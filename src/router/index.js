@@ -1,20 +1,68 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import Member from '../views/MemberView.vue'
 
 const routes = [
   {
     path: '/',
-    name: 'home',
-    component: HomeView
+    name: 'member',
+    component: Member,
   },
   {
-    path: '/about',
-    name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
-  }
+    path: '/news',
+    name: 'news',
+    component: () => import('../views/NewsView.vue')
+  },
+  {
+    path: '/history',
+    name: 'history',
+    component: () => import('../views/HistoryView.vue')
+  },
+  {
+    path: '/itinerary',
+    name: 'itinerary',
+    component: () => import('../views/ItineraryView.vue')
+  },
+  {
+    path: '/itineraryorder',
+    name: 'itineraryorder',
+    component: () => import('../views/ItineraryOrderView.vue')
+  },
+  {
+    path: '/itinerarycanvas',
+    name: 'itinerarycanvas',
+    component: () => import('../views/ItineraryCanvasView.vue')
+  },
+  {
+    path: '/itinerarycomment',
+    name: 'itinerarycomment',
+    component: () => import('../views/ItineraryCommentView.vue')
+  },
+  {
+    path: '/product',
+    name: 'product',
+    component: () => import('../views/ProductView.vue')
+  },
+  {
+    path: '/productorder',
+    name: 'productorder',
+    component: () => import('../views/ProductOrderView.vue')
+  },
+  {
+    path: '/qa',
+    name: 'qa',
+    component: () => import('../views/QAView.vue')
+  },
+  {
+    path: '/coupon',
+    name: 'coupon',
+    component: () => import('../views/CouponView.vue')
+  },
+  {
+    path: '/backaccount',
+    name: 'backaccount',
+    component: () => import('../views/BackAccountView.vue')
+  },
+  
 ]
 
 const router = createRouter({
@@ -22,4 +70,4 @@ const router = createRouter({
   routes
 })
 
-export default router
+export default router;

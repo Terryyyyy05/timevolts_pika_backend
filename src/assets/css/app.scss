@@ -1,0 +1,16 @@
+// base
+@import "base/color";
+
+// component
+@import "component/button";
+
+body{
+    background-color: $background;
+}
+$container:100%;
+.container{
+    position: absolute;
+    max-width: $container;
+    left: 250px;
+    margin: 10px 30px;
+}
