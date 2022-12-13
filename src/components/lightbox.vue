@@ -4,8 +4,9 @@
             v-model="modal4"
             title="Custom width"
             width="500" hight="fit-content">
-            <p>Customize width, unit px, default 520px.</p>
-            <p>The width of the dialog box is responsive, and the width becomes <code>auto</code> when the screen size is less than 768px.</p>
+            <div class="popup">
+
+            </div>
         </Modal>
 </template>
 <script>

@@ -1,54 +1,42 @@
 <template>
-    <Menu :theme="theme" active-name="1" class="sidebar">
-        
+    <Menu theme="dark" active-name="1" class="sidebar">
+
         <MenuGroup title="Timevolts後台管理 ">
-            <MenuItem name="1">
-                <Icon type="ios-contact" />
-                <router-link to="/">會員管理</router-link> 
+            <MenuItem name="1" to="/" class="item">
+            <Icon type="ios-contact" />會員管理
             </MenuItem>
-            <MenuItem name="2">
-                <Icon type="md-flash" />
-                <router-link to="/News">最新消息管理</router-link>
+            <MenuItem name="2" to="/News" class="item">
+            <Icon type="md-flash" />最新消息管理
             </MenuItem>
-            <MenuItem name="3">
-                <Icon type="ios-list-box-outline" />
-                <router-link to="/History">歷史故事管理</router-link>
+            <MenuItem name="3" to="/History" class="item">
+            <Icon type="ios-list-box-outline" />歷史故事管理
             </MenuItem>
-            <MenuItem name="4">
-                <Icon type="ios-list-box-outline" />
-                <router-link to="/Itinerary">行程管理</router-link>
+            <MenuItem name="4" to="/Itinerary" class="item">
+            <Icon type="ios-list-box-outline" />行程管理
             </MenuItem>
-            <MenuItem name="5">
-                <Icon type="md-flash" />
-                <router-link to="/Itineraryorder">行程訂單管理</router-link>
+            <MenuItem name="5" to="/Itineraryorder" class="item">
+            <Icon type="md-flash" />行程訂單管理
             </MenuItem>
-            <MenuItem name="6">
-                <Icon type="ios-color-palette-outline" />
-                <router-link to="/Itinerarycanvas">畫布管理</router-link>
+            <MenuItem name="6" to="/Itinerarycanvas" class="item">
+            <Icon type="ios-color-palette-outline" />畫布管理
             </MenuItem>
-            <MenuItem name="7">
-                <Icon type="md-text" />
-                <router-link to="/Itinerarycomment">行程評論管理</router-link>
+            <MenuItem name="7" to="/Itinerarycomment" class="item">
+            <Icon type="md-text" />行程評論管理
             </MenuItem>
-            <MenuItem name="8">
-                <Icon type="ios-thumbs-up-outline" />
-                <router-link to="/Product">商品管理</router-link>
+            <MenuItem name="8" to="/Product" class="item">
+            <Icon type="ios-thumbs-up-outline" />商品管理
             </MenuItem>
-            <MenuItem name="9">
-                <Icon type="md-heart-outline" />
-                <router-link to="/Productorder">商品訂單管理</router-link>
+            <MenuItem name="9" to="/Productorder" class="item">
+            <Icon type="md-heart-outline" />商品訂單管理
             </MenuItem>
-            <MenuItem name="10">
-                <Icon type="ios-mail-outline" />
-                <router-link to="/Qa">時空管理局管理</router-link>
+            <MenuItem name="10" to="/Qa" class="item">
+            <Icon type="ios-mail-outline" />時空管理局管理
             </MenuItem>
-            <MenuItem name="11">
-                <Icon type="md-flash" />
-                <router-link to="/Coupon">折扣券管理</router-link>
+            <MenuItem name="11" to="/Coupon" class="item">
+            <Icon type="md-flash" /> 折扣券管理
             </MenuItem>
-            <MenuItem name="12">
-                <Icon type="md-contacts" />
-                <router-link to="/Backaccount">後台帳號管理</router-link>
+            <MenuItem name="12" to="/Backaccount" class="item">
+            <Icon type="ios-contact" />後台帳號管理
             </MenuItem>
         </MenuGroup>
     </Menu>
@@ -57,7 +45,6 @@
     export default {
         data () {
             return {
-                theme: 'dark'
             }
         }
     }
@@ -76,10 +63,11 @@
     .ivu-icon {
         color: $primary;
     }
-    a {
-        color: $primary;
-        font-size: 17px;
-        text-decoration: none;
-    }
+    .item {
+            color: $primary;
+            font-size: 17px;
+            text-decoration: none;
+        }
 }
+    
 </style>
