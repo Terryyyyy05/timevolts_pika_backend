@@ -33,7 +33,7 @@
             <Icon type="ios-mail-outline" />時空管理局管理
             </MenuItem>
             <MenuItem name="11" to="/Coupon" class="item">
-            <Icon type="md-flash" /> 折扣券管理
+            <Icon type="md-flash" />折扣券管理
             </MenuItem>
             <MenuItem name="12" to="/Backaccount" class="item">
             <Icon type="ios-contact" />後台帳號管理

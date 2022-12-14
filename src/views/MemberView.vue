@@ -3,7 +3,7 @@
   <!-- 表格 -->
   <Table class="table" stripe border :columns="columns" :data="data" width="1200">
     <!-- 加入開關按鈕 -->
-    <template #on_off="{ row }">   
+    <template #onoff="{row,index}">   
       <Switch size="large" true-color="#fab042" false-color="#e6e6e6">
                 <template #open>
                   <span>一般</span>
@@ -21,28 +21,35 @@
     <!-- 加入編輯、刪除彈窗 -->
     <template #edit_member="{ row }">
       <!-- 編輯按鈕 -->
-      <Button @click="modal3 = true">編輯</Button>
+      <Button @click="modal3 = true" class="edit">編輯</Button>
       <!-- 編輯彈窗 -->
       <Modal v-model="modal3" title="編輯會員資料" ok-text="確認修改" cancel-text="取消" width="700px" class="editmember-popup"
         :styles="{top: '30px'}">
       
-        <Form :model="memberItem" :label-width="80" :rules="ruleInline" inline>
-          <FormItem label="會員姓名">
-            <text>{{memberItem.name}}</text>
+        <Form :label-width="80" :rules="ruleInline" inline>
+          <FormItem label="姓名">
+            <text>{{data[0].name}}</text>
+          </FormItem>
+          <FormItem label="會員頭貼" style="margin-left:200px">
+            <Avatar style="background-color: #87d068" icon="ios-person" />
           </FormItem>
 
         </Form>
-        <Form :model="memberItem" :label-width="80">
+        <Form :label-width="80">
           <FormItem label="信箱">
+            <text>{{data[0].email}}</text>
           </FormItem>
           <FormItem label="生日">
+            <text>{{data[0].birthday}}</text>
           </FormItem>
           <FormItem label="電話">
+            <text>{{data[0].tel}}</text>
           </FormItem>
           <FormItem label="地址">
+            <text>{{data[0].address}}</text>
           </FormItem>
           <FormItem label="會員狀態">
-            <Select v-model="memberItem.status" placeholder="狀態">
+            <Select v-model="memberItem.status" placeholder="狀態" style="width:100px">
               <Option value="一般">一般</Option>
               <Option value="停權">停權</Option>
             </Select>
@@ -121,7 +128,7 @@ export default {
           width: '110px',
           key: 'status',
           align: 'center',
-          slot: 'on_off',  //加入開關鈕欄位需加slot
+          slot: 'onoff',  //加入開關鈕欄位需加slot
           // filters: [   //篩選分類
           //   {
           //     label: '1',
@@ -152,43 +159,67 @@ export default {
       data: [     ///表格內容資料
         {
           id: '1000001',
+          name: '張西西',
           account: '123123',
           email: '123123@gmail.com',
+          birthday:'1999/11/11',
+          tel:'0900000000',
+          address:'桃園復興',
           date: '2022/01/05',
           mem_level: '白金'
         },
         {
           id: '1000002',
+          name: '張嚕嚕',
           account: '123123',
           email: '123123@gmail.com',
+          birthday:'1999/11/12',
+          tel:'0900009800',
+          address:'桃園復興路',
           date: '2022/01/06',
           mem_level: '白金'
         },
         {
           id: '1000003',
+          name: '張哈哈',
           account: '3424fdsf',
           email: '123123@gmail.com',
+          birthday:'1999/11/13',
+          tel:'0900076000',
+          address:'桃園市中壢區復興',
           date: '2022/01/04',
           mem_level: '白金'
         },
         {
           id: '1000004',
+          name: '張滴滴',
           account: 'dsgdsxcv',
           email: '123123@gmail.com',
+          birthday:'1999/11/14',
+          tel:'0900054000',
+          address:'桃園市復興',
           date: '2022/01/03',
           mem_level: '普通'
         },
         {
           id: '1000005',
+          name: '張咚咚',
           account: '123123',
           email: '123123@gmail.com',
+          birthday:'1999/11/15',
+          tel:'0900230000',
+          address:'桃園復興46號',
           date: '2022/01/01',
           mem_level: '白金'
         },
         {
           id: '1000006',
+          name: '張喃喃',
           account: 'safafdaaaa',
           email: '123123@gmail.com',
+          birthday:'1999/11/16',
+          tel:'0900000000',
+          address:'桃園復興',
           date: '2022/01/02',
           mem_level: '鑽石'
         },
@@ -208,6 +239,7 @@ export default {
 .table {
   margin: 30px auto;
 }
+
 .edit {
   color: $color;
   border: 1px solid $color;

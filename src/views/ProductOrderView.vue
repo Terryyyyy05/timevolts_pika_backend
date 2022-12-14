@@ -1,6 +1,6 @@
 <template>
     <!-- 標題 -->
-    <the-heading heading="最新消息管理系統"></the-heading>
+    <the-heading heading="商品訂單管理系統"></the-heading>
     <!-- 新增彈窗按鈕 -->
     <Button @click="modal1 = true" class="add">新增 +</Button>
     <!-- 新增彈窗 -->
