@@ -12,7 +12,7 @@
  @import "@/assets/css/app.scss" ;
  
  h1{
-    color: $primary;
+    color: $color;
     font-weight: bold;
     font-size: 50px;
  }

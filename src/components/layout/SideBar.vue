@@ -1,7 +1,7 @@
 <template>
     <Menu theme="dark" active-name="1" class="sidebar">
 
-        <MenuGroup title="Timevolts後台管理 ">
+        <MenuGroup title="Timevolts後台管理" color="#fa0">
             <MenuItem name="1" to="/" class="item">
             <Icon type="ios-contact" />會員管理
             </MenuItem>
@@ -51,6 +51,7 @@
 </script>
 <style lang="scss" scoped>
 @import '@/assets/css/app.scss';
+
 .sidebar {
     height: 100%;
     position: fixed;
@@ -59,17 +60,17 @@
     text-decoration: none;
     color: $primary;
     margin-right: 50px;
-    border-right: 2px solid $primary;
+    border-right: 2px solid $color;
     .ivu-icon {
-        color: $primary;
+        color: $color;
     }
     .item {
-            color: $primary;
+            color: $color;
             font-size: 17px;
             text-decoration: none;
         }
 }
 .ivu-menu-dark.ivu-menu-vertical .ivu-menu-item-active:not(.ivu-menu-submenu), .ivu-menu-dark.ivu-menu-vertical .ivu-menu-submenu-title-active:not(.ivu-menu-submenu),.ivu-icon{
-    color: $color;
+    color: $primary;
 }
 </style>

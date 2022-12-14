@@ -1,5 +1,5 @@
 <template>
-    <Switch :before-change="handleBeforeChange" true-color="#FEC570" false-color="#e6e6e6"/>
+    <Switch :before-change="handleBeforeChange" true-color="#fab042" false-color="#e6e6e6"/>
 </template>
 <script>
     export default {

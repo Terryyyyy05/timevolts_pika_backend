@@ -1,55 +1,105 @@
 <template>
+  <!-- 標題 -->
   <the-heading heading="最新消息管理系統"></the-heading>
-  <Button @click="modal1 = true">新增</Button>
-        <Modal
-            v-model="modal1"
-            title="Custom width"
-            width="300"
-            >
-            <p>Customize width, unit px, default 520px.</p>
-            <p>The width of the dialog box is responsive, and the width becomes <code>auto</code> when the screen size is less than 768px.</p>
-        </Modal>
-    <Table class="table" stripe border :columns="columns" :data="data">
+  <!-- 新增彈窗按鈕 -->
+  <Button @click="modal1 = true" class="add">新增 +</Button>
+  <!-- 新增彈窗 -->
+  <Modal v-model="modal1" title="新增最新消息" width="700px" class="addnews-popup" :styles="{top: '30px'}">
+      <Form :model="addItem" :label-width="80" :rules="ruleInline" inline >
+        <FormItem label="消息編號">
+          <Input v-model="addItem.id" placeholder="請輸入消息編號"></Input>
+        </FormItem>
+        <FormItem label="消息分類">
+          <Select v-model="addItem.select" placeholder="請選擇">
+            <Option value="歷史故事">歷史故事</Option>
+            <Option value="行程預訂">行程預訂</Option>
+            <Option value="購物商城">購物商城</Option>
+            <Option value="其他消息">其他消息</Option>
+          </Select>
+        </FormItem>
+      </Form>
+      <Form :model="addItem" :label-width="80">
+        <FormItem label="消息標題">
+          <Input v-model="addItem.title" placeholder="請輸入消息標題"></Input>
+        </FormItem>
+        <FormItem label="日期">
+          <DatePicker type="date" placeholder="請選擇日期" v-model="addItem.date"></DatePicker>
+        </FormItem>
+        <FormItem label="消息圖片">
+          <input type="file" multiple>
+        </FormItem>
+        <FormItem label="消息內容">
+          <Input v-model="addItem.textarea" type="textarea" :autosize="{ minRows: 10, maxRows: 50 }"></Input>
+        </FormItem>
+      </Form>
+  </Modal>
+
+  <!-- 表格 -->
+  <Table class="table" stripe border :columns="columns" :data="data" width="1200">
+    <!-- 加入開關按鈕 -->
+    <template #on_off="{ row,index }">   
+      <switchbtn />
+    </template>
+    <!-- 加入編輯、刪除彈窗 -->
+    <template #edit_del="{ row,index }">
+      <!-- 編輯按鈕 -->
+      <Button @click="modal3 = true">編輯</Button>
+      <!-- 編輯彈窗 -->
+      <Modal v-model="modal3" title="編輯最新消息" ok-text="確認修改" cancel-text="取消" width="700px" class="editnews-popup"
+        :styles="{top: '30px'}">
       
-      <template #on_off="{row }">
-        <switchbtn />
-      </template>
+        <Form :model="editItem" :label-width="80" :rules="ruleInline" inline>
+          <FormItem label="消息編號" :model="addItem">
+            <text>{{addItem.id}}</text>
+          </FormItem>
+          <FormItem label="消息分類">
+            <Select v-model="editItem.select" placeholder="請選擇">
+              <Option value="歷史故事">歷史故事</Option>
+              <Option value="行程預訂">行程預訂</Option>
+              <Option value="購物商城">購物商城</Option>
+              <Option value="其他消息">其他消息</Option>
+            </Select>
+          </FormItem>
+        </Form>
+        <Form :model="editItem" :label-width="80">
+          <FormItem label="消息標題">
+            <Input v-model="editItem.title" placeholder="請輸入消息標題"></Input>
+          </FormItem>
+          <FormItem label="日期">
+            <DatePicker type="date" placeholder="請選擇日期" v-model="editItem.date"></DatePicker>
+          </FormItem>
+          <FormItem label="消息圖片">
+            <input type="file" multiple>
+          </FormItem>
+          <FormItem label="消息內容">
+            <Input v-model="editItem.textarea" type="textarea" :autosize="{ minRows: 10, maxRows: 50 }"></Input>
+          </FormItem>
+        </Form>
+      </Modal>
 
-      <template #edit_del="{row}">
-        <Button @click="modal2 = true" class="edit">編輯</Button>
-        <Modal
-            title="Title"
-            v-model="modal2"
-            :mask-closable="false">
-            <p>Content of dialog</p>
-            <p>Content of dialog</p>
-            <p>Content of dialog</p>
-        </Modal>
-
-        <Button class="delete" @click="confirm">刪除</Button>
-      </template>
-    </Table>
+      <!-- 刪除按鈕 -->
+      <Button class="delete" @click="remove(data.id)">刪除</Button>
+    </template>
+  </Table>
 </template>
 
 <script>
 import switchbtn from '@/components/switchbtn.vue'
-import lightbox from '@/components/lightbox.vue'
 export default {
   components: {
     switchbtn,
-    lightbox
   },
   data() {
     return {
-      modal1: false, 
-      modal2: false,
-      columns: [
+      modal1: false,  //新增彈窗預設關閉
+      modal3: false,  //編輯彈窗預設關閉
+      columns: [  ///表單表頭
         {
           title: '編號',
-          width: '100px',
-          key: 'number',
-          align: 'center',
-          sortable: true
+          width: '100px',  //寬度
+          key: 'id',
+          align: 'center',  //置中
+          sortable: true,   //是否排序
         },
         {
           title: '發布日期',
@@ -63,99 +113,159 @@ export default {
           width: '150px',
           key: 'type',
           align: 'center',
-          sortable: true,
+          filters: [   //篩選分類
+            {
+              label: '1',
+              value: 1
+            },
+            {
+              label: '2',
+              value: 2
+            }
+          ],
+          filterMultiple: false,
+          filterMethod(value, row) {
+            if (value === 1) {
+              return row.show === 1;
+            } else if (value === 2) {
+              return row.show === 2;
+            }
+          }
         },
         {
           title: '標題',
           key: 'title',
           align: 'center',
-          input: 'textarea',
         },
         {
           title: '上下架',
           key: 'status',
           align: 'center',
           width: '100px',
-          slot: 'on_off',
+          slot: 'on_off',  //加入開關鈕欄位需加slot
+          filters: [   //篩選分類
+            {
+              label: 'true',
+              value: true
+            },
+            {
+              label: 'false',
+              value: false
+            }
+          ],
+          filterMultiple: false,
+          filterMethod(value, row) {
+            if (value === true) {
+              return row.show === true;
+            } else if (value === false) {
+              return row.show === false;
+            }
+          }
         },
         {
           title: '編輯/刪除',
           width: '200px',
           key: 'edit',
           align: 'center',
-          slot:'edit_del'
+          slot: 'edit_del'  //加入編輯刪除欄位需加slot
         },
       ],
-      data: [
+      data: [     ///表格內容資料
         {
-          number: '1',
+          id: '1',
           date: '',
           type: '',
           title: '',
         },
         {
-          number: '2',
+          id: '2',
           date: '',
           type: '',
           title: '',
         },
         {
-          number: '3',
+          id: '3',
           date: '',
           type: '',
           title: '',
         },
         {
-          number: '4',
+          id: '4',
           date: '',
           type: '',
           title: '',
         },
         {
-          number: '5',
+          id: '5',
           date: '',
           type: '',
           title: '',
         },
         {
-          number: '6',
+          id: '6',
           date: '',
           type: '',
           title: '',
         },
-      ]
+      ],
+      addItem: {   //新增彈窗內容資料
+                  id:'',
+                  title: '',
+                  select: '',
+                  date: '',
+                  textarea: ''
+              },
+      editItem: {
+        id: 'addItem.id()',
+        title: '',
+        select: '',
+        date: '',
+        textarea: ''
+      }
     }
   },
   methods: {
-    confirm () {
-                this.$Modal.confirm({
-                    content: '<p>確認刪除嗎?</p>',
-                    onOk: () => {
-                        this.$Message.info('確認刪除');
-                    },
-                    onCancel: () => {
-                        this.$Message.info('取消');
-                    }
-                });
+    remove() {
+      this.$Modal.confirm({
+        content: '<p>確認刪除嗎?</p>',
+        onOk: () => {
+          this.$Message.info('確認刪除');
+          this.data.splice("data.id",1);
+        },
+        onCancel: () => {
+          this.$Message.info('取消');
         }
-      }
+      })
+      
     }
+    
+  }
+}
 
 </script>
 <style lang="scss" scoped>
 @import '@/assets/css/app.scss';
-.table{
-  width: 1200px;
+
+.table {
   margin: 30px auto;
 }
-.delete{
- margin: 0 10px;
- background-color: $color;
- color: #ffffff;
- border:1px solid $color;
+
+.delete,.add {
+  margin: 0 10px;
+  background-color: $color;
+  color: #ffffff;
+  border: 1px solid $color;
 }
-.edit{
- color: $color;
- border:1px solid $color;
+
+.add {
+  margin: 20px 0 0 0;
+  width: 80px;
 }
+
+.edit {
+  color: $color;
+  border: 1px solid $color;
+}
+
+
 </style>
