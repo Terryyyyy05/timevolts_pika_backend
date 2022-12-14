@@ -4,8 +4,20 @@
   <Table class="table" stripe border :columns="columns" :data="data" width="1200">
     <!-- 加入開關按鈕 -->
     <template #on_off="{ row }">   
-      <switchbtn />
+      <Switch size="large" true-color="#fab042" false-color="#e6e6e6">
+                <template #open>
+                  <span>一般</span>
+                </template>
+                <template #close>
+                  <span>停權</span>
+                </template>
+            </Switch>
     </template>
+
+    <template #mem_level="{ row,index }">   
+      <text>{{ row.mem_level }}</text>
+    </template>
+
     <!-- 加入編輯、刪除彈窗 -->
     <template #edit_member="{ row }">
       <!-- 編輯按鈕 -->
@@ -37,17 +49,12 @@
           </FormItem>
         </Form>
       </Modal>
-
     </template>
   </Table>
 </template>
 
 <script>
-import switchbtn from '@/components/switchbtn.vue'
 export default {
-  components: {
-    switchbtn,
-  },
   data() {
     return {
       modal3: false,  //編輯彈窗預設關閉
@@ -82,30 +89,30 @@ export default {
         {
           title: '會員等級',
           width: '110px',
-          key: 'value',
+          slot: 'mem_level',
           align: 'center',
           filters: [   //篩選分類
             {
-              level: "普通",
+              label: "普通",
               value: 1
             },
             {
-              level: "白金",
+              label: "白金",
               value: 2
             },
             {
-              level: "鑽石",
+              label: "鑽石",
               value: 3
             }
           ],
           filterMultiple: false,
           filterMethod(value, row) {
             if (value === 1) {
-              return row.show === "普通";
+              return row.mem_level === "普通";
             } else if (value === 2) {
-              return row.show ==="白金";
+              return row.mem_level ==="白金";
             } else {
-              return row.show === "鑽石";
+              return row.mem_level === "鑽石";
             }
           }
         },
@@ -115,24 +122,24 @@ export default {
           key: 'status',
           align: 'center',
           slot: 'on_off',  //加入開關鈕欄位需加slot
-          filters: [   //篩選分類
-            {
-              label: '1',
-              value: 1
-            },
-            {
-              label: '2',
-              value: 2
-            }
-          ],
-          filterMultiple: false,
-          filterMethod(value, row) {
-            if (value === 1) {
-              return row.show === 1;
-            } else if (value === 2) {
-              return row.show === 2;
-            }
-          }
+          // filters: [   //篩選分類
+          //   {
+          //     label: '1',
+          //     value: 1
+          //   },
+          //   {
+          //     label: '2',
+          //     value: 2
+          //   }
+          // ],
+          // filterMultiple: false,
+          // filterMethod(value, row) {
+          //   if (value === 1) {
+          //     return row.show === 1;
+          //   } else if (value === 2) {
+          //     return row.show === 2;
+          //   }
+          // }
         },
         {
           title: '編輯',
@@ -148,42 +155,42 @@ export default {
           account: '123123',
           email: '123123@gmail.com',
           date: '2022/01/05',
-          value: '白金'
+          mem_level: '白金'
         },
         {
           id: '1000002',
           account: '123123',
           email: '123123@gmail.com',
           date: '2022/01/06',
-          value: '白金'
+          mem_level: '白金'
         },
         {
           id: '1000003',
           account: '3424fdsf',
           email: '123123@gmail.com',
           date: '2022/01/04',
-          value: '白金'
+          mem_level: '白金'
         },
         {
           id: '1000004',
           account: 'dsgdsxcv',
           email: '123123@gmail.com',
           date: '2022/01/03',
-          value: '白金'
+          mem_level: '普通'
         },
         {
           id: '1000005',
           account: '123123',
           email: '123123@gmail.com',
           date: '2022/01/01',
-          value: '白金'
+          mem_level: '白金'
         },
         {
           id: '1000006',
           account: 'safafdaaaa',
           email: '123123@gmail.com',
           date: '2022/01/02',
-          value: '鑽石'
+          mem_level: '鑽石'
         },
       ],
       memberItem: {
@@ -192,9 +199,6 @@ export default {
       }
     }
   },
-  // methods: {
-    
-  // }
 }
 
 </script>

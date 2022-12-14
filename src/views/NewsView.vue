@@ -38,8 +38,20 @@
   <Table class="table" stripe border :columns="columns" :data="data" width="1200">
     <!-- 加入開關按鈕 -->
     <template #on_off="{ row,index }">   
-      <switchbtn />
+      <Switch size="large" true-color="#fab042" false-color="#e6e6e6">
+                <template #open>
+                  <span>上架</span>
+                </template>
+                <template #close>
+                  <span>下架</span>
+                </template>
+            </Switch>
     </template>
+
+    <template #news_type="{ row,index }">   
+      <text>{{row.news_type}}</text>
+    </template>
+
     <!-- 加入編輯、刪除彈窗 -->
     <template #edit_del="{ row,index }">
       <!-- 編輯按鈕 -->
@@ -84,11 +96,7 @@
 </template>
 
 <script>
-import switchbtn from '@/components/switchbtn.vue'
 export default {
-  components: {
-    switchbtn,
-  },
   data() {
     return {
       modal1: false,  //新增彈窗預設關閉
@@ -111,24 +119,36 @@ export default {
         {
           title: '消息分類',
           width: '150px',
-          key: 'type',
+          slot: 'news_type',
           align: 'center',
           filters: [   //篩選分類
             {
-              label: '1',
+              label: '歷史故事',
               value: 1
             },
             {
-              label: '2',
+              label: '行程預訂',
               value: 2
-            }
+            },
+            {
+              label: '購物商城',
+              value: 3
+            },
+            {
+              label: '其他消息',
+              value: 4
+            },
           ],
           filterMultiple: false,
           filterMethod(value, row) {
             if (value === 1) {
-              return row.show === 1;
+              return row.news_type === '歷史故事';
             } else if (value === 2) {
-              return row.show === 2;
+              return row.news_type === '行程預訂';
+            } else if (value === 3) {
+              return row.news_type === '購物商城';
+            } else {
+              return row.news_type === '其他消息';
             }
           }
         },
@@ -138,29 +158,11 @@ export default {
           align: 'center',
         },
         {
-          title: '上下架',
+          title: '狀態',
           key: 'status',
           align: 'center',
           width: '100px',
           slot: 'on_off',  //加入開關鈕欄位需加slot
-          filters: [   //篩選分類
-            {
-              label: 'true',
-              value: true
-            },
-            {
-              label: 'false',
-              value: false
-            }
-          ],
-          filterMultiple: false,
-          filterMethod(value, row) {
-            if (value === true) {
-              return row.show === true;
-            } else if (value === false) {
-              return row.show === false;
-            }
-          }
         },
         {
           title: '編輯/刪除',
@@ -174,37 +176,37 @@ export default {
         {
           id: '1001',
           date: '2022-12-10',
-          type: '經典行程',
+          news_type: '行程預訂',
           title: '穿梭於史前時代',
         },
         {
           id: '1002',
           date: '2022-11-10',
-          type: '經典行程',
+          news_type: '行程預訂',
           title: '埃及五千年的黃金時代',
         },
         {
           id: '2001',
           date: '2022-12-15',
-          type: '歷史事件',
+          news_type: '歷史故事',
           title: '鐵達尼號沈船',
         },
         {
           id: '2002',
           date: '2022-12-01',
-          type: '歷史事件',
+          news_type: '歷史故事',
           title: '鄭和下西洋',
         },
         {
           id: '3001',
           date: '2022-11-11',
-          type: '購物商城',
+          news_type: '購物商城',
           title: '購物須知',
         },
         {
           id: '4001',
           date: '2022-11-09',
-          type: '其他消息',
+          news_type: '其他消息',
           title: '官網維護公告',
         },
       ],
@@ -230,15 +232,13 @@ export default {
         content: '<p>確認刪除嗎?</p>',
         onOk: () => {
           this.$Message.info('確認刪除');
-          this.data.splice("data.id",1);
+          this.data.splice("id",1);
         },
         onCancel: () => {
           this.$Message.info('取消');
         }
       })
-      
-    }
-    
+    },
   }
 }
 
