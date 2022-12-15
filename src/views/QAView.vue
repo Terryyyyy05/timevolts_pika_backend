@@ -5,29 +5,21 @@
   <Button @click="modal1 = true" class="add">新增 +</Button>
   <!-- 新增彈窗 -->
   <Modal v-model="modal1" title="新增問題" width="700px" class="addqa-popup" :styles="{ top: '30px' }">
-    <Form :model="addItem" :label-width="80">
-      <FormItem label="消息編號">
-        <Input v-model="addItem.id" placeholder="請輸入消息編號"></Input>
+    <Form :model="addqaItem" :label-width="80">
+      <FormItem label="問題編號">
+        <Input v-model="addqaItem.id" placeholder="請輸入問題編號"></Input>
       </FormItem>
-      <FormItem label="消息分類">
-        <Select v-model="addItem.select" placeholder="請選擇">
-          <Option value="歷史故事">歷史故事</Option>
+      <FormItem label="問題分類">
+        <Select v-model="addqaItem.qa_type" placeholder="請選擇">
+          <Option value="常見問題">常見問題</Option>
           <Option value="行程預訂">行程預訂</Option>
-          <Option value="購物商城">購物商城</Option>
-          <Option value="其他消息">其他消息</Option>
         </Select>
       </FormItem>
-      <FormItem label="消息標題">
-        <Input v-model="addItem.title" placeholder="請輸入消息標題"></Input>
+      <FormItem label="問題標題">
+        <Input v-model="addqaItem.title" placeholder="請輸入問題標題"></Input>
       </FormItem>
-      <FormItem label="日期">
-        <DatePicker type="date" placeholder="請選擇日期" v-model="addItem.date"></DatePicker>
-      </FormItem>
-      <FormItem label="消息圖片">
-        <input type="file" multiple>
-      </FormItem>
-      <FormItem label="消息內容">
-        <Input v-model="addItem.textarea" type="textarea" :autosize="{ minRows: 10, maxRows: 50 }"></Input>
+      <FormItem label="問題內容">
+        <Input v-model="addqaItem.textarea" type="textarea" :autosize="{ minRows: 10, maxRows: 50 }"></Input>
       </FormItem>
     </Form>
   </Modal>
@@ -46,49 +38,36 @@
       </Switch>
     </template>
 
-    <template #news_type="{ row, index }">
-      <text>{{ row.news_type }}</text>
+    <template #qa_type="{ row, index }">
+      <text>{{ row.qa_type }}</text>
     </template>
 
-    <!-- 加入編輯、刪除彈窗 -->
-    <template #edit_del="{ row, index }">
+    <!-- 加入編輯彈窗 -->
+    <template #edit="{ row, index }">
       <!-- 編輯按鈕 -->
-      <Button @click="modal3 = true">編輯</Button>
+      <Button @click="modal3 = true" class="edit">編輯</Button>
       <!-- 編輯彈窗 -->
       <Modal v-model="modal3" title="編輯最新消息" ok-text="確認修改" cancel-text="取消" width="700px" class="editnews-popup"
         :styles="{ top: '30px' }">
 
-        <Form :model="editItem" :label-width="80" :rules="ruleInline" inline>
-          <FormItem label="消息編號" :model="addItem">
-            <text>{{ addItem.id }}</text>
+        <Form :model="addqaItem" :label-width="80">
+          <FormItem label="問題編號">
+            <Input v-model="addqaItem.id" placeholder="請輸入問題編號"></Input>
           </FormItem>
-          <FormItem label="消息分類">
-            <Select v-model="editItem.select" placeholder="請選擇">
-              <Option value="歷史故事">歷史故事</Option>
+          <FormItem label="問題分類">
+            <Select v-model="addqaItem.qa_type" placeholder="請選擇">
+              <Option value="常見問題">常見問題</Option>
               <Option value="行程預訂">行程預訂</Option>
-              <Option value="購物商城">購物商城</Option>
-              <Option value="其他消息">其他消息</Option>
             </Select>
           </FormItem>
-        </Form>
-        <Form :model="editItem" :label-width="80">
-          <FormItem label="消息標題">
-            <Input v-model="editItem.title" placeholder="請輸入消息標題"></Input>
+          <FormItem label="問題標題">
+            <Input v-model="addqaItem.title" placeholder="請輸入問題標題"></Input>
           </FormItem>
-          <FormItem label="日期">
-            <DatePicker type="date" placeholder="請選擇日期" v-model="editItem.date"></DatePicker>
-          </FormItem>
-          <FormItem label="消息圖片">
-            <input type="file" multiple>
-          </FormItem>
-          <FormItem label="消息內容">
-            <Input v-model="editItem.textarea" type="textarea" :autosize="{ minRows: 10, maxRows: 50 }"></Input>
+          <FormItem label="問題內容">
+            <Input v-model="addqaItem.textarea" type="textarea" :autosize="{ minRows: 10, maxRows: 50 }"></Input>
           </FormItem>
         </Form>
       </Modal>
-
-      <!-- 刪除按鈕 -->
-      <Button class="delete" @click="remove(data.id)">刪除</Button>
     </template>
   </Table>
 </template>
@@ -102,14 +81,15 @@ export default {
       columns: [  ///表單表頭
         {
           title: '問題編號',
-          width: '100px',  //寬度
+          width: '200px',  //寬度
           key: 'id',
           align: 'center',  //置中
           sortable: true,   //是否排序
         },
         {
           title: '問題分類',
-          width: '150px',
+          width: '200px',
+          key:'qa_type',
           slot: 'qa_type',
           align: 'center',
         },
@@ -126,11 +106,11 @@ export default {
           slot: 'on_off',  //加入開關鈕欄位需加slot
         },
         {
-          title: '編輯/刪除',
-          width: '200px',
+          title: '編輯',
+          width: '100px',
           key: 'edit',
           align: 'center',
-          slot: 'edit_del'  //加入編輯刪除欄位需加slot
+          slot: 'edit'  //加入編輯刪除欄位需加slot
         },
       ],
       data: [     ///表格內容資料
@@ -141,37 +121,25 @@ export default {
         },
         {
           id: '1002',
-          news_type: '行程預訂',
+          qa_type: '行程預訂',
           title: '埃及五千年的黃金時代',
         },
       ],
       addqaItem: {   //新增彈窗內容資料
         id: '',
-        news_type: '',
+        qa_type: '',
         title: '',
         textarea: ''
       },
       editqaItem: {
         id: '',
-        news_type: '',
+        qa_type: '',
         title: '',
         textarea: ''
       }
     }
   },
   methods: {
-    remove() {
-      this.$Modal.confirm({
-        content: '<p>確認刪除嗎?</p>',
-        onOk: () => {
-          this.$Message.info('確認刪除');
-          this.data.splice("id", 1);
-        },
-        onCancel: () => {
-          this.$Message.info('取消');
-        }
-      })
-    },
   }
 }
 
@@ -183,17 +151,12 @@ export default {
   margin: 30px auto;
 }
 
-.delete,
-.add {
-  margin: 0 10px;
-  background-color: $color;
-  color: #ffffff;
-  border: 1px solid $color;
-}
-
 .add {
   margin: 20px 0 0 0;
   width: 80px;
+  background-color: $color;
+  color: #ffffff;
+  border: 1px solid $color;
 }
 
 .edit {

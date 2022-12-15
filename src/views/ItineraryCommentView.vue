@@ -55,7 +55,7 @@
       <!-- 加入編輯、刪除彈窗 -->
       <template #edit_del="{ row,index }">
         <!-- 編輯按鈕 -->
-        <Button @click="modal3 = true">編輯</Button>
+        <Button @click="modal3 = true" class="edit">編輯</Button>
         <!-- 編輯彈窗 -->
         <Modal v-model="modal3" title="編輯最新消息" ok-text="確認修改" cancel-text="取消" width="700px" class="editnews-popup"
           :styles="{top: '30px'}">

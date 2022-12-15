@@ -4,65 +4,65 @@
   <!-- 新增彈窗按鈕 -->
   <Button @click="modal1 = true" class="add">新增 +</Button>
   <!-- 新增彈窗 -->
-  <Modal v-model="modal1" title="新增最新消息" width="700px" class="addnews-popup" :styles="{ top: '30px' }">
-    <Form :model="addItem" :label-width="80" :rules="ruleInline" inline>
-      <FormItem label="消息編號">
-        <Input v-model="addItem.id" placeholder="請輸入消息編號"></Input>
-      </FormItem>
-      <FormItem label="消息分類">
-        <Select v-model="addItem.select" placeholder="請選擇">
-          <Option value="歷史故事">歷史故事</Option>
-          <Option value="行程預訂">行程預訂</Option>
-          <Option value="購物商城">購物商城</Option>
-          <Option value="其他消息">其他消息</Option>
-        </Select>
-      </FormItem>
-    </Form>
-    <Form :model="addItem" :label-width="80">
-      <FormItem label="消息標題">
-        <Input v-model="addItem.title" placeholder="請輸入消息標題"></Input>
-      </FormItem>
-      <FormItem label="日期">
-        <DatePicker type="date" placeholder="請選擇日期" v-model="addItem.date"></DatePicker>
-      </FormItem>
-      <FormItem label="消息圖片">
-        <input type="file" multiple>
-      </FormItem>
-      <FormItem label="消息內容">
-        <Input v-model="addItem.textarea" type="textarea" :autosize="{ minRows: 10, maxRows: 50 }"></Input>
-      </FormItem>
-    </Form>
+  <Modal v-model="modal1" title="新增最新消息" width="700px" class="addnews-popup" :styles="{top: '30px'}">
+      <Form :model="addItem" :label-width="80" :rules="ruleInline" inline >
+        <FormItem label="消息編號">
+          <Input v-model="addItem.id" placeholder="請輸入消息編號"></Input>
+        </FormItem>
+        <FormItem label="消息分類">
+          <Select v-model="addItem.select" placeholder="請選擇">
+            <Option value="歷史故事">歷史故事</Option>
+            <Option value="行程預訂">行程預訂</Option>
+            <Option value="購物商城">購物商城</Option>
+            <Option value="其他消息">其他消息</Option>
+          </Select>
+        </FormItem>
+      </Form>
+      <Form :model="addItem" :label-width="80">
+        <FormItem label="消息標題">
+          <Input v-model="addItem.title" placeholder="請輸入消息標題"></Input>
+        </FormItem>
+        <FormItem label="日期">
+          <DatePicker type="date" placeholder="請選擇日期" v-model="addItem.date"></DatePicker>
+        </FormItem>
+        <FormItem label="消息圖片">
+          <input type="file" multiple>
+        </FormItem>
+        <FormItem label="消息內容">
+          <Input v-model="addItem.textarea" type="textarea" :autosize="{ minRows: 10, maxRows: 50 }"></Input>
+        </FormItem>
+      </Form>
   </Modal>
 
   <!-- 表格 -->
-  <Table class="table" stripe border :columns="columns1" :data="data1" width="1200">
+  <Table class="table" stripe border :columns="columns" :data="data" width="1200">
     <!-- 加入開關按鈕 -->
-    <template #on_off="{ row, index}">
+    <template #on_off="{ row,index }">   
       <Switch size="large" true-color="#fab042" false-color="#e6e6e6">
-        <template #open>
-          <span>上架</span>
-        </template>
-        <template #close>
-          <span>下架</span>
-        </template>
-      </Switch>
+                <template #open>
+                  <span>上架</span>
+                </template>
+                <template #close>
+                  <span>下架</span>
+                </template>
+            </Switch>
     </template>
 
-    <template #news_type="{row}">
-      <text>{{ row.news_type }}</text>
+    <template #news_type="{ row,index }">   
+      <text>{{row.news_type}}</text>
     </template>
 
     <!-- 加入編輯、刪除彈窗 -->
-    <template #edit_del="{ row, index }">
+    <template #edit_del="{ row,index }">
       <!-- 編輯按鈕 -->
       <Button @click="modal3 = true" class="edit">編輯</Button>
       <!-- 編輯彈窗 -->
       <Modal v-model="modal3" title="編輯最新消息" ok-text="確認修改" cancel-text="取消" width="700px" class="editnews-popup"
-        :styles="{ top: '30px' }">
-
+        :styles="{top: '30px'}">
+      
         <Form :model="editItem" :label-width="80" :rules="ruleInline" inline>
           <FormItem label="消息編號" :model="addItem">
-            <text>{{ addItem.id }}</text>
+            <text>{{addItem.id}}</text>
           </FormItem>
           <FormItem label="消息分類">
             <Select v-model="editItem.select" placeholder="請選擇">
@@ -88,8 +88,9 @@
           </FormItem>
         </Form>
       </Modal>
+
       <!-- 刪除按鈕 -->
-      <Button class="delete" @click="remove(index)">刪除</Button>
+      <Button class="delete" @click="remove(data.id)">刪除</Button>
     </template>
   </Table>
 </template>
@@ -100,7 +101,7 @@ export default {
     return {
       modal1: false,  //新增彈窗預設關閉
       modal3: false,  //編輯彈窗預設關閉
-      columns1: [  ///表單表頭
+      columns: [  ///表單表頭
         {
           title: '編號',
           width: '100px',  //寬度
@@ -171,7 +172,7 @@ export default {
           slot: 'edit_del'  //加入編輯刪除欄位需加slot
         },
       ],
-      data1: [     ///表格內容資料
+      data: [     ///表格內容資料
         {
           id: '1001',
           date: '2022-12-10',
@@ -210,12 +211,12 @@ export default {
         },
       ],
       addItem: {   //新增彈窗內容資料
-        id: '',
-        title: '',
-        select: '',
-        date: '',
-        textarea: ''
-      },
+                  id:'',
+                  title: '',
+                  select: '',
+                  date: '',
+                  textarea: ''
+              },
       editItem: {
         id: 'addItem.id()',
         title: '',
@@ -262,9 +263,9 @@ export default {
 }
 
 .edit {
-  background-color: #ffffff;
   color: $color;
   border: 1px solid $color;
 }
+
 
 </style>
