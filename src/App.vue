@@ -10,8 +10,16 @@
 <style lang="scss">
 @import '@/assets/reset.css';
 @import '@/assets/css/app.scss';
-#app{
-  color: $color;
+
+
+.container {
+    position: absolute;
+    max-width: 100%;
+    left: 290px;
+    margin: auto;
 }
+
+
+
 
 </style>

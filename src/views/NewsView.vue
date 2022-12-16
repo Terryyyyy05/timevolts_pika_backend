@@ -37,7 +37,7 @@
   <!-- 表格 -->
   <Table class="table" stripe border :columns="columns" :data="data" width="1200">
     <!-- 加入開關按鈕 -->
-    <template #on_off="{ row,index }">   
+    <template #on_off>   
       <Switch size="large" true-color="#fab042" false-color="#e6e6e6">
                 <template #open>
                   <span>上架</span>
@@ -48,16 +48,16 @@
             </Switch>
     </template>
 
-    <template #news_type="{ row,index }">   
+    <template #news_type="{ row }">   
       <text>{{row.news_type}}</text>
     </template>
 
     <!-- 加入編輯、刪除彈窗 -->
-    <template #edit_del="{ row,index }">
+    <template #edit_del="{index}">
       <!-- 編輯按鈕 -->
-      <Button @click="modal3 = true" class="edit">編輯</Button>
+      <Button @click="modal[index] = true" class="edit">編輯</Button>
       <!-- 編輯彈窗 -->
-      <Modal v-model="modal3" title="編輯最新消息" ok-text="確認修改" cancel-text="取消" width="700px" class="editnews-popup"
+      <Modal v-model="modal[index]" title="編輯最新消息" ok-text="確認修改" cancel-text="取消" width="700px" class="editnews-popup"
         :styles="{top: '30px'}">
       
         <Form :model="editItem" :label-width="80" :rules="ruleInline" inline>
@@ -100,7 +100,7 @@ export default {
   data() {
     return {
       modal1: false,  //新增彈窗預設關閉
-      modal3: false,  //編輯彈窗預設關閉
+      modal: [],  //編輯彈窗預設關閉
       columns: [  ///表單表頭
         {
           title: '編號',
@@ -246,26 +246,6 @@ export default {
 <style lang="scss" scoped>
 @import '@/assets/css/app.scss';
 
-.table {
-  margin: 30px auto;
-}
-
-.delete,.add {
-  margin: 0 10px;
-  background-color: $color;
-  color: #ffffff;
-  border: 1px solid $color;
-}
-
-.add {
-  margin: 20px 0 0 0;
-  width: 80px;
-}
-
-.edit {
-  color: $color;
-  border: 1px solid $color;
-}
 
 
 </style>

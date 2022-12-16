@@ -2,8 +2,9 @@
   <the-heading heading="會員管理系統"></the-heading>
   <!-- 表格 -->
   <Table class="table" stripe border :columns="columns" :data="data" width="1200">
+
     <!-- 加入開關按鈕 -->
-    <template #onoff="{row,index}">   
+    <template #onoff>   
       <Switch size="large" true-color="#fab042" false-color="#e6e6e6">
                 <template #open>
                   <span>一般</span>
@@ -14,16 +15,16 @@
             </Switch>
     </template>
 
-    <template #mem_level="{ row,index }">   
+    <template #mem_level="{ row }">   
       <text>{{ row.mem_level }}</text>
     </template>
 
     <!-- 加入編輯、刪除彈窗 -->
-    <template #edit_member="{ row }">
+    <template #edit_member="{index}">
       <!-- 編輯按鈕 -->
-      <Button @click="modal3 = true" class="edit">編輯</Button>
+      <Button @click="modal[index] = true" class="edit">編輯</Button>
       <!-- 編輯彈窗 -->
-      <Modal v-model="modal3" title="編輯會員資料" ok-text="確認修改" cancel-text="取消" width="700px" class="editmember-popup"
+      <Modal v-model="modal[index]" title="編輯會員資料" ok-text="確認修改" cancel-text="取消" width="700px" class="editmember-popup"
         :styles="{top: '30px'}">
       
         <Form :label-width="80" :rules="ruleInline" inline>
@@ -64,7 +65,7 @@
 export default {
   data() {
     return {
-      modal3: false,  //編輯彈窗預設關閉
+      modal: [],  //編輯彈窗預設關閉
       columns: [  ///表單表頭
         {
           title: '會員編號',
@@ -236,13 +237,4 @@ export default {
 <style lang="scss" scoped>
 @import '@/assets/css/app.scss';
 
-.table {
-  margin: 30px auto;
-}
-
-.edit {
-  color: $color;
-  border: 1px solid $color;
-  margin: auto;
-}
 </style>

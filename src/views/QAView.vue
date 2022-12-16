@@ -27,7 +27,7 @@
   <!-- 表格 -->
   <Table class="table" stripe border :columns="columns" :data="data" width="1200">
     <!-- 加入開關按鈕 -->
-    <template #on_off="{ row, index }">
+    <template #on_off>
       <Switch size="large" true-color="#fab042" false-color="#e6e6e6">
         <template #open>
           <span>上架</span>
@@ -38,12 +38,12 @@
       </Switch>
     </template>
 
-    <template #qa_type="{ row, index }">
+    <template #qa_type="{ row }">
       <text>{{ row.qa_type }}</text>
     </template>
 
     <!-- 加入編輯彈窗 -->
-    <template #edit="{ row, index }">
+    <template #edit >
       <!-- 編輯按鈕 -->
       <Button @click="modal3 = true" class="edit">編輯</Button>
       <!-- 編輯彈窗 -->
@@ -147,20 +147,5 @@ export default {
 <style lang="scss" scoped>
 @import '@/assets/css/app.scss';
 
-.table {
-  margin: 30px auto;
-}
 
-.add {
-  margin: 20px 0 0 0;
-  width: 80px;
-  background-color: $color;
-  color: #ffffff;
-  border: 1px solid $color;
-}
-
-.edit {
-  color: $color;
-  border: 1px solid $color;
-}
 </style>
