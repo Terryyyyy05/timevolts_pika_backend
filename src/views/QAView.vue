@@ -13,6 +13,7 @@
         <Select v-model="addqaItem.qa_type" placeholder="請選擇">
           <Option value="常見問題">常見問題</Option>
           <Option value="行程預訂">行程預訂</Option>
+          <Option value="商品訂購">商品訂購</Option>
         </Select>
       </FormItem>
       <FormItem label="問題標題">
@@ -58,6 +59,7 @@
             <Select v-model="addqaItem.qa_type" placeholder="請選擇">
               <Option value="常見問題">常見問題</Option>
               <Option value="行程預訂">行程預訂</Option>
+              <Option value="商品訂購">商品訂購</Option>
             </Select>
           </FormItem>
           <FormItem label="問題標題">
@@ -117,12 +119,17 @@ export default {
         {
           id: '1001',
           qa_type: '常見問題',
-          title: '穿梭於史前時代',
+          title: '時間管理局是一個什麼樣的組織？',
         },
         {
           id: '1002',
           qa_type: '行程預訂',
-          title: '埃及五千年的黃金時代',
+          title: '經典行程與期間限定行程有何不同？',
+        },
+        {
+          id: '1003',
+          qa_type: '商品訂購',
+          title: '商品配送時間多久？',
         },
       ],
       addqaItem: {   //新增彈窗內容資料
