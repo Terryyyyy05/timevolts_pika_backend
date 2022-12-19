@@ -20,16 +20,16 @@
       </FormItem>
       <FormItem label="商品分類">
         <Select v-model="addItem.pro_class_name" placeholder="請選擇">
-          <Option value="歷史故事">歷史故事</Option>
-          <Option value="行程預訂">行程預訂</Option>
-          <Option value="購物商城">購物商城</Option>
-          <Option value="其他消息">其他消息</Option>
+          <Option value="旅行必備">旅行必備</Option>
+          <Option value="醫療用品">醫療用品</Option>
+          <Option value="應急糧食">應急糧食</Option>
+          <Option value="求生用品">求生用品</Option>
         </Select>
       </FormItem>
     </Form>
     <Form :model="addItem" :label-width="80">
       <FormItem label="商品名稱">
-        <Input v-model="addItem.pro_name" placeholder="請輸入消息標題"></Input>
+        <Input v-model="addItem.pro_name" placeholder="請輸入商品名稱"></Input>
       </FormItem>
       <FormItem label="上架日期">
         <DatePicker
@@ -97,52 +97,68 @@
     </template>
 
     <!-- 加入編輯、刪除彈窗 -->
-    <template #edit_del>
+    <template #edit_del="{ row, index }">
       <!-- 編輯按鈕 -->
-      <Button @click="modal3 = true" class="edit">編輯</Button>
+      <Button @click="clickEditBtn(index)" class="edit">編輯</Button>
       <!-- 編輯彈窗 -->
       <Modal
         v-model="modal3"
-        title="編輯最新消息"
+        title="編輯商品資訊"
         ok-text="確認修改"
         cancel-text="取消"
         width="700px"
         class="editnews-popup"
         :styles="{ top: '30px' }"
+        @on-ok="replaceItem"
+        @on-cancel="cancelEdit"
       >
-        <Form :model="editItem" :label-width="80" inline>
-          <FormItem label="消息編號" :model="addItem">
-            <text>{{ addItem.id }}</text>
+        <Form :model="addItem" :label-width="80" inline>
+          <FormItem label="消息編號">
+            <text>{{ addItem.pro_id }}</text>
           </FormItem>
           <FormItem label="消息分類">
-            <Select v-model="editItem.select" placeholder="請選擇">
-              <Option value="歷史故事">歷史故事</Option>
-              <Option value="行程預訂">行程預訂</Option>
-              <Option value="購物商城">購物商城</Option>
-              <Option value="其他消息">其他消息</Option>
+            <Select v-model="addItem.pro_class_name" placeholder="請選擇">
+              <Option value="旅行必備">旅行必備</Option>
+              <Option value="醫療用品">醫療用品</Option>
+              <Option value="應急糧食">應急糧食</Option>
+              <Option value="求生用品">求生用品</Option>
             </Select>
           </FormItem>
         </Form>
-        <Form :model="editItem" :label-width="80">
-          <FormItem label="消息標題">
+        <Form :model="addItem" :label-width="80">
+          <FormItem label="商品名稱">
             <Input
-              v-model="editItem.title"
-              placeholder="請輸入消息標題"
+              v-model="addItem.pro_name"
+              placeholder="請輸入商品名稱"
             ></Input>
           </FormItem>
-          <FormItem label="日期">
+          <FormItem label="上架日期">
             <DatePicker
               type="date"
               placeholder="請選擇日期"
-              v-model="editItem.date"
+              v-model="addItem.pro_onshelf_date"
             ></DatePicker>
           </FormItem>
-          <FormItem label="消息圖片">
+          <FormItem label="商品單價">
+            <input
+              type="number"
+              placeholder="請輸入商品單價"
+              v-model="addItem.pro_price"
+            />
+          </FormItem>
+          <FormItem label="商品數量">
+            <input
+              type="number"
+              placeholder="請更新商品上架數量"
+              v-model="addItem.pro_onshelf_amount"
+            />
+          </FormItem>
+          <FormItem label="商品圖片">
             <input type="file" multiple />
           </FormItem>
-          <FormItem label="消息內容">
+          <FormItem label="商品資訊">
             <Input
-              v-model="editItem.textarea"
+              v-model="addItem.pro_info"
               type="textarea"
               :autosize="{ minRows: 10, maxRows: 50 }"
             ></Input>
@@ -151,13 +167,13 @@
       </Modal>
 
       <!-- 刪除按鈕 -->
-      <Button class="delete" @click="remove(data.pro_id)">刪除</Button>
+      <Button class="delete" @click="remove(index)">刪除</Button>
     </template>
   </Table>
 </template>
 
 <script>
-import { objectToString } from "@vue/shared";
+// import { objectToString } from "@vue/shared";
 
 export default {
   data() {
@@ -189,32 +205,32 @@ export default {
           filters: [
             //篩選分類
             {
-              label: "歷史故事",
+              label: "旅行必備",
               value: 1,
             },
             {
-              label: "行程預訂",
+              label: "醫療用品",
               value: 2,
             },
             {
-              label: "購物商城",
+              label: "應急糧食",
               value: 3,
             },
             {
-              label: "其他消息",
+              label: "求生用品",
               value: 4,
             },
           ],
           filterMultiple: false,
           filterMethod(value, row) {
             if (value === 1) {
-              return row.pro_class_name === "歷史故事";
+              return row.pro_class_name === "旅行必備";
             } else if (value === 2) {
-              return row.pro_class_name === "行程預訂";
+              return row.pro_class_name === "醫療用品";
             } else if (value === 3) {
-              return row.pro_class_name === "購物商城";
+              return row.pro_class_name === "應急糧食";
             } else {
-              return row.pro_class_name === "其他消息";
+              return row.pro_class_name === "求生用品";
             }
           },
         },
@@ -264,62 +280,74 @@ export default {
         {
           pro_id: "1001",
           pro_onshelf_date: "2022-12-10",
-          pro_class_name: "行程預訂",
+          pro_class_name: "旅行必備",
           pro_name: "穿梭於史前時代",
           pro_price: "7777",
           pro_onshelf_amount: "100",
           pro_rest_amount: "50",
           pro_status: true,
+          pro_info:
+            "你好我好你好我好大家好安安你蒿哭哭饅頭團專家由你好我好大家好安安你蒿哭哭饅頭團專家由你好我好大家好安安你蒿哭哭饅頭團專家由你好我好大家好安安你蒿哭哭饅頭團專家由大家好安安你蒿哭哭饅頭團專家由",
         },
         {
           pro_id: "1002",
           pro_onshelf_date: "2022-11-10",
-          pro_class_name: "行程預訂",
+          pro_class_name: "醫療用品",
           pro_name: "埃及五千年的黃金時代",
           pro_price: "777",
           pro_onshelf_amount: "100",
           pro_rest_amount: "50",
           pro_status: true,
+          pro_info:
+            "你好我好你好我好大家好安安你蒿哭哭饅頭團專家由你好我好大家好安安你蒿哭哭饅頭團專家由你好我好大家好安安你蒿哭哭饅頭團專家由你好我好大家好安安你蒿哭哭饅頭團專家由大家好安安你蒿哭哭饅頭團專家由",
         },
         {
           pro_id: "2001",
           pro_onshelf_date: "2022-12-15",
-          pro_class_name: "歷史故事",
+          pro_class_name: "旅行必備",
           pro_name: "鐵達尼號沈船",
           pro_price: "1020",
           pro_onshelf_amount: "100",
           pro_rest_amount: "50",
           pro_status: true,
+          pro_info:
+            "你好我好你好我好大家好安安你蒿哭哭饅頭團專家由你好我好大家好安安你蒿哭哭饅頭團專家由你好我好大家好安安你蒿哭哭饅頭團專家由你好我好大家好安安你蒿哭哭饅頭團專家由大家好安安你蒿哭哭饅頭團專家由",
         },
         {
           pro_id: "2002",
           pro_onshelf_date: "2022-12-01",
-          pro_class_name: "歷史故事",
+          pro_class_name: "旅行必備",
           pro_name: "鄭和下西洋",
           pro_price: "1500",
           pro_onshelf_amount: "100",
           pro_rest_amount: "50",
           pro_status: true,
+          pro_info:
+            "你好我好你好我好大家好安安你蒿哭哭饅頭團專家由你好我好大家好安安你蒿哭哭饅頭團專家由你好我好大家好安安你蒿哭哭饅頭團專家由你好我好大家好安安你蒿哭哭饅頭團專家由大家好安安你蒿哭哭饅頭團專家由",
         },
         {
           pro_id: "3001",
           pro_onshelf_date: "2022-11-11",
-          pro_class_name: "購物商城",
+          pro_class_name: "應急糧食",
           pro_name: "購物須知",
           pro_price: "7970",
           pro_onshelf_amount: "100",
           pro_rest_amount: "50",
           pro_status: true,
+          pro_info:
+            "你好我好你好我好大家好安安你蒿哭哭饅頭團專家由你好我好大家好安安你蒿哭哭饅頭團專家由你好我好大家好安安你蒿哭哭饅頭團專家由你好我好大家好安安你蒿哭哭饅頭團專家由大家好安安你蒿哭哭饅頭團專家由",
         },
         {
           pro_id: "4001",
           pro_onshelf_date: "2022-11-09",
-          pro_class_name: "其他消息",
+          pro_class_name: "求生用品",
           pro_name: "官網維護公告",
           pro_price: "977",
           pro_onshelf_amount: "100",
           pro_rest_amount: "50",
           pro_status: true,
+          pro_info:
+            "你好我好你好我好大家好安安你蒿哭哭饅頭團專家由你好我好大家好安安你蒿哭哭饅頭團專家由你好我好大家好安安你蒿哭哭饅頭團專家由你好我好大家好安安你蒿哭哭饅頭團專家由大家好安安你蒿哭哭饅頭團專家由",
         },
       ],
       addItem: {
@@ -355,12 +383,15 @@ export default {
     };
   },
   methods: {
-    remove() {
+    remove(index) {
+      // console.log(index);
       this.$Modal.confirm({
         content: "<p>確認刪除嗎?</p>",
+        okText: "刪刪刪",
+        cancelText: "還是不要好了",
         onOk: () => {
           this.$Message.info("確認刪除");
-          this.data.splice("id", 1);
+          this.data.splice(index, 1);
         },
         onCancel: () => {
           this.$Message.info("取消");
@@ -380,18 +411,46 @@ export default {
       this.addItem.pro_onshelf_date = this.addItem.pro_onshelf_date
         .toLocaleDateString()
         .replace(/\//g, "-");
-      // console.log(this.addItem.pro_onshelf_date);
-      // console.log(typeof this.addItem.pro_onshelf_date);
-      console.log(this.resetItem);
+
+      // console.log(this.resetItem);
 
       this.data.push({ ...this.addItem });
-      console.log(this.addItem);
-      console.log(this.addItem.pro_onshelf_date);
+
+      // console.log(this.addItem);
+      // console.log(this.addItem.pro_onshelf_date);
       // Object.assign(this.addItem, this.resetItem)
       this.addItem = { ...this.resetItem };
-      console.log(this.addItem);
-      console.log(this.resetItem);
-      // e04花了我一個下午的智障東西原來這麼簡單
+      // console.log(this.addItem);
+      // console.log(this.resetItem);
+    },
+    testtt(index) {
+      console.log(index);
+    },
+    clickEditBtn(index) {
+      this.modal3 = true;
+      this.addItem = { ...this.data[index] };
+      console.log(this.data[0]);
+    },
+    replaceItem() {
+      console.log(this.data[0]);
+      const index = this.data.findIndex(
+        (item) => item.pro_id === this.addItem.pro_id
+      );
+
+      this.addItem.pro_onshelf_date = this.addItem.pro_onshelf_date
+        .toLocaleDateString()
+        .replace(/\//g, "-");
+
+      this.data[index] = this.addItem;
+      this.addItem = { ...this.resetItem };
+      console.log(this.data[0]);
+      // console.log(index);
+      // console.log(this.addItem);
+      // console.log(this.data[0]);
+    },
+    cancelEdit() {
+      this.addItem = { ...this.resetItem };
+      console.log(this.data[0]);
     },
   },
 };
