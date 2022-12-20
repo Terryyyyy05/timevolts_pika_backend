@@ -97,7 +97,7 @@
     </template>
 
     <!-- 加入編輯、刪除彈窗 -->
-    <template #edit_del="{ row, index }">
+    <template #edit_del="{ index }">
       <!-- 編輯按鈕 -->
       <Button @click="clickEditBtn(index)" class="edit">編輯</Button>
       <!-- 編輯彈窗 -->
