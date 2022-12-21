@@ -8,7 +8,9 @@ header("Content-Type:application/json;charset=utf-8");
 // echo json_encode($prodRows);
 
 // test
-
+$json = file_get_contents("php://input");
+$datas = json_decode($json, true); //轉為關聯性陣列
+echo "$json"
 ?>
 
 

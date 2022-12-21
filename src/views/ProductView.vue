@@ -104,7 +104,7 @@
       <Button @click="clickEditBtn(index)" class="edit">編輯</Button>
       <!-- 編輯彈窗 -->
       <Modal
-        v-model="modal3"
+        v-model="modal3[index]"
         title="編輯商品資訊"
         ok-text="確認修改"
         cancel-text="取消"
@@ -182,7 +182,7 @@ export default {
     return {
       test: true,
       modal1: false, //新增彈窗預設關閉
-      modal3: false, //編輯彈窗預設關閉
+      modal3: [], //編輯彈窗預設關閉
       columns: [
         ///表單表頭
         {
@@ -431,7 +431,7 @@ export default {
       console.log(index);
     },
     clickEditBtn(index) {
-      this.modal3 = true;
+      this.modal3[index] = true;
       this.addItem = { ...this.dataList[index] };
     },
     replaceItem() {
@@ -463,23 +463,23 @@ export default {
           this.dataList = result;
         });
     },
-    // insertData() {
-    //   fetch(
-    //     "http://localhost/timevolts_pika_backend/public/phpfiles/insert_pro_data.php", {
-    //       method: "POST",
-    //       body: {
-
-    //       }
-    //     }
-    //   )
-    //     .then((res) => res.json())
-    //     .then((result) => {
-    //       this.dataList = result;
-    //     });
-    // },
+    insertData(newData) {
+      fetch(
+        "http://localhost/timevolts_pika_backend/public/phpfiles/insert_pro_data.php",
+        {
+          method: "POST",
+          body: JSON.stringify({ test: 123 }),
+        }
+      )
+        .then((res) => res.json())
+        .then((result) => {
+          console.log(result);
+        });
+    },
   },
   mounted() {
     this.getData();
+    // this.insertData();
   },
 };
 </script>
