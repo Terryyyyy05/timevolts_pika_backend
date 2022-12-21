@@ -51,6 +51,8 @@
       size="large" 
       true-color="#fab042" 
       false-color="#e6e6e6"
+      true-value="1"
+      false-value="0"
       v-model="row.status"
       @on-change="onChange(row)"
       >
@@ -68,12 +70,12 @@
     </template>
 
     <!-- 加入編輯、刪除彈窗 -->
-    <template #edit_del="{row,index}">
+    <template #edit_del="{index}">
       <!-- 編輯按鈕 -->
       <Button @click="clickEditBtn(index)" class="edit">編輯</Button>
       <!-- 編輯彈窗 -->
       <Modal 
-      v-model="modal3" 
+      v-model="modal3[index]" 
       title="編輯最新消息" 
       ok-text="確認修改" 
       cancel-text="取消" 
@@ -84,12 +86,12 @@
       @on-cancel="cancelEdit"
       >
       
-        <Form :model="editItem" :label-width="80" inline>
+        <Form :model="addItem" :label-width="80" inline>
           <FormItem label="消息編號" :model="addItem">
             <text>{{addItem.id}}</text>
           </FormItem>
           <FormItem label="消息分類">
-            <Select v-model="editItem.news_type" placeholder="請選擇">
+            <Select v-model="addItem.news_type" placeholder="請選擇">
               <Option value="歷史故事">歷史故事</Option>
               <Option value="行程預訂">行程預訂</Option>
               <Option value="購物商城">購物商城</Option>
@@ -97,18 +99,18 @@
             </Select>
           </FormItem>
         </Form>
-        <Form :model="editItem" :label-width="80">
+        <Form :model="addItem" :label-width="80">
           <FormItem label="消息標題">
-            <Input v-model="editItem.title" placeholder="請輸入消息標題"></Input>
+            <Input v-model="addItem.title" placeholder="請輸入消息標題"></Input>
           </FormItem>
           <FormItem label="日期">
-            <DatePicker type="date" placeholder="請選擇日期" v-model="editItem.date"></DatePicker>
+            <DatePicker type="date" placeholder="請選擇日期" v-model="addItem.date"></DatePicker>
           </FormItem>
           <FormItem label="消息圖片">
             <input type="file" multiple>
           </FormItem>
           <FormItem label="消息內容">
-            <Input v-model="editItem.textarea" type="textarea" :autosize="{ minRows: 10, maxRows: 50 }"></Input>
+            <Input v-model="addItem.textarea" type="textarea" :autosize="{ minRows: 10, maxRows: 50 }"></Input>
           </FormItem>
         </Form>
       </Modal>
@@ -124,7 +126,7 @@ export default {
   data() {
     return {
       modal1: false,  //新增彈窗預設關閉
-      modal3: false,  //編輯彈窗預設關閉
+      modal3: [],  //編輯彈窗預設關閉
       columns: [  ///表單表頭
         {
           title: '編號',
@@ -201,7 +203,7 @@ export default {
           id: '1001',
           date: '2022-12-10',
           news_type: '行程預訂',
-          status: 'true',
+          status: true,
           title: '穿梭於史前時代',
           textarea: 'ssfdsfv',
         },
@@ -209,7 +211,7 @@ export default {
           id: '1002',
           date: '2022-11-10',
           news_type: '行程預訂',
-          status: 'true',
+          status: true,
           title: '埃及五千年的黃金時代',
           textarea: 'sasfasfasafsfaffv',
         },
@@ -217,7 +219,7 @@ export default {
           id: '2001',
           date: '2022-12-15',
           news_type: '歷史故事',
-          status: 'true',
+          status: true,
           title: '鐵達尼號沈船',
           textarea: 'sasfasfsfaxxfaffv',
         },
@@ -225,7 +227,7 @@ export default {
           id: '2002',
           date: '2022-12-01',
           news_type: '歷史故事',
-          status: 'true',
+          status: true,
           title: '鄭和下西洋',
           textarea: 'sasdddddsdaffv',
         },
@@ -233,7 +235,7 @@ export default {
           id: '3001',
           date: '2022-11-11',
           news_type: '購物商城',
-          status: 'false',
+          status: false,
           title: '購物須知',
           textarea: 'ssdddxvfaxxfaffv',
         },
@@ -241,7 +243,7 @@ export default {
           id: '4001',
           date: '2022-11-09',
           news_type: '其他消息',
-          status: 'false',
+          status: false,
           title: '官網維護公告',
           textarea: 'aaaxssdddavaxxfaffv',
         },
@@ -249,24 +251,17 @@ export default {
       addItem: {   //新增彈窗內容資料
         id: '',
         title: '',
-        news_type: 'false',
         date: '',
-        textarea: ''
-      },
-      editItem: {
-        id: '',
-        title: '',
-        news_type: 'false',
-        date: '',
+        news_type: '',
         textarea: ''
       },
       resetItem: {
         id: '',
         title: '',
-        news_type: 'false',
         date: '',
+        news_type: '',
         textarea: ''
-      }
+      },
     }
   },
   methods: {
@@ -293,17 +288,14 @@ export default {
       }
     },
     clickOk() {
-      this.addItem.id = this.addItem.id;
       this.addItem.date = this.addItem.date
       .toLocaleDateString()
         .replace(/\//g, "-");
-      this.addItem.title = this.addItem.title;
-      this.addItem.news_type = this.addItem.news_type;
       this.data.push({ ...this.addItem });
       this.addItem = { ...this.resetItem };
   },
   clickEditBtn(index) {
-      this.modal3 = true;
+      this.modal3[index] = true;
       this.addItem = { ...this.data[index] };
       console.log(this.data[0]);
     },
@@ -314,8 +306,6 @@ export default {
 
       this.addItem.date = this.addItem.date.toLocaleDateString()
         .replace(/\//g, "-");
-      this.addItem.title = this.addItem.title;
-      this.addItem.news_type = this.addItem.news_type;
       this.data[index] = this.addItem;
       this.addItem = { ...this.resetItem };
     },
