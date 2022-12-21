@@ -71,7 +71,7 @@
     stripe
     border
     :columns="columns"
-    :data="data"
+    :data="dataList"
     width="1200"
   >
     <!-- 加入開關按鈕 -->
@@ -81,6 +81,8 @@
         true-color="#fab042"
         false-color="#e6e6e6"
         v-model="row.pro_status"
+        true-value="1"
+        false-value="0"
         @on-change="onChange(row)"
       >
         <template #open>
@@ -97,7 +99,7 @@
     </template>
 
     <!-- 加入編輯、刪除彈窗 -->
-    <template #edit_del="{ row, index }">
+    <template #edit_del="{ index }">
       <!-- 編輯按鈕 -->
       <Button @click="clickEditBtn(index)" class="edit">編輯</Button>
       <!-- 編輯彈窗 -->
@@ -350,6 +352,7 @@ export default {
             "你好我好你好我好大家好安安你蒿哭哭饅頭團專家由你好我好大家好安安你蒿哭哭饅頭團專家由你好我好大家好安安你蒿哭哭饅頭團專家由你好我好大家好安安你蒿哭哭饅頭團專家由大家好安安你蒿哭哭饅頭團專家由",
         },
       ],
+      dataList: [],
       addItem: {
         //新增彈窗內容資料
         pro_id: "",
@@ -391,6 +394,7 @@ export default {
         cancelText: "還是不要好了",
         onOk: () => {
           this.$Message.info("確認刪除");
+
           this.data.splice(index, 1);
         },
         onCancel: () => {
@@ -428,8 +432,7 @@ export default {
     },
     clickEditBtn(index) {
       this.modal3 = true;
-      this.addItem = { ...this.data[index] };
-      console.log(this.data[0]);
+      this.addItem = { ...this.dataList[index] };
     },
     replaceItem() {
       console.log(this.data[0]);
@@ -450,8 +453,33 @@ export default {
     },
     cancelEdit() {
       this.addItem = { ...this.resetItem };
-      console.log(this.data[0]);
     },
+    getData() {
+      fetch(
+        "http://localhost/timevolts_pika_backend/public/phpfiles/get_pro_data.php"
+      )
+        .then((res) => res.json())
+        .then((result) => {
+          this.dataList = result;
+        });
+    },
+    // insertData() {
+    //   fetch(
+    //     "http://localhost/timevolts_pika_backend/public/phpfiles/insert_pro_data.php", {
+    //       method: "POST",
+    //       body: {
+
+    //       }
+    //     }
+    //   )
+    //     .then((res) => res.json())
+    //     .then((result) => {
+    //       this.dataList = result;
+    //     });
+    // },
+  },
+  mounted() {
+    this.getData();
   },
 };
 </script>
