@@ -2,6 +2,7 @@
 node_modules
 /dist
 phpfiles/connectBooks.php
+phpfiles/images
 
 
 # local env files
