@@ -14,7 +14,13 @@
     cancel-text="取消新增"
     @on-ok="clickOk"
   >
-    <Form :model="addItem" :label-width="80" inline>
+    <!-- <Form
+      :model="addItem"
+      :label-width="80"
+      inline
+      method="post"
+      enctype="multipart/form-data"
+    >
       <FormItem label="商品編號">
         <Input v-model="addItem.pro_id" placeholder="請輸入消息編號"></Input>
       </FormItem>
@@ -26,16 +32,47 @@
           <Option value="求生用品">求生用品</Option>
         </Select>
       </FormItem>
-    </Form>
-    <Form :model="addItem" :label-width="80">
+    </Form> -->
+    <Form
+      :model="addItem"
+      :label-width="80"
+      method="post"
+      enctype="multipart/form-data"
+      ref="addForm"
+      id="addForm"
+    >
+      <FormItem label="商品編號">
+        <Input
+          v-model="addItem.pro_id"
+          placeholder="請輸入消息編號"
+          ref="pro_id"
+        ></Input>
+      </FormItem>
+      <FormItem label="商品分類">
+        <Select
+          v-model="addItem.pro_class_name"
+          placeholder="請選擇"
+          ref="pro_class_name"
+        >
+          <Option value="旅行必備">旅行必備</Option>
+          <Option value="醫療用品">醫療用品</Option>
+          <Option value="應急糧食">應急糧食</Option>
+          <Option value="求生用品">求生用品</Option>
+        </Select>
+      </FormItem>
       <FormItem label="商品名稱">
-        <Input v-model="addItem.pro_name" placeholder="請輸入商品名稱"></Input>
+        <Input
+          v-model="addItem.pro_name"
+          placeholder="請輸入商品名稱"
+          ref="pro_name"
+        ></Input>
       </FormItem>
       <FormItem label="上架日期">
         <DatePicker
           type="date"
           placeholder="請選擇日期"
           v-model="addItem.pro_onshelf_date"
+          ref="pro_onshelf_date"
         ></DatePicker>
       </FormItem>
       <FormItem label="商品單價">
@@ -43,6 +80,7 @@
           type="number"
           placeholder="請輸入商品單價"
           v-model="addItem.pro_price"
+          ref="pro_price"
         />
       </FormItem>
       <FormItem label="商品數量">
@@ -50,16 +88,18 @@
           type="number"
           placeholder="請輸入商品上架數量"
           v-model="addItem.pro_onshelf_amount"
+          ref="pro_onshelf_amount"
         />
       </FormItem>
       <FormItem label="商品圖片">
-        <input type="file" multiple />
+        <input id="pro_img_id" type="file" ref="fileInput" multiple />
       </FormItem>
       <FormItem label="商品資訊">
         <Input
           v-model="addItem.pro_info"
           type="textarea"
           :autosize="{ minRows: 10, maxRows: 50 }"
+          ref="pro_info"
         ></Input>
       </FormItem>
     </Form>
@@ -81,8 +121,8 @@
         true-color="#fab042"
         false-color="#e6e6e6"
         v-model="row.pro_status"
-        true-value="1"
-        false-value="0"
+        :true-value="parseInt(1)"
+        :false-value="parseInt(0)"
         @on-change="onChange(row)"
       >
         <template #open>
@@ -175,6 +215,7 @@
 </template>
 
 <script>
+import { ref } from "@vue/reactivity";
 // import { objectToString } from "@vue/shared";
 
 export default {
@@ -363,7 +404,8 @@ export default {
         pro_price: "",
         pro_onshelf_amount: "",
         pro_rest_amount: "",
-        pro_status: false,
+        pro_status: 0,
+        pro_img: "",
       },
       editItem: {
         id: "addItem.pro_id()",
@@ -381,11 +423,15 @@ export default {
         pro_price: "",
         pro_onshelf_amount: "",
         pro_rest_amount: "",
-        pro_status: false,
+        pro_status: 0,
       },
     };
   },
   methods: {
+    // onchangeFile(event) {
+    //   const file = event.target.files[0];
+    //   console.log(file);
+    // },
     remove(index) {
       // console.log(index);
       this.$Modal.confirm({
@@ -418,7 +464,8 @@ export default {
 
       // console.log(this.resetItem);
 
-      this.data.push({ ...this.addItem });
+      this.insertData(this.addItem);
+      this.dataList.push({ ...this.addItem });
 
       // console.log(this.addItem);
       // console.log(this.addItem.pro_onshelf_date);
@@ -426,6 +473,8 @@ export default {
       this.addItem = { ...this.resetItem };
       // console.log(this.addItem);
       // console.log(this.resetItem);
+
+      // console.log(this.$refs.addForm);
     },
     testtt(index) {
       console.log(index);
@@ -463,12 +512,22 @@ export default {
           this.dataList = result;
         });
     },
-    insertData(newData) {
+    insertData() {
+      const formData = new FormData();
+      const formDataKey = Object.keys(this.addItem);
+      formDataKey.forEach((key) => {
+        formData.append(`${key}`, this.addItem[key]);
+      });
+
+      formData.set("pro_img", document.getElementById("pro_img_id").files[0]);
+
+      console.log(formData.get("pro_img"));
+
       fetch(
         "http://localhost/timevolts_pika_backend/public/phpfiles/insert_pro_data.php",
         {
           method: "POST",
-          body: JSON.stringify({ test: 123 }),
+          body: formData,
         }
       )
         .then((res) => res.json())
@@ -479,7 +538,14 @@ export default {
   },
   mounted() {
     this.getData();
-    // this.insertData();
+    // const FormData2 = new FormData();
+    // const formDataKey = Object.keys(this.addItem);
+    // formDataKey.forEach((key) => {
+    //   FormData2.append(`${key}`, this.addItem[`${key}`]);
+    // });
+    // console.log(FormData2.get('pro_id'));
+
+    // console.log(this.$refs);
   },
 };
 </script>
