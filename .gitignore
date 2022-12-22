@@ -1,8 +1,9 @@
 .DS_Store
 node_modules
 /dist
-phpfiles/connectBooks.php
 
+#
+php_connect_books
 
 # local env files
 .env.local
