@@ -139,7 +139,7 @@
     </template>
 
     <!-- 加入編輯、刪除彈窗 -->
-    <template #edit_del="{ index }">
+    <template #edit_del="{ index, row }">
       <!-- 編輯按鈕 -->
       <Button @click="clickEditBtn(index)" class="edit">編輯</Button>
       <!-- 編輯彈窗 -->
@@ -209,7 +209,7 @@
       </Modal>
 
       <!-- 刪除按鈕 -->
-      <Button class="delete" @click="remove(index)">刪除</Button>
+      <Button class="delete" @click="remove(index, row)">刪除</Button>
     </template>
   </Table>
 </template>
@@ -429,20 +429,17 @@ export default {
     };
   },
   methods: {
-    // onchangeFile(event) {
-    //   const file = event.target.files[0];
-    //   console.log(file);
-    // },
-    remove(index) {
-      // console.log(index);
+    remove(index, row) {
+      console.log(row);
       this.$Modal.confirm({
         content: "<p>確認刪除嗎?</p>",
         okText: "刪刪刪",
         cancelText: "還是不要好了",
         onOk: () => {
           this.$Message.info("確認刪除");
+          this.deleData(row);
 
-          this.data.splice(index, 1);
+          this.dataList.splice(index, 1);
         },
         onCancel: () => {
           this.$Message.info("取消");
@@ -463,19 +460,15 @@ export default {
         .toLocaleDateString()
         .replace(/\//g, "-");
 
-      // console.log(this.resetItem);
-
       this.insertData(this.addItem);
-      this.dataList.push({ ...this.addItem });
 
-      // console.log(this.addItem);
-      // console.log(this.addItem.pro_onshelf_date);
-      // Object.assign(this.addItem, this.resetItem)
-      this.addItem = { ...this.resetItem };
-      // console.log(this.addItem);
-      // console.log(this.resetItem);
+      setTimeout(() => {
+        this.dataList.push({ ...this.addItem });
+        this.addItem = { ...this.resetItem };
+      }, 5);
 
-      // console.log(this.$refs.addForm);
+      console.log(this.addItem);
+      console.log(this.dataList);
     },
     testtt(index) {
       console.log(index);
@@ -497,9 +490,6 @@ export default {
       this.data[index] = this.addItem;
       this.addItem = { ...this.resetItem };
       console.log(this.data[0]);
-      // console.log(index);
-      // console.log(this.addItem);
-      // console.log(this.data[0]);
     },
     cancelEdit() {
       this.addItem = { ...this.resetItem };
@@ -518,11 +508,31 @@ export default {
         formData.append(`${key}`, this.addItem[key]);
       });
 
-      formData.set("pro_img", document.getElementById("pro_img_id").files[0]);
+      const imgName = document.getElementById("pro_img_id").files[0];
+
+      formData.set("pro_img", imgName);
 
       console.log(formData.get("pro_img"));
 
       fetch(`${BASE_URL}/insert_pro_data.php`, {
+        method: "POST",
+        body: formData,
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          const result = res;
+          this.addItem.pro_img = result.pro_img;
+          console.log(result.pro_img);
+          console.log(this.addItem);
+        });
+    },
+    deleData(row) {
+      console.log(row.pro_id);
+      const formData = new FormData();
+      formData.append("pro_id", row.pro_id);
+      formData.append("pro_img", row.pro_img);
+
+      fetch(`${BASE_URL}/dele_pro_data.php`, {
         method: "POST",
         body: formData,
       })
@@ -532,16 +542,9 @@ export default {
         });
     },
   },
+
   mounted() {
     this.getData();
-    // const FormData2 = new FormData();
-    // const formDataKey = Object.keys(this.addItem);
-    // formDataKey.forEach((key) => {
-    //   FormData2.append(`${key}`, this.addItem[`${key}`]);
-    // });
-    // console.log(FormData2.get('pro_id'));
-
-    // console.log(this.$refs);
   },
 };
 </script>
