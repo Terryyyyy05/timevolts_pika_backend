@@ -69,7 +69,7 @@ if( $_FILES["pro_img"]["error"] === 0){
 	}	
 }
 //輸出結果
-$result = ["msg"=>$msg];
+$result = ["msg"=>$msg, "pro_img"=> $fileName];
 echo json_encode($result);
 
 ?>
