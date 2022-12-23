@@ -51,11 +51,11 @@
       size="large" 
       true-color="#fab042" 
       false-color="#e6e6e6"
-      true-value="1"
-      false-value="0"
       v-model="row.status"
       @on-change="onChange(row)"
       >
+      <!-- true-value="1"
+      false-value="0" -->
                 <template #open>
                   <span>上架</span>
                 </template>
