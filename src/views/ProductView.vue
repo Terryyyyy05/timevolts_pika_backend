@@ -217,6 +217,7 @@
 <script>
 import { ref } from "@vue/reactivity";
 // import { objectToString } from "@vue/shared";
+import { BASE_URL } from "@/assets/js/commom";
 
 export default {
   data() {
@@ -504,9 +505,7 @@ export default {
       this.addItem = { ...this.resetItem };
     },
     getData() {
-      fetch(
-        "http://localhost/timevolts_pika_backend/public/phpfiles/get_pro_data.php"
-      )
+      fetch(`${BASE_URL}/get_pro_data.php`)
         .then((res) => res.json())
         .then((result) => {
           this.dataList = result;
@@ -523,13 +522,10 @@ export default {
 
       console.log(formData.get("pro_img"));
 
-      fetch(
-        "http://localhost/timevolts_pika_backend/public/phpfiles/insert_pro_data.php",
-        {
-          method: "POST",
-          body: formData,
-        }
-      )
+      fetch(`${BASE_URL}/insert_pro_data.php`, {
+        method: "POST",
+        body: formData,
+      })
         .then((res) => res.json())
         .then((result) => {
           console.log(result);
