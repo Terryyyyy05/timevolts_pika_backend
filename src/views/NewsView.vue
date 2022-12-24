@@ -16,12 +16,12 @@
   >
     <Form :model="addItem" :label-width="80" inline>
       <FormItem label="消息編號">
-        <Input v-model="addItem.id" placeholder="請輸入消息編號"></Input>
+        <Input v-model="addItem.news_id" placeholder="請輸入消息編號"></Input>
       </FormItem>
       <FormItem label="消息分類">
-        <Select v-model="addItem.news_type" placeholder="請選擇">
-          <Option value="歷史故事">歷史故事</Option>
+        <Select v-model="addItem.news_category" placeholder="請選擇">
           <Option value="行程預訂">行程預訂</Option>
+          <Option value="歷史故事">歷史故事</Option>
           <Option value="購物商城">購物商城</Option>
           <Option value="其他消息">其他消息</Option>
         </Select>
@@ -29,13 +29,16 @@
     </Form>
     <Form :model="addItem" :label-width="80">
       <FormItem label="消息標題">
-        <Input v-model="addItem.title" placeholder="請輸入消息標題"></Input>
+        <Input v-model="addItem.news_title" placeholder="請輸入消息標題"></Input>
+      </FormItem>
+      <FormItem label="消息標籤">
+        <Input v-model="addItem.news_hashtag" placeholder="請輸入消息標籤"></Input>
       </FormItem>
       <FormItem label="日期">
         <DatePicker
           type="date"
           placeholder="請選擇日期"
-          v-model="addItem.date"
+          v-model="addItem.news_add_date"
         ></DatePicker>
       </FormItem>
       <FormItem label="消息圖片">
@@ -43,10 +46,16 @@
       </FormItem>
       <FormItem label="消息內容">
         <Input
-          v-model="addItem.textarea"
+          v-model="addItem.news_content"
           type="textarea"
           :autosize="{ minRows: 10, maxRows: 50 }"
         ></Input>
+      </FormItem>
+      <FormItem label="狀態">
+        <Select v-model="addItem.news_status" placeholder="請選擇" style="width:100px">
+          <Option value="1">上架</Option>
+          <Option value="0">下架</Option>
+        </Select>
       </FormItem>
     </Form>
   </Modal>
@@ -57,16 +66,21 @@
     stripe
     border
     :columns="columns"
-    :data="data"
+    :data="getNews"
     width="1200"
   >
+  <template #news_id="{row}">
+     <Input type="text">{{ row.news_id }}</Input> 
+  </template>
     <!-- 加入開關按鈕 -->
-    <template #on_off="{row}">   
+    <template #news_status="{row}">   
       <Switch 
       size="large" 
       true-color="#fab042" 
       false-color="#e6e6e6"
-      v-model="row.status"
+      true-value=1
+      false-value=0
+      v-model="row.news_status"
       @on-change="onChange(row)"
       >
         <template #open>
@@ -79,7 +93,7 @@
     </template>
 
     <template #news_type="{ row }">
-      <text>{{ row.news_type }}</text>
+      <text>{{ row.news_category }}</text>
     </template>
 
     <!-- 加入編輯、刪除彈窗 -->
@@ -101,12 +115,12 @@
       
         <Form :model="addItem" :label-width="80" inline>
           <FormItem label="消息編號" :model="addItem">
-            <text>{{ addItem.id }}</text>
+            <text>{{ addItem.news_id }}</text>
           </FormItem>
           <FormItem label="消息分類">
-            <Select v-model="addItem.news_type" placeholder="請選擇">
-              <Option value="歷史故事">歷史故事</Option>
+            <Select v-model="addItem.news_category" placeholder="請選擇">
               <Option value="行程預訂">行程預訂</Option>
+              <Option value="歷史故事">歷史故事</Option>
               <Option value="購物商城">購物商城</Option>
               <Option value="其他消息">其他消息</Option>
             </Select>
@@ -114,17 +128,26 @@
         </Form>
         <Form :model="addItem" :label-width="80">
           <FormItem label="消息標題">
-            <Input v-model="addItem.title" placeholder="請輸入消息標題"></Input>
+            <Input v-model="addItem.news_title" placeholder="請輸入消息標題"></Input>
+          </FormItem>
+          <FormItem label="消息標籤">
+            <Input v-model="addItem.news_hashtag" placeholder="請輸入消息標籤"></Input>
           </FormItem>
           <FormItem label="日期">
-            <DatePicker type="date" placeholder="請選擇日期" v-model="addItem.date"></DatePicker>
+            <DatePicker type="date" placeholder="請選擇日期" v-model="addItem.news_add_date"></DatePicker>
           </FormItem>
           <FormItem label="消息圖片">
             <input type="file" multiple />
           </FormItem>
           <FormItem label="消息內容">
-            <Input v-model="addItem.textarea" type="textarea" :autosize="{ minRows: 10, maxRows: 50 }"></Input>
+            <Input v-model="addItem.news_content" type="textarea" :autosize="{ minRows: 10, maxRows: 50 }"></Input>
           </FormItem>
+          <FormItem label="狀態">
+            <Select v-model="addItem.news_status" placeholder="請選擇" style="width:100px">
+             <Option value="1">上架</Option>
+             <Option value="0">下架</Option>
+            </Select>
+      </FormItem>
         </Form>
       </Modal>
 
@@ -135,147 +158,158 @@
 </template>
 
 <script>
+import { thisTypeAnnotation } from '@babel/types';
+import { BASE_URL } from "@/assets/js/commom";
+
 export default {
   data() {
     return {
       modal1: false,  //新增彈窗預設關閉
-      modal3: [],  //編輯彈窗預設關閉
+      modal3: [],  
       columns: [  ///表單表頭
         {
           title: "編號",
           width: "100px", //寬度
-          key: "id",
+          key: "news_id",
           align: "center", //置中
           sortable: true, //是否排序
         },
         {
           title: "發布日期",
           width: "150px",
-          key: "date",
+          key: "news_add_date",
           align: "center",
           sortable: true,
         },
         {
           title: "消息分類",
           width: "150px",
-          slot: "news_type",
           align: "center",
+          key:"news_category",
           filters: [
             //篩選分類
+            {
+              label: "行程預訂",
+              value: 0,
+            },
             {
               label: "歷史故事",
               value: 1,
             },
             {
-              label: "行程預訂",
+              label: "購物商城",
               value: 2,
             },
             {
-              label: "購物商城",
-              value: 3,
-            },
-            {
               label: "其他消息",
-              value: 4,
+              value: 3,
             },
           ],
           filterMultiple: false,
           filterMethod(value, row) {
-            if (value === 1) {
-              return row.news_type === "歷史故事";
+            if (value === 0) {
+              return row.news_category === "行程預訂";
+            } else if (value === 1) {
+              return row.news_category === "歷史故事";
             } else if (value === 2) {
-              return row.news_type === "行程預訂";
-            } else if (value === 3) {
-              return row.news_type === "購物商城";
+              return row.news_category === "購物商城";
             } else {
-              return row.news_type === "其他消息";
+              return row.news_category === "其他消息";
             }
           },
         },
         {
           title: "標題",
-          key: "title",
+          key: "news_title",
           align: "center",
         },
         {
           title: "狀態",
-          key: "status",
+          key: "news_status",
           align: "center",
-          width: "100px",
-          slot: "on_off", //加入開關鈕欄位需加slot
+          width: "100px", //加入開關鈕欄位需加slot
         },
         {
           title: "編輯/刪除",
           width: "200px",
           key: "edit",
           align: "center",
-          slot: "edit_del", //加入編輯刪除欄位需加slot
+          slot:"edit_del", //加入編輯刪除欄位需加slot
         },
       ],
-      data: [
-        ///表格內容資料
-        {
-          id: '1001',
-          date: '2022-12-10',
-          news_type: '行程預訂',
-          status: true,
-          title: '穿梭於史前時代',
-          textarea: 'ssfdsfv',
-        },
-        {
-          id: '1002',
-          date: '2022-11-10',
-          news_type: '行程預訂',
-          status: true,
-          title: '埃及五千年的黃金時代',
-          textarea: 'sasfasfasafsfaffv',
-        },
-        {
-          id: '2001',
-          date: '2022-12-15',
-          news_type: '歷史故事',
-          status: true,
-          title: '鐵達尼號沈船',
-          textarea: 'sasfasfsfaxxfaffv',
-        },
-        {
-          id: '2002',
-          date: '2022-12-01',
-          news_type: '歷史故事',
-          status: true,
-          title: '鄭和下西洋',
-          textarea: 'sasdddddsdaffv',
-        },
-        {
-          id: '3001',
-          date: '2022-11-11',
-          news_type: '購物商城',
-          status: false,
-          title: '購物須知',
-          textarea: 'ssdddxvfaxxfaffv',
-        },
-        {
-          id: '4001',
-          date: '2022-11-09',
-          news_type: '其他消息',
-          status: false,
-          title: '官網維護公告',
-          textarea: 'aaaxssdddavaxxfaffv',
-        },
-      ],
+      // data: [
+      //   ///表格內容資料
+      //   {
+      //     id: '1001',
+      //     date: '2022-12-10',
+      //     news_type: '行程預訂',
+      //     status: true,
+      //     title: '穿梭於史前時代',
+      //     textarea: 'ssfdsfv',
+      //   },
+      //   {
+      //     id: '1002',
+      //     date: '2022-11-10',
+      //     news_type: '行程預訂',
+      //     status: true,
+      //     title: '埃及五千年的黃金時代',
+      //     textarea: 'sasfasfasafsfaffv',
+      //   },
+      //   {
+      //     id: '2001',
+      //     date: '2022-12-15',
+      //     news_type: '歷史故事',
+      //     status: true,
+      //     title: '鐵達尼號沈船',
+      //     textarea: 'sasfasfsfaxxfaffv',
+      //   },
+      //   {
+      //     id: '2002',
+      //     date: '2022-12-01',
+      //     news_type: '歷史故事',
+      //     status: true,
+      //     title: '鄭和下西洋',
+      //     textarea: 'sasdddddsdaffv',
+      //   },
+      //   {
+      //     id: '3001',
+      //     date: '2022-11-11',
+      //     news_type: '購物商城',
+      //     status: false,
+      //     title: '購物須知',
+      //     textarea: 'ssdddxvfaxxfaffv',
+      //   },
+      //   {
+      //     id: '4001',
+      //     date: '2022-11-09',
+      //     news_type: '其他消息',
+      //     status: false,
+      //     title: '官網維護公告',
+      //     textarea: 'aaaxssdddavaxxfaffv',
+      //   },
+      // ],
+      getNews:[],
       addItem: {   //新增彈窗內容資料
-        id: '',
-        title: '',
-        date: '',
-        news_type: '',
-        textarea: ''
+        news_id: '',
+        news_title: '',
+        news_add_date: '',
+        news_category: '',
+        news_hashtag:'',
+        nees_status:'',
+        news_img:'',
+        news_item_id:'',
+        news_content: ''
       },
       resetItem: {
-        id: '',
-        title: '',
-        date: '',
-        news_type: '',
-        textarea: ''
+        news_id: '',
+        news_title: '',
+        news_add_date: '',
+        news_category: '',
+        news_hashtag:'',
+        nees_status:'',
+        news_img:'',
+        news_item_id:'',
+        news_content: ''
       },
     }
   },
@@ -288,7 +322,7 @@ export default {
         cancelText: "先不要好ㄌ",
         onOk: () => {
           this.$Message.info("確認刪除");
-          this.data.splice(index, 1);
+          this.getNews.splice(index, 1);
         },
         onCancel: () => {
           this.$Message.info("取消");
@@ -303,30 +337,69 @@ export default {
       }
     },
     clickOk() {
-      this.addItem.date = this.addItem.date
+      this.addItem.news_add_date = this.addItem.news_add_date
         .toLocaleDateString()
         .replace(/\//g, "-");
-      this.data.push({ ...this.addItem });
-      this.addItem = { ...this.resetItem };
+        // "new_img"=>$fileName
+      // this.addItem.news_img = 
+      setTimeout(()=>{
+        this.getNews.push({ ...this.addItem });
+        this.addItem = { ...this.resetItem };
+      },5)
   },
   clickEditBtn(index) {
       this.modal3[index] = true;
-      this.addItem = { ...this.data[index] };
-      console.log(this.data[0]);
+      this.addItem = { ...this.getNews[index] };
+      // console.log(this.getNews[0]);
     },
     replaceItem() {
-      const index = this.data.findIndex((item) => item.id === this.addItem.id);
+      const index = this.getNews.findIndex((item) => item.news_id === this.addItem.news_id);
 
-      this.addItem.date = this.addItem.date
-        .toLocaleDateString()
-        .replace(/\//g, "-");
-      this.data[index] = this.addItem;
+      
+      this.addItem.news_add_date = this.addItem.news_add_date.toLocaleDateString().replace(/\//g, "-");
+      this.getNews[index] = this.addItem;
       this.addItem = { ...this.resetItem };
     },
     cancelEdit() {
       this.addItem = { ...this.resetItem };
-      console.log(this.data[0]);
+      console.log(this.getNews[0]);
     },
+    getData(){
+      fetch(`${BASE_URL}/getNews.php`)
+      .then((res) => res.json())
+      .then((json) => {
+        this.getNews = json;
+      });
+    },
+    insertData() {
+      const formData = new FormData();
+      const formDataKey = Object.keys(this.addItem);
+      formDataKey.forEach((key) => {
+        formData.append(`${key}`, this.addItem[key]);
+      });
+
+      formData.set("pro_img", document.getElementById("pro_img_id").files[0]);
+
+      console.log(formData.get("pro_img"));
+
+      fetch(`${BASE_URL}/insert_News.php`, {
+        method: "POST",
+        body: formData,
+      })
+        .then((res) => res.json())
+        .then((result) => {
+          console.log(result);
+        });
+    },
+    saveData(){
+      console.log(this.getNews);
+    },
+  },
+  created() {
+    this.getData();
+  },
+  computed:{
+    
   },
 };
 </script>
