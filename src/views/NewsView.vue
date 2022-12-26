@@ -14,47 +14,83 @@
     cancel-text="取消新增"
     @on-ok="clickOk"
   >
-    <Form :model="addItem" :label-width="80" inline>
+    <Form 
+    :model="addItem" 
+    :label-width="80" 
+    method="post"
+    enctype="multipart/form-data"
+    id="addForm"
+    inline>
       <FormItem label="消息編號">
         <Input v-model="addItem.news_id" placeholder="請輸入消息編號"></Input>
       </FormItem>
       <FormItem label="消息分類">
-        <Select v-model="addItem.news_category" placeholder="請選擇">
-          <Option value="行程預訂">行程預訂</Option>
-          <Option value="歷史故事">歷史故事</Option>
-          <Option value="購物商城">購物商城</Option>
-          <Option value="其他消息">其他消息</Option>
+        <Select 
+        v-model="addItem.news_category" 
+        :value="news_category"
+        placeholder="請選擇"
+        name="news_category"
+        >
+          <Option value="0">行程預訂</Option>
+          <Option value="1">歷史故事</Option>
+          <Option value="2">購物商城</Option>
+          <Option value="3">其他消息</Option>
         </Select>
       </FormItem>
     </Form>
-    <Form :model="addItem" :label-width="80">
+    <Form 
+    :model="addItem" 
+    :label-width="80"
+    >
       <FormItem label="消息標題">
-        <Input v-model="addItem.news_title" placeholder="請輸入消息標題"></Input>
+        <Input 
+        v-model="addItem.news_title" 
+        placeholder="請輸入消息標題"
+        name="news_title"
+        ></Input>
       </FormItem>
       <FormItem label="消息標籤">
-        <Input v-model="addItem.news_hashtag" placeholder="請輸入消息標籤"></Input>
+        <Input 
+        v-model="addItem.news_hashtag" 
+        placeholder="請輸入消息標籤"
+        name="news_hashtag"
+        ></Input>
       </FormItem>
       <FormItem label="日期">
         <DatePicker
           type="date"
           placeholder="請選擇日期"
           v-model="addItem.news_add_date"
+          name="news_add_date"
         ></DatePicker>
       </FormItem>
       <FormItem label="消息圖片">
-        <input type="file" multiple />
+        <input type="file" multiple id="news_img" name="news_img"/>
+      </FormItem>
+      <FormItem label="消息路徑">
+        <Input 
+        v-model="addItem.news_item_id" 
+        placeholder="請輸入消息標籤路徑"
+        name="news_item_id"
+        ></Input>
       </FormItem>
       <FormItem label="消息內容">
         <Input
           v-model="addItem.news_content"
           type="textarea"
           :autosize="{ minRows: 10, maxRows: 50 }"
+          name="news_content"
         ></Input>
       </FormItem>
       <FormItem label="狀態">
-        <Select v-model="addItem.news_status" placeholder="請選擇" style="width:100px">
-          <Option value="true">上架</Option>
-          <Option value="false">下架</Option>
+        <Select 
+        v-model="addItem.news_status" 
+        placeholder="請選擇" 
+        style="width:100px"
+        name="news_status"
+        >
+          <Option value="1">上架</Option>
+          <Option value="0">下架</Option>
         </Select>
       </FormItem>
     </Form>
@@ -73,13 +109,14 @@
      <Input type="text">{{ row.news_id }}</Input> 
   </template>
     <!-- 加入開關按鈕 -->
+    
+    <!-- :true-value="parseInt(1)"
+      :false-value="parseInt(0)" -->
     <template #news_status="{row}">   
       <Switch 
       size="large" 
       true-color="#fab042" 
       false-color="#e6e6e6"
-      :true-value=1
-      :false-value=0
       v-model="row.news_status"
       @on-change="onChange(row)"
       >
@@ -119,10 +156,10 @@
           </FormItem>
           <FormItem label="消息分類">
             <Select v-model="addItem.news_category" placeholder="請選擇">
-              <Option value="行程預訂">行程預訂</Option>
-              <Option value="歷史故事">歷史故事</Option>
-              <Option value="購物商城">購物商城</Option>
-              <Option value="其他消息">其他消息</Option>
+              <Option value="0">行程預訂</Option>
+              <Option value="1">歷史故事</Option>
+              <Option value="2">購物商城</Option>
+              <Option value="3">其他消息</Option>
             </Select>
           </FormItem>
         </Form>
@@ -137,15 +174,18 @@
             <DatePicker type="date" placeholder="請選擇日期" v-model="addItem.news_add_date"></DatePicker>
           </FormItem>
           <FormItem label="消息圖片">
-            <input type="file" multiple />
+            <input type="file" multiple id="news_img" name="news_img" />
+          </FormItem>
+          <FormItem label="消息路徑">
+            <Input v-model="addItem.news_item_id" placeholder="請輸入消息標籤路徑" name="news_item_id"></Input>
           </FormItem>
           <FormItem label="消息內容">
             <Input v-model="addItem.news_content" type="textarea" :autosize="{ minRows: 10, maxRows: 50 }"></Input>
           </FormItem>
           <FormItem label="狀態">
             <Select v-model="addItem.news_status" placeholder="請選擇" style="width:100px">
-             <Option value="true">上架</Option>
-             <Option value="false">下架</Option>
+             <Option value="1">上架</Option>
+             <Option value="0">下架</Option>
             </Select>
       </FormItem>
         </Form>
@@ -185,7 +225,7 @@ export default {
           title: "消息分類",
           width: "150px",
           align: "center",
-          slot:"news_category",
+          key:"news_category",
           // key:"news_category",
           filters: [
             //篩選分類
@@ -207,12 +247,12 @@ export default {
             },
           ],
           filterMultiple: false,
-          filterMethod(news_category, row) {
-            if (news_category === 0) {
+          filterMethod(value, row) {
+            if (value === 0) {
               return row.news_category === "行程預訂";
-            } else if (news_category === 1) {
+            } else if (value === 1) {
               return row.news_category === "歷史故事";
-            } else if (news_category === 2) {
+            } else if (value === 2) {
               return row.news_category === "購物商城";
             } else {
               return row.news_category === "其他消息";
@@ -332,7 +372,7 @@ export default {
       });
     },
     onChange(row) {
-      if (row.status) {
+      if (row.news_status) {
         this.$Message.info("上架狀態： 上架");
       } else {
         this.$Message.info("上架狀態： 下架");
@@ -344,6 +384,7 @@ export default {
         .replace(/\//g, "-");
         // "new_img"=>$fileName
       // this.addItem.news_img = 
+      this.insertData(this.addItem);
       setTimeout(()=>{
         this.getNews.push({ ...this.addItem });
         this.addItem = { ...this.resetItem };
@@ -369,8 +410,8 @@ export default {
     getData(){
       fetch(`${BASE_URL}/getNews.php`)
       .then((res) => res.json())
-      .then((json) => {
-        this.getNews = json;
+      .then((result) => {
+        this.getNews = result;
       });
     },
     insertData() {
@@ -380,24 +421,28 @@ export default {
         formData.append(`${key}`, this.addItem[key]);
       });
 
-      formData.set("pro_img", document.getElementById("pro_img_id").files[0]);
+      const imgName = document.getElementById("news_img").files[0];
+      // console.log("----------------",imgName);
+      formData.set("news_img", imgName);
 
-      console.log(formData.get("pro_img"));
+      console.log(formData.get("news_img"));
 
-      fetch(`${BASE_URL}/insert_News.php`, {
+      fetch(`${BASE_URL}/insert_news.php`, {
         method: "POST",
         body: formData,
       })
         .then((res) => res.json())
-        .then((result) => {
-          console.log(result);
+        .then((res) => {
+          const result = res;
+          this.addItem.news_img = result.news_img;
+          console.log(result.news_img);
+          console.log(this.addItem);
         });
     },
     saveData(){
-      console.log(this.getNews);
     },
   },
-  created() {
+  mounted() {
     this.getData();
   },
   computed:{
