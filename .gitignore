@@ -2,7 +2,7 @@
 node_modules
 /dist
 phpfiles/images
-
+phpfiles/connectBooks.php
 #
 php_connect_books
 

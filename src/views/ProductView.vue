@@ -14,25 +14,6 @@
     cancel-text="取消新增"
     @on-ok="clickOk"
   >
-    <!-- <Form
-      :model="addItem"
-      :label-width="80"
-      inline
-      method="post"
-      enctype="multipart/form-data"
-    >
-      <FormItem label="商品編號">
-        <Input v-model="addItem.pro_id" placeholder="請輸入消息編號"></Input>
-      </FormItem>
-      <FormItem label="商品分類">
-        <Select v-model="addItem.pro_class_name" placeholder="請選擇">
-          <Option value="旅行必備">旅行必備</Option>
-          <Option value="醫療用品">醫療用品</Option>
-          <Option value="應急糧食">應急糧食</Option>
-          <Option value="求生用品">求生用品</Option>
-        </Select>
-      </FormItem>
-    </Form> -->
     <Form
       :model="addItem"
       :label-width="80"
@@ -41,13 +22,13 @@
       ref="addForm"
       id="addForm"
     >
-      <FormItem label="商品編號">
+      <!-- <FormItem label="商品編號">
         <Input
           v-model="addItem.pro_id"
           placeholder="請輸入消息編號"
           ref="pro_id"
         ></Input>
-      </FormItem>
+      </FormItem> -->
       <FormItem label="商品分類">
         <Select
           v-model="addItem.pro_class_name"
@@ -155,10 +136,10 @@
         @on-cancel="cancelEdit"
       >
         <Form :model="addItem" :label-width="80" inline>
-          <FormItem label="消息編號">
+          <FormItem label="商品編號">
             <text>{{ addItem.pro_id }}</text>
           </FormItem>
-          <FormItem label="消息分類">
+          <FormItem label="商品分類">
             <Select v-model="addItem.pro_class_name" placeholder="請選擇">
               <Option value="旅行必備">旅行必備</Option>
               <Option value="醫療用品">醫療用品</Option>
@@ -215,8 +196,6 @@
 </template>
 
 <script>
-import { ref } from "@vue/reactivity";
-// import { objectToString } from "@vue/shared";
 import { BASE_URL } from "@/assets/js/commom";
 
 export default {
@@ -319,85 +298,10 @@ export default {
           slot: "edit_del", //加入編輯刪除欄位需加slot
         },
       ],
-      data: [
-        ///表格內容資料
-        {
-          pro_id: "1001",
-          pro_onshelf_date: "2022-12-10",
-          pro_class_name: "旅行必備",
-          pro_name: "穿梭於史前時代",
-          pro_price: "7777",
-          pro_onshelf_amount: "100",
-          pro_rest_amount: "50",
-          pro_status: true,
-          pro_info:
-            "你好我好你好我好大家好安安你蒿哭哭饅頭團專家由你好我好大家好安安你蒿哭哭饅頭團專家由你好我好大家好安安你蒿哭哭饅頭團專家由你好我好大家好安安你蒿哭哭饅頭團專家由大家好安安你蒿哭哭饅頭團專家由",
-        },
-        {
-          pro_id: "1002",
-          pro_onshelf_date: "2022-11-10",
-          pro_class_name: "醫療用品",
-          pro_name: "埃及五千年的黃金時代",
-          pro_price: "777",
-          pro_onshelf_amount: "100",
-          pro_rest_amount: "50",
-          pro_status: true,
-          pro_info:
-            "你好我好你好我好大家好安安你蒿哭哭饅頭團專家由你好我好大家好安安你蒿哭哭饅頭團專家由你好我好大家好安安你蒿哭哭饅頭團專家由你好我好大家好安安你蒿哭哭饅頭團專家由大家好安安你蒿哭哭饅頭團專家由",
-        },
-        {
-          pro_id: "2001",
-          pro_onshelf_date: "2022-12-15",
-          pro_class_name: "旅行必備",
-          pro_name: "鐵達尼號沈船",
-          pro_price: "1020",
-          pro_onshelf_amount: "100",
-          pro_rest_amount: "50",
-          pro_status: true,
-          pro_info:
-            "你好我好你好我好大家好安安你蒿哭哭饅頭團專家由你好我好大家好安安你蒿哭哭饅頭團專家由你好我好大家好安安你蒿哭哭饅頭團專家由你好我好大家好安安你蒿哭哭饅頭團專家由大家好安安你蒿哭哭饅頭團專家由",
-        },
-        {
-          pro_id: "2002",
-          pro_onshelf_date: "2022-12-01",
-          pro_class_name: "旅行必備",
-          pro_name: "鄭和下西洋",
-          pro_price: "1500",
-          pro_onshelf_amount: "100",
-          pro_rest_amount: "50",
-          pro_status: true,
-          pro_info:
-            "你好我好你好我好大家好安安你蒿哭哭饅頭團專家由你好我好大家好安安你蒿哭哭饅頭團專家由你好我好大家好安安你蒿哭哭饅頭團專家由你好我好大家好安安你蒿哭哭饅頭團專家由大家好安安你蒿哭哭饅頭團專家由",
-        },
-        {
-          pro_id: "3001",
-          pro_onshelf_date: "2022-11-11",
-          pro_class_name: "應急糧食",
-          pro_name: "購物須知",
-          pro_price: "7970",
-          pro_onshelf_amount: "100",
-          pro_rest_amount: "50",
-          pro_status: true,
-          pro_info:
-            "你好我好你好我好大家好安安你蒿哭哭饅頭團專家由你好我好大家好安安你蒿哭哭饅頭團專家由你好我好大家好安安你蒿哭哭饅頭團專家由你好我好大家好安安你蒿哭哭饅頭團專家由大家好安安你蒿哭哭饅頭團專家由",
-        },
-        {
-          pro_id: "4001",
-          pro_onshelf_date: "2022-11-09",
-          pro_class_name: "求生用品",
-          pro_name: "官網維護公告",
-          pro_price: "977",
-          pro_onshelf_amount: "100",
-          pro_rest_amount: "50",
-          pro_status: true,
-          pro_info:
-            "你好我好你好我好大家好安安你蒿哭哭饅頭團專家由你好我好大家好安安你蒿哭哭饅頭團專家由你好我好大家好安安你蒿哭哭饅頭團專家由你好我好大家好安安你蒿哭哭饅頭團專家由大家好安安你蒿哭哭饅頭團專家由",
-        },
-      ],
       dataList: [],
       addItem: {
         //新增彈窗內容資料
-        pro_id: "",
+        // pro_id: "",
         pro_name: "",
         pro_class_name: "",
         pro_onshelf_date: "",
@@ -408,15 +312,8 @@ export default {
         pro_status: 0,
         pro_img: "",
       },
-      editItem: {
-        id: "addItem.pro_id()",
-        title: "",
-        select: "",
-        date: "",
-        textarea: "",
-      },
       resetItem: {
-        pro_id: "",
+        // pro_id: "",
         pro_name: "",
         pro_class_name: "",
         pro_onshelf_date: "",
@@ -425,6 +322,7 @@ export default {
         pro_onshelf_amount: "",
         pro_rest_amount: "",
         pro_status: 0,
+        pro_img: "",
       },
     };
   },
@@ -461,17 +359,6 @@ export default {
         .replace(/\//g, "-");
 
       this.insertData(this.addItem);
-
-      setTimeout(() => {
-        this.dataList.push({ ...this.addItem });
-        this.addItem = { ...this.resetItem };
-      }, 5);
-
-      console.log(this.addItem);
-      console.log(this.dataList);
-    },
-    testtt(index) {
-      console.log(index);
     },
     clickEditBtn(index) {
       this.modal3[index] = true;
@@ -508,11 +395,8 @@ export default {
         formData.append(`${key}`, this.addItem[key]);
       });
 
-      const imgName = document.getElementById("pro_img_id").files[0];
-
-      formData.set("pro_img", imgName);
-
-      console.log(formData.get("pro_img"));
+      let imgName = document.getElementById("pro_img_id");
+      formData.set("pro_img", imgName.files[0]);
 
       fetch(`${BASE_URL}/insert_pro_data.php`, {
         method: "POST",
@@ -521,9 +405,17 @@ export default {
         .then((res) => res.json())
         .then((res) => {
           const result = res;
-          this.addItem.pro_img = result.pro_img;
-          console.log(result.pro_img);
-          console.log(this.addItem);
+
+          if (result === "wrong") {
+            alert("新增失敗，資料庫已有此筆資料");
+          } else {
+            this.addItem.pro_img = result.pro_img;
+            this.addItem.pro_id = result.pro_id[0].pro_id;
+            this.dataList.push({ ...this.addItem });
+          }
+
+          this.addItem = { ...this.resetItem };
+          imgName.outerHTML = imgName.outerHTML;
         });
     },
     deleData(row) {
