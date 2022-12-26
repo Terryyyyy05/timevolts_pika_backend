@@ -53,8 +53,8 @@
       </FormItem>
       <FormItem label="狀態">
         <Select v-model="addItem.news_status" placeholder="請選擇" style="width:100px">
-          <Option value="1">上架</Option>
-          <Option value="0">下架</Option>
+          <Option value="true">上架</Option>
+          <Option value="false">下架</Option>
         </Select>
       </FormItem>
     </Form>
@@ -78,8 +78,8 @@
       size="large" 
       true-color="#fab042" 
       false-color="#e6e6e6"
-      true-value=1
-      false-value=0
+      :true-value=1
+      :false-value=0
       v-model="row.news_status"
       @on-change="onChange(row)"
       >
@@ -92,7 +92,7 @@
       </Switch>
     </template>
 
-    <template #news_type="{ row }">
+    <template #news_category="{ row }">
       <text>{{ row.news_category }}</text>
     </template>
 
@@ -144,8 +144,8 @@
           </FormItem>
           <FormItem label="狀態">
             <Select v-model="addItem.news_status" placeholder="請選擇" style="width:100px">
-             <Option value="1">上架</Option>
-             <Option value="0">下架</Option>
+             <Option value="true">上架</Option>
+             <Option value="false">下架</Option>
             </Select>
       </FormItem>
         </Form>
@@ -185,7 +185,8 @@ export default {
           title: "消息分類",
           width: "150px",
           align: "center",
-          key:"news_category",
+          slot:"news_category",
+          // key:"news_category",
           filters: [
             //篩選分類
             {
@@ -206,12 +207,12 @@ export default {
             },
           ],
           filterMultiple: false,
-          filterMethod(value, row) {
-            if (value === 0) {
+          filterMethod(news_category, row) {
+            if (news_category === 0) {
               return row.news_category === "行程預訂";
-            } else if (value === 1) {
+            } else if (news_category === 1) {
               return row.news_category === "歷史故事";
-            } else if (value === 2) {
+            } else if (news_category === 2) {
               return row.news_category === "購物商城";
             } else {
               return row.news_category === "其他消息";
@@ -225,7 +226,8 @@ export default {
         },
         {
           title: "狀態",
-          key: "news_status",
+          // key: "news_status",
+          slot:"news_status",
           align: "center",
           width: "100px", //加入開關鈕欄位需加slot
         },
