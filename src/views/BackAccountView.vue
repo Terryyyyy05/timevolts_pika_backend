@@ -3,7 +3,12 @@
   <!-- 新增彈窗按鈕 -->
   <Button @click="modal1 = true" class="admin">新增 +</Button>
   <!-- 新增彈窗 -->
-  <Modal v-model="modal1" title="新增管理員" width="500px" class="addadmin-popup" :styles="{top: '30px'}">
+  <Modal 
+  v-model="modal1" 
+  title="新增管理員" 
+  width="500px" 
+  class="addadmin-popup" 
+  :styles="{top: '30px'}">
       <Form :model="adminItem" :label-width="100">
         <FormItem label="員工編號">
           <Input v-model="adminItem.id" placeholder="請輸入編號"></Input>
