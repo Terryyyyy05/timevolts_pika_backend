@@ -13,7 +13,7 @@
   >
     <Form :model="addqaItem" :label-width="80">
       <FormItem label="問題編號">
-        <Input v-model="addqaItem.id" placeholder="請輸入問題編號"></Input>
+        <Input v-model="addqaItem.qa_id" placeholder="請輸入問題編號"></Input>
       </FormItem>
       <FormItem label="問題分類">
         <Select v-model="addqaItem.qa_type" placeholder="請選擇">
@@ -23,17 +23,26 @@
         </Select>
       </FormItem>
       <FormItem label="問題標題">
-        <Input v-model="addqaItem.title" placeholder="請輸入問題標題"></Input>
+        <Input
+          v-model="addqaItem.qa_title"
+          placeholder="請輸入問題標題"
+        ></Input>
       </FormItem>
       <FormItem label="問題答案">
-        <Input v-model="addqaItem.answer" placeholder="請輸入問題標題"></Input>
-      </FormItem>
-      <FormItem label="問題內容">
         <Input
-          v-model="addqaItem.textarea"
-          type="textarea"
-          :autosize="{ minRows: 10, maxRows: 50 }"
+          v-model="addqaItem.qa_answer"
+          placeholder="請輸入問題答案"
         ></Input>
+      </FormItem>
+      <FormItem label="狀態">
+        <Select
+          v-model="addqaItem.qa_status"
+          placeholder="請選擇"
+          style="width: 100px"
+        >
+          <Option value="true">上架</Option>
+          <Option value="false">下架</Option>
+        </Select>
       </FormItem>
     </Form>
   </Modal>
@@ -44,7 +53,7 @@
     stripe
     border
     :columns="columns"
-    :data="data"
+    :data="getQuestion"
     width="1200"
   >
     <!-- 加入開關按鈕 -->
@@ -79,7 +88,10 @@
       >
         <Form :model="addqaItem" :label-width="80">
           <FormItem label="問題編號">
-            <Input v-model="addqaItem.id" placeholder="請輸入問題編號"></Input>
+            <Input
+              v-model="addqaItem.qa_id"
+              placeholder="請輸入問題編號"
+            ></Input>
           </FormItem>
           <FormItem label="問題分類">
             <Select v-model="addqaItem.qa_type" placeholder="請選擇">
@@ -90,22 +102,25 @@
           </FormItem>
           <FormItem label="問題標題">
             <Input
-              v-model="addqaItem.title"
+              v-model="addqaItem.qa_title"
               placeholder="請輸入問題標題"
             ></Input>
           </FormItem>
           <FormItem label="問題答案">
             <Input
-              v-model="addqaItem.answer"
-              placeholder="請輸入問題標題"
+              v-model="addqaItem.qa_answer"
+              placeholder="請輸入問題答案"
             ></Input>
           </FormItem>
-          <FormItem label="問題內容">
-            <Input
-              v-model="addqaItem.textarea"
-              type="textarea"
-              :autosize="{ minRows: 10, maxRows: 50 }"
-            ></Input>
+          <FormItem label="狀態">
+            <Select
+              v-model="addqaItem.qa_status"
+              placeholder="請選擇"
+              style="width: 100px"
+            >
+              <Option value="true">上架</Option>
+              <Option value="false">下架</Option>
+            </Select>
           </FormItem>
         </Form>
       </Modal>
@@ -114,6 +129,9 @@
 </template>
 
 <script>
+import { BASE_URL } from "@/assets/js/commom";
+import { is } from "@babel/types";
+
 export default {
   data() {
     return {
@@ -124,7 +142,7 @@ export default {
         {
           title: "問題編號",
           width: "200px", //寬度
-          key: "id",
+          key: "qa_id",
           align: "center", //置中
           sortable: true, //是否排序
         },
@@ -132,22 +150,21 @@ export default {
           title: "問題分類",
           width: "200px",
           key: "qa_type",
-          slot: "qa_type",
           align: "center",
         },
         {
           title: "問題標題",
-          key: "title",
+          key: "qa_title",
           align: "center",
         },
         {
           title: "問題答案",
-          key: "answer",
+          key: "qa_answer",
           align: "center",
         },
         {
           title: "問題狀態",
-          key: "status",
+          key: "qa_status",
           align: "center",
           width: "100px",
           slot: "on_off", //加入開關鈕欄位需加slot
@@ -160,44 +177,59 @@ export default {
           slot: "edit", //加入編輯刪除欄位需加slot
         },
       ],
-      data: [
-        ///表格內容資料
-        {
-          id: "1001",
-          qa_type: "常見問題",
-          title: "時間管理局是一個什麼樣的組織？",
-          answer:
-            "時間管理局是一個為了維持時間線正常運行的組織，其主要成員都是研究時空穿越的頂尖科學家。",
-        },
-        {
-          id: "1002",
-          qa_type: "行程預訂",
-          title: "經典行程與期間限定行程有何不同？",
-          answer: "若有不可抗力之因素需取消訂單，請洽詢客服。",
-        },
-        {
-          id: "1003",
-          qa_type: "商品訂購",
-          title: "商品配送時間多久？",
-          answer: "我們合作的時光宅急便，配送時間為工作天一到三天。",
-        },
-      ],
+      // data: [
+      //   ///表格內容資料
+      //   {
+      //     id: "1001",
+      //     qa_type: "常見問題",
+      //     title: "時間管理局是一個什麼樣的組織？",
+      //     answer:
+      //       "時間管理局是一個為了維持時間線正常運行的組織，其主要成員都是研究時空穿越的頂尖科學家。",
+      //   },
+      //   {
+      //     id: "1002",
+      //     qa_type: "行程預訂",
+      //     title: "經典行程與期間限定行程有何不同？",
+      //     answer: "若有不可抗力之因素需取消訂單，請洽詢客服。",
+      //   },
+      //   {
+      //     id: "1003",
+      //     qa_type: "商品訂購",
+      //     title: "商品配送時間多久？",
+      //     answer: "我們合作的時光宅急便，配送時間為工作天一到三天。",
+      //   },
+      // ],
+      getQuestion: [],
       addqaItem: {
         //新增彈窗內容資料
-        id: "",
+        qa_id: "",
         qa_type: "",
-        title: "",
-        textarea: "",
+        qa_title: "",
+        qa_answer: "",
+        qa_status: "",
       },
       editqaItem: {
-        id: "",
+        qa_id: "",
         qa_type: "",
-        title: "",
-        textarea: "",
+        qa_title: "",
+        qa_answer: "",
+        qa_status: "",
       },
     };
   },
-  methods: {},
+  methods: {
+    getData() {
+      fetch(`${BASE_URL}/getQuestion.php`)
+        .then((res) => res.json())
+        .then((json) => {
+          this.getQuestion = json;
+        });
+    },
+  },
+  created() {
+    this.getData();
+    console.log(this);
+  },
 };
 </script>
 <style lang="scss" scoped>
