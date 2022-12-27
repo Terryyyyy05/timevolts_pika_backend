@@ -52,6 +52,7 @@
 <style lang="scss" scoped>
 @import '@/assets/css/app.scss';
 
+
 .sidebar {
     height: 100%;
     position: fixed;

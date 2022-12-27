@@ -4,89 +4,165 @@
   <!-- 新增彈窗按鈕 -->
   <Button @click="modal1 = true" class="add">新增 +</Button>
   <!-- 新增彈窗 -->
-  <Modal v-model="modal1" title="新增最新消息" width="700px" class="addnews-popup" :styles="{top: '30px'}">
-      <Form :model="addItem" :label-width="80" :rules="ruleInline" inline >
-        <FormItem label="消息編號">
-          <Input v-model="addItem.id" placeholder="請輸入消息編號"></Input>
-        </FormItem>
-        <FormItem label="消息分類">
-          <Select v-model="addItem.select" placeholder="請選擇">
-            <Option value="歷史故事">歷史故事</Option>
-            <Option value="行程預訂">行程預訂</Option>
-            <Option value="購物商城">購物商城</Option>
-            <Option value="其他消息">其他消息</Option>
-          </Select>
-        </FormItem>
-      </Form>
-      <Form :model="addItem" :label-width="80">
-        <FormItem label="消息標題">
-          <Input v-model="addItem.title" placeholder="請輸入消息標題"></Input>
-        </FormItem>
-        <FormItem label="日期">
-          <DatePicker type="date" placeholder="請選擇日期" v-model="addItem.date"></DatePicker>
-        </FormItem>
-        <FormItem label="消息圖片">
-          <input type="file" multiple>
-        </FormItem>
-        <FormItem label="消息內容">
-          <Input v-model="addItem.textarea" type="textarea" :autosize="{ minRows: 10, maxRows: 50 }"></Input>
-        </FormItem>
-      </Form>
+  <Modal
+    v-model="modal1"
+    title="新增折扣卷"
+    width="700px"
+    class="addnews-popup"
+    :styles="{ top: '30px' }"
+  >
+    <Form :model="addItem" :label-width="80" :rules="ruleInline" inline>
+      <FormItem label="折扣卷ID">
+        <Input v-model="addItem.coupon_id" placeholder="請輸入折扣ID"></Input>
+      </FormItem>
+      <FormItem label="折扣金額">
+        <Input
+          v-model="addItem.coupon_discount_number"
+          placeholder="請輸入折扣金額"
+        ></Input>
+      </FormItem>
+      <FormItem label="發行數量">
+        <Input
+          v-model="addItem.coupon_quantity"
+          placeholder="請輸入發行數量"
+        ></Input>
+      </FormItem>
+      <FormItem label="消費門檻">
+        <Input
+          v-model="addItem.coupon_pricing_condition"
+          placeholder="請輸入門檻金額"
+        ></Input>
+      </FormItem>
+    </Form>
+    <Form :model="addItem">
+      <FormItem label="發送日期">
+        <DatePicker
+          type="date"
+          v-model="addItem.coupon_issue_date"
+          placeholder="請輸入發送日期"
+        ></DatePicker>
+      </FormItem>
+      <FormItem label="生效日期">
+        <DatePicker
+          type="date"
+          v-model="addItem.coupon_valid_date"
+          placeholder="請輸入生效日期"
+        ></DatePicker>
+      </FormItem>
+      <FormItem label="到期日期">
+        <DatePicker
+          type="date"
+          v-model="addItem.coupon_exp_date"
+          placeholder="請輸入到期日期"
+        ></DatePicker>
+      </FormItem>
+    </Form>
+    <Switch size="large" true-color="#fab042" false-color="#e6e6e6">
+      <template #open>
+        <span>上架</span>
+      </template>
+      <template #close>
+        <span>下架</span>
+      </template>
+    </Switch>
   </Modal>
 
   <!-- 表格 -->
-  <Table class="table" stripe border :columns="columns" :data="data" width="1200">
+  <Table
+    class="table"
+    stripe
+    border
+    :columns="columns"
+    :data="data"
+    width="1200"
+  >
     <!-- 加入開關按鈕 -->
-    <template #on_off="{ row,index }">   
+    <template #on_off>
       <Switch size="large" true-color="#fab042" false-color="#e6e6e6">
-                <template #open>
-                  <span>上架</span>
-                </template>
-                <template #close>
-                  <span>下架</span>
-                </template>
-            </Switch>
+        <template #open>
+          <span>上架</span>
+        </template>
+        <template #close>
+          <span>下架</span>
+        </template>
+      </Switch>
     </template>
 
-    <template #news_type="{ row,index }">   
-      <text>{{row.news_type}}</text>
+    <template #news_type="{ row }">
+      <text>{{ row.news_type }}</text>
     </template>
 
     <!-- 加入編輯、刪除彈窗 -->
-    <template #edit_del="{ row,index }">
+    <template #edit_del>
       <!-- 編輯按鈕 -->
       <Button @click="modal3 = true">編輯</Button>
       <!-- 編輯彈窗 -->
-      <Modal v-model="modal3" title="編輯最新消息" ok-text="確認修改" cancel-text="取消" width="700px" class="editnews-popup"
-        :styles="{top: '30px'}">
-      
+      <Modal
+        v-model="modal3"
+        title="編輯折扣卷"
+        ok-text="確認修改"
+        cancel-text="取消"
+        width="700px"
+        class="editnews-popup"
+        :styles="{ top: '30px' }"
+      >
         <Form :model="editItem" :label-width="80" :rules="ruleInline" inline>
-          <FormItem label="消息編號" :model="addItem">
-            <text>{{addItem.id}}</text>
+          <FormItem label="折扣卷ID">
+            <Input
+              v-model="addItem.coupon_id"
+              placeholder="請輸入折扣ID"
+            ></Input>
           </FormItem>
-          <FormItem label="消息分類">
-            <Select v-model="editItem.select" placeholder="請選擇">
-              <Option value="歷史故事">歷史故事</Option>
-              <Option value="行程預訂">行程預訂</Option>
-              <Option value="購物商城">購物商城</Option>
-              <Option value="其他消息">其他消息</Option>
-            </Select>
+          <FormItem label="折扣金額">
+            <Input
+              v-model="addItem.coupon_discount_number"
+              placeholder="請輸入折扣金額"
+            ></Input>
+          </FormItem>
+          <FormItem label="發行數量">
+            <Input
+              v-model="addItem.coupon_quantity"
+              placeholder="請輸入發行數量"
+            ></Input>
+          </FormItem>
+          <FormItem label="消費門檻">
+            <Input
+              v-model="addItem.coupon_pricing_condition"
+              placeholder="請輸入門檻金額"
+            ></Input>
           </FormItem>
         </Form>
-        <Form :model="editItem" :label-width="80">
-          <FormItem label="消息標題">
-            <Input v-model="editItem.title" placeholder="請輸入消息標題"></Input>
+        <Form :model="addItem">
+          <FormItem label="發送日期">
+            <DatePicker
+              type="date"
+              v-model="addItem.coupon_issue_date"
+              placeholder="請輸入發送日期"
+            ></DatePicker>
           </FormItem>
-          <FormItem label="日期">
-            <DatePicker type="date" placeholder="請選擇日期" v-model="editItem.date"></DatePicker>
+          <FormItem label="生效日期">
+            <DatePicker
+              type="date"
+              v-model="addItem.coupon_valid_date"
+              placeholder="請輸入生效日期"
+            ></DatePicker>
           </FormItem>
-          <FormItem label="消息圖片">
-            <input type="file" multiple>
-          </FormItem>
-          <FormItem label="消息內容">
-            <Input v-model="editItem.textarea" type="textarea" :autosize="{ minRows: 10, maxRows: 50 }"></Input>
+          <FormItem label="到期日期">
+            <DatePicker
+              type="date"
+              v-model="addItem.coupon_exp_date"
+              placeholder="請輸入到期日期"
+            ></DatePicker>
           </FormItem>
         </Form>
+        <Switch size="large" true-color="#fab042" false-color="#e6e6e6">
+          <template #open>
+            <span>上架</span>
+          </template>
+          <template #close>
+            <span>下架</span>
+          </template>
+        </Switch>
       </Modal>
 
       <!-- 刪除按鈕 -->
@@ -99,173 +175,149 @@
 export default {
   data() {
     return {
-      modal1: false,  //新增彈窗預設關閉
-      modal3: false,  //編輯彈窗預設關閉
-      columns: [  ///表單表頭
+      modal1: false, //新增彈窗預設關閉
+      modal3: false, //編輯彈窗預設關閉
+      columns: [
+        ///表單表頭
         {
-          title: '編號',
-          width: '100px',  //寬度
-          key: 'id',
-          align: 'center',  //置中
-          sortable: true,   //是否排序
+          title: "ID",
+          width: "80px", //寬度
+          key: "coupon_id",
+          align: "center", //置中
+          sortable: true, //是否排序
         },
         {
-          title: '發布日期',
-          width: '150px',
-          key: 'date',
-          align: 'center',
-          sortable: true
+          title: "發送日期",
+          width: "120px",
+          key: "coupon_issue_date",
+          align: "center",
+          sortable: true,
         },
         {
-          title: '消息分類',
-          width: '150px',
-          slot: 'news_type',
-          align: 'center',
-          filters: [   //篩選分類
-            {
-              label: '歷史故事',
-              value: 1
-            },
-            {
-              label: '行程預訂',
-              value: 2
-            },
-            {
-              label: '購物商城',
-              value: 3
-            },
-            {
-              label: '其他消息',
-              value: 4
-            },
-          ],
-          filterMultiple: false,
-          filterMethod(value, row) {
-            if (value === 1) {
-              return row.news_type === '歷史故事';
-            } else if (value === 2) {
-              return row.news_type === '行程預訂';
-            } else if (value === 3) {
-              return row.news_type === '購物商城';
-            } else {
-              return row.news_type === '其他消息';
-            }
-          }
+          title: "生效日期",
+          width: "120px",
+          key: "coupon_valid_date",
+          align: "center",
+          sortable: true,
         },
         {
-          title: '標題',
-          key: 'title',
-          align: 'center',
+          title: "到期日期",
+          width: "120px",
+          key: "coupon_exp_date",
+          align: "center",
+          sortable: true,
         },
         {
-          title: '狀態',
-          key: 'status',
-          align: 'center',
-          width: '100px',
-          slot: 'on_off',  //加入開關鈕欄位需加slot
+          title: "發行數量",
+          width: "108px",
+          key: "coupon_quantity",
+          align: "center",
+          sortable: true,
         },
         {
-          title: '編輯/刪除',
-          width: '200px',
-          key: 'edit',
-          align: 'center',
-          slot: 'edit_del'  //加入編輯刪除欄位需加slot
-        },
-      ],
-      data: [     ///表格內容資料
-        {
-          id: '1001',
-          date: '2022-12-10',
-          news_type: '行程預訂',
-          title: '穿梭於史前時代',
+          title: "已發數量",
+          width: "108px",
+          key: "coupon_given_numbers",
+          align: "center",
+          sortable: true,
         },
         {
-          id: '1002',
-          date: '2022-11-10',
-          news_type: '行程預訂',
-          title: '埃及五千年的黃金時代',
+          title: "折扣金額",
+          width: "108px",
+          key: "coupon_discount_number",
+          align: "center",
+          sortable: true,
         },
         {
-          id: '2001',
-          date: '2022-12-15',
-          news_type: '歷史故事',
-          title: '鐵達尼號沈船',
+          title: "消費門檻",
+          width: "108px",
+          key: "coupon_pricing_condition",
+          align: "center",
+          sortable: true,
         },
         {
-          id: '2002',
-          date: '2022-12-01',
-          news_type: '歷史故事',
-          title: '鄭和下西洋',
+          title: "上下架狀態",
+          key: "coupon_status",
+          align: "center",
+          width: "120px",
+          slot: "on_off", //加入開關鈕欄位需加slot
         },
         {
-          id: '3001',
-          date: '2022-11-11',
-          news_type: '購物商城',
-          title: '購物須知',
-        },
-        {
-          id: '4001',
-          date: '2022-11-09',
-          news_type: '其他消息',
-          title: '官網維護公告',
+          title: "編輯/刪除",
+          key: "edit",
+          align: "center",
+          slot: "edit_del", //加入編輯刪除欄位需加slot
         },
       ],
-      addItem: {   //新增彈窗內容資料
-                  id:'',
-                  title: '',
-                  select: '',
-                  date: '',
-                  textarea: ''
-              },
+      data: [
+        ///表格內容資料
+        {
+          coupon_id: 1, //編號
+          coupon_discount_number: 200, //折扣金額
+          coupon_issue_date: "2022-12-20", //發送日期
+          coupon_valid_date: "2022-12-25", //生效日期
+          coupon_exp_date: "2023-01-15", //到期日期
+          coupon_quantity: 1000, //發行數量
+          coupon_given_numbers: 0, //已發數量
+          coupon_pricing_condition: 1000, //消費門檻
+          coupon_status: 1, // 1=上架,0=下架
+        },
+        {
+          coupon_id: 2, //編號
+          coupon_discount_number: 5, //折扣金額
+          coupon_issue_date: "2022-12-18", //發送日期
+          coupon_valid_date: "2022-12-18", //生效日期
+          coupon_exp_date: "null", //到期日期
+          coupon_quantity: 2000, //發行數量
+          coupon_given_numbers: 0, //已發數量
+          coupon_pricing_condition: 100, //消費門檻
+          coupon_status: 1, // 1=上架,0=下架
+        },
+        {
+          coupon_id: 3, //編號
+          coupon_discount_number: 5000, //折扣金額
+          coupon_issue_date: "2022-12-18", //發送日期
+          coupon_valid_date: "2022-12-18", //生效日期
+          coupon_exp_date: "null", //到期日期
+          coupon_quantity: 2000, //發行數量
+          coupon_given_numbers: 0, //已發數量
+          coupon_pricing_condition: 80000, //消費門檻
+          coupon_status: 0, // 1=上架,0=下架
+        },
+      ],
+      addItem: {
+        //新增彈窗內容資料
+        id: "",
+        title: "",
+        select: "",
+        date: "",
+        textarea: "",
+      },
       editItem: {
-        id: 'addItem.id()',
-        title: '',
-        select: '',
-        date: '',
-        textarea: ''
-      }
-    }
+        id: "addItem.id()",
+        title: "",
+        select: "",
+        date: "",
+        textarea: "",
+      },
+    };
   },
   methods: {
     remove() {
       this.$Modal.confirm({
-        content: '<p>確認刪除嗎?</p>',
+        content: "<p>確認刪除嗎?</p>",
         onOk: () => {
-          this.$Message.info('確認刪除');
-          this.data.splice("id",1);
+          this.$Message.info("確認刪除");
+          this.data.splice("id", 1);
         },
         onCancel: () => {
-          this.$Message.info('取消');
-        }
-      })
+          this.$Message.info("取消");
+        },
+      });
     },
-  }
-}
-
+  },
+};
 </script>
 <style lang="scss" scoped>
-@import '@/assets/css/app.scss';
-
-.table {
-  margin: 30px auto;
-}
-
-.delete,.add {
-  margin: 0 10px;
-  background-color: $color;
-  color: #ffffff;
-  border: 1px solid $color;
-}
-
-.add {
-  margin: 20px 0 0 0;
-  width: 80px;
-}
-
-.edit {
-  color: $color;
-  border: 1px solid $color;
-}
-
-
+@import "@/assets/css/app.scss";
 </style>

@@ -4,13 +4,17 @@
 // component
 @import "component/button";
 
-body{
+///table
+.table {
+    margin: 30px auto;
+}
+
+body {
     background-color: $background;
 }
-$container:100%;
-.container{
-    position: absolute;
-    max-width: $container;
-    left: 290px;
-    margin: auto;
+
+.ivu-menu-dark.ivu-menu-vertical .ivu-menu-item-group-title{
+    color: $color;
+    font-size: 20px;
+    font-weight: bold;
 }

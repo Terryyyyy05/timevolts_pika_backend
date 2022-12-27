@@ -35,7 +35,7 @@
   <!-- 表格 -->
   <Table class="table" stripe border :columns="columns" :data="data" width="1200">
     <!-- 加入開關按鈕 -->
-    <template #on_off="{ row,index }">   
+    <template #on_off>   
       <Switch size="large" true-color="#fab042" false-color="#e6e6e6">
                 <template #open>
                   <span>一般</span>
@@ -46,12 +46,12 @@
             </Switch>
     </template>
 
-    <template #admin_status="{ row,index }">   
+    <template #admin_status="{ row }">   
       <text>{{ row.admin_status }}</text>
     </template>
 
     <!-- 加入編輯、刪除彈窗 -->
-    <template #edit_admin="{ row,index }">
+    <template #edit_admin>
       <!-- 編輯按鈕 -->
       <Button @click="modal3 = true" class="edit">編輯</Button>
       <!-- 編輯彈窗 -->
@@ -190,14 +190,6 @@ export default {
 <style lang="scss" scoped>
 @import '@/assets/css/app.scss';
 
-.table {
-  margin: 30px auto;
-}
-.edit {
-  color: $color;
-  border: 1px solid $color;
-  margin: auto;
-}
 
 .admin {
   margin: 20px 0 0 0;
