@@ -67,38 +67,38 @@
     </Form>
   </Modal>
 
-  <!-- 表格 -->
-  <Table
-    class="table"
-    stripe
-    border
-    :columns="columns"
-    :data="dataList"
-    width="1200"
-  >
-    <!-- 加入開關按鈕 -->
-    <template #on_off="{ row }">
-      <Switch
-        size="large"
-        true-color="#fab042"
-        false-color="#e6e6e6"
-        v-model="row.pro_status"
-        :true-value="parseInt(1)"
-        :false-value="parseInt(0)"
-        @on-change="onChange(row)"
-      >
-        <template #open>
-          <span>上架</span>
-        </template>
-        <template #close>
-          <span>下架</span>
-        </template>
-      </Switch>
-    </template>
+   <!-- 表格 -->
+   <Table
+      class="table"
+      stripe
+      border
+      :columns="columns"
+      :data="dataList"
+      width="1200"
+   >
+      <!-- 加入開關按鈕 -->
+      <template #on_off="{ row }">
+         <Switch
+            size="large"
+            true-color="#fab042"
+            false-color="#e6e6e6"
+            v-model="row.pro_status"
+            :true-value="parseInt(1)"
+            :false-value="parseInt(0)"
+            @on-change="onChange(row)"
+         >
+            <template #open>
+               <span>上架</span>
+            </template>
+            <template #close>
+               <span>下架</span>
+            </template>
+         </Switch>
+      </template>
 
-    <template #pro_class_name="{ row }">
-      <text>{{ row.pro_class_name }}</text>
-    </template>
+      <template #pro_class_name="{ row }">
+         <text>{{ row.pro_class_name }}</text>
+      </template>
 
     <!-- 加入編輯、刪除彈窗 -->
     <template #edit_del="{ index, row }">
@@ -173,10 +173,10 @@
         </Form>
       </Modal>
 
-      <!-- 刪除按鈕 -->
-      <Button class="delete" @click="remove(index, row)">刪除</Button>
-    </template>
-  </Table>
+         <!-- 刪除按鈕 -->
+         <Button class="delete" @click="remove(index, row)">刪除</Button>
+      </template>
+   </Table>
 </template>
 
 <script>
@@ -542,9 +542,9 @@ export default {
     },
   },
 
-  mounted() {
-    this.getData();
-  },
+   mounted() {
+      this.getData();
+   },
 };
 </script>
 <style lang="scss" scoped>
