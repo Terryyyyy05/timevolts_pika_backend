@@ -20,67 +20,48 @@
       method="post"
       enctype="multipart/form-data"
       ref="addForm"
-      id="addForm"
+      :rules="ruleValidate"
     >
-      <!-- <FormItem label="商品編號">
-        <Input
-          v-model="addItem.pro_id"
-          placeholder="請輸入消息編號"
-          ref="pro_id"
-        ></Input>
-      </FormItem> -->
-      <FormItem label="商品分類">
-        <Select
-          v-model="addItem.pro_class_name"
-          placeholder="請選擇"
-          ref="pro_class_name"
-        >
+      <FormItem label="商品分類" prop="pro_class_name">
+        <Select v-model="addItem.pro_class_name" placeholder="請選擇">
           <Option value="旅行必備">旅行必備</Option>
           <Option value="醫療用品">醫療用品</Option>
           <Option value="應急糧食">應急糧食</Option>
           <Option value="求生用品">求生用品</Option>
         </Select>
       </FormItem>
-      <FormItem label="商品名稱">
-        <Input
-          v-model="addItem.pro_name"
-          placeholder="請輸入商品名稱"
-          ref="pro_name"
-        ></Input>
+      <FormItem label="商品名稱" prop="pro_name">
+        <Input v-model="addItem.pro_name" placeholder="請輸入商品名稱"></Input>
       </FormItem>
-      <FormItem label="上架日期">
+      <FormItem label="上架日期" prop="pro_onshelf_date">
         <DatePicker
           type="date"
           placeholder="請選擇日期"
           v-model="addItem.pro_onshelf_date"
-          ref="pro_onshelf_date"
         ></DatePicker>
       </FormItem>
-      <FormItem label="商品單價">
+      <FormItem label="商品單價" prop="pro_price">
         <input
           type="number"
           placeholder="請輸入商品單價"
           v-model="addItem.pro_price"
-          ref="pro_price"
         />
       </FormItem>
-      <FormItem label="商品數量">
+      <FormItem label="商品數量" prop="pro_onshelf_amount">
         <input
           type="number"
           placeholder="請輸入商品上架數量"
           v-model="addItem.pro_onshelf_amount"
-          ref="pro_onshelf_amount"
         />
       </FormItem>
-      <FormItem label="商品圖片">
-        <input id="pro_img_id" type="file" ref="fileInput" multiple />
+      <FormItem label="商品圖片" prop="pro_img">
+        <input id="pro_img_id" type="file" multiple />
       </FormItem>
-      <FormItem label="商品資訊">
+      <FormItem label="商品資訊" prop="pro_info">
         <Input
           v-model="addItem.pro_info"
           type="textarea"
           :autosize="{ minRows: 10, maxRows: 50 }"
-          ref="pro_info"
         ></Input>
       </FormItem>
     </Form>
@@ -324,6 +305,59 @@ export default {
         pro_status: 0,
         pro_img: "",
       },
+      // validate
+      ruleValidate: {
+        pro_name: [
+          {
+            required: true,
+            message: "名字記得打拜託",
+            trigger: "blur",
+          },
+        ],
+        pro_class_name: [
+          {
+            required: true,
+            type: "string",
+            message: "別忘了分類",
+            trigger: "blur",
+          },
+        ],
+        pro_onshelf_date: [
+          {
+            required: true,
+            type: "date",
+            message: "啥時要上架啦",
+            trigger: "blur",
+          },
+        ],
+        pro_info: [{ required: true, message: "介紹一下吧", trigger: "blur" }],
+        pro_price: [
+          {
+            required: true,
+            type: "number",
+            message: "不輸入是不用錢逆",
+            trigger: "blur",
+          },
+        ],
+        pro_onshelf_amount: [
+          {
+            required: true,
+            type: "number",
+            message: "商品數量輸入了嗎",
+            trigger: "blur",
+          },
+        ],
+        pro_rest_amount: "",
+        pro_status: 0,
+        pro_img: [
+          {
+            required: true,
+            type: "any",
+            message: "商品數量輸入了嗎",
+            trigger: "blur",
+          },
+        ],
+      },
     };
   },
   methods: {
@@ -353,12 +387,29 @@ export default {
       console.log(row);
     },
     clickOk() {
-      this.addItem.pro_rest_amount = this.addItem.pro_onshelf_amount;
-      this.addItem.pro_onshelf_date = this.addItem.pro_onshelf_date
-        .toLocaleDateString()
-        .replace(/\//g, "-");
+      this.$refs["addForm"].validate((valid) => {
+        if (valid) {
+          this.addItem.pro_rest_amount = this.addItem.pro_onshelf_amount;
+          this.addItem.pro_onshelf_date = this.addItem.pro_onshelf_date
+            .toLocaleDateString()
+            .replace(/\//g, "-");
 
-      this.insertData(this.addItem);
+          this.insertData(this.addItem);
+        } else {
+          alert("新增失敗，請確認表格是否輸入正確");
+          // this.$Message.error("Fail!");
+          // this.addItem = { ...this.resetItem };
+          // document.getElementById("pro_img_id").outerHTML =
+          //   document.getElementById("pro_img_id").outerHTML;
+        }
+      });
+
+      // this.addItem.pro_rest_amount = this.addItem.pro_onshelf_amount;
+      // this.addItem.pro_onshelf_date = this.addItem.pro_onshelf_date
+      //   .toLocaleDateString()
+      //   .replace(/\//g, "-");
+
+      // this.insertData(this.addItem);
     },
     clickEditBtn(index) {
       this.modal3[index] = true;
