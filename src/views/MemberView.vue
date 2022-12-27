@@ -88,7 +88,7 @@ export default {
       columns: [  ///表單表頭
         {
           title: '會員編號',
-          width: '200px',  //寬度
+          width: '100px',  //寬度
           key: 'mem_id',
           align: 'center',  //置中
           sortable: true,   //是否排序
@@ -99,6 +99,13 @@ export default {
           key: 'mem_email',
           align: 'center',
           sortable: true
+        },
+        {
+          title: '會員姓名',
+          width: '150px',  //寬度
+          key: 'mem_name',
+          align: 'center',  //置中
+          sortable: true,   //是否排序
         },
         {
           title: '註冊日期',
@@ -139,7 +146,7 @@ export default {
         },
         {
           title: '會員狀態',
-          width: '200px',
+          width: '150px',
           key: 'status',
           align: 'center',
           slot: 'mem_status',  //加入開關鈕欄位需加slot
