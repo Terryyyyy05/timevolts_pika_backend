@@ -430,42 +430,42 @@ export default {
           //   .toLocaleDateString()
           //   .replace(/\//g, "-");
 
-               // this.insertData(this.addItem);
+          // this.insertData(this.addItem);
 
-               this.addItem.pro_onshelf_date = this.addItem.pro_onshelf_date
-                  .toLocaleDateString()
-                  .replace(/\//g, "-");
+          this.addItem.pro_onshelf_date = this.addItem.pro_onshelf_date
+            .toLocaleDateString()
+            .replace(/\//g, "-");
 
           this.updateData(index);
 
-               // 帶移動
-               // const index = this.dataList.findIndex(
-               //   (item) => item.pro_id === this.addItem.pro_id
-               // );
+          // 帶移動
+          // const index = this.dataList.findIndex(
+          //   (item) => item.pro_id === this.addItem.pro_id
+          // );
 
-               // this.dataList[index] = this.addItem;
-               // this.addItem = { ...this.resetItem };
-            } else {
-               alert("修改失敗，請確認表格是否輸入正確");
-            }
-         });
-      },
-      cancelEdit() {
-         this.addItem = { ...this.resetItem };
-      },
-      getData() {
-         fetch(`${BASE_URL}/get_pro_data.php`)
-            .then((res) => res.json())
-            .then((result) => {
-               this.dataList = result;
-            });
-      },
-      insertData() {
-         const formData = new FormData();
-         const formDataKey = Object.keys(this.addItem);
-         formDataKey.forEach((key) => {
-            formData.append(`${key}`, this.addItem[key]);
-         });
+          // this.dataList[index] = this.addItem;
+          // this.addItem = { ...this.resetItem };
+        } else {
+          alert("修改失敗，請確認表格是否輸入正確");
+        }
+      });
+    },
+    cancelEdit() {
+      this.addItem = { ...this.resetItem };
+    },
+    getData() {
+      fetch(`${BASE_URL}/get_pro_data.php`)
+        .then((res) => res.json())
+        .then((result) => {
+          this.dataList = result;
+        });
+    },
+    insertData() {
+      const formData = new FormData();
+      const formDataKey = Object.keys(this.addItem);
+      formDataKey.forEach((key) => {
+        formData.append(`${key}`, this.addItem[key]);
+      });
 
       let imgName = document.getElementById("pro_img_id");
       formData.set("pro_img", imgName.files[0]);
