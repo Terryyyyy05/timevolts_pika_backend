@@ -17,9 +17,9 @@
             <MenuItem name="5" to="/Itineraryorder" class="item">
             <Icon type="md-flash" />行程訂單管理
             </MenuItem>
-            <MenuItem name="6" to="/Itinerarycanvas" class="item">
-            <Icon type="ios-color-palette-outline" />畫布管理
-            </MenuItem>
+            <!-- <MenuItem name="6" to="/Itinerarycanvas" class="item"> -->
+            <!-- <Icon type="ios-color-palette-outline" />畫布管理
+            </MenuItem> -->
             <MenuItem name="7" to="/Itinerarycomment" class="item">
             <Icon type="md-text" />行程評論管理
             </MenuItem>
