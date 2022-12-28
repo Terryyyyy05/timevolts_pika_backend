@@ -94,7 +94,7 @@
     </template>
 
     <!-- 加入編輯、刪除彈窗 -->
-    <template #edit_del="{ index }">
+    <template #edit_del="{ index, row }">
       <!-- 編輯按鈕 -->
       <Button @click="clickEditBtn(index)" class="edit">編輯</Button>
       <!-- 編輯彈窗 -->
@@ -106,7 +106,7 @@
         width="700px"
         class="editnews-popup"
         :styles="{ top: '30px' }"
-        @on-ok="replaceItem"
+        @on-ok="replaceItem(row.qa_title)"
         @on-cancel="cancelEdit"
       >
         <Form
@@ -249,6 +249,7 @@ export default {
         qa_type: [
           {
             required: true,
+            type: "string",
             message: "請記得打問題種類",
             trigger: "blur",
           },
@@ -285,7 +286,6 @@ export default {
           this.deleData(row);
 
           this.getQuestion.splice(index, 1);
-          console.log(this.deleData(row));
         },
         onCancel: () => {
           this.$Message.info("取消");
@@ -293,18 +293,17 @@ export default {
       });
     },
     onChange(row) {
+      console.log(row.qa_status);
       if (row.qa_status) {
         this.$Message.info("上架狀態： 上架");
       } else {
         this.$Message.info("上架狀態： 下架");
       }
+      console.log(row);
+
+      this.updateStatus(row.qa_id, row.qa_status);
     },
     clickOk() {
-      // this.insertData(this.addqaItem);
-      // setTimeout(() => {
-      //   this.getQuestion.push({ ...this.addqaItem });
-      //   this.addqaItem = { ...this.resetqaItem };
-      // }, 5);
       this.$refs["addForm"].validate((valid) => {
         if (valid) {
           this.insertData(this.addqaItem);
@@ -323,12 +322,6 @@ export default {
       // console.log(this.getNews[0]);
     },
     replaceItem() {
-      // const index = this.getQuestion.findIndex(
-      //   (item) => item.qa_id === this.addqaItem.qa_id
-      // );
-
-      // this.getQuestion[index] = this.addqaItem;
-      // this.addqaItem = { ...this.resetqaItem };
       this.$refs["updateForm"].validate((valid) => {
         if (valid) {
           // this.addItem.pro_rest_amount = this.addItem.pro_onshelf_amount;
@@ -374,7 +367,6 @@ export default {
         .then((res) => res.json())
         .then((res) => {
           const result = res;
-          console.log(this.addqaItem);
 
           if (result === "wrong") {
             alert("新增失敗，資料庫已有此筆資料");
@@ -407,30 +399,27 @@ export default {
       formDataKey.forEach((key) => {
         formData.append(`${key}`, this.addqaItem[key]);
       });
+      fetch(`${BASE_URL}/editQuestion.php`, {
+        method: "POST",
+        body: formData,
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          const result = res;
 
-      // fetch(`${BASE_URL}/update_pro_data.php`, {
-      //   method: "POST",
-      //   body: formData,
-      // })
-      //   .then((res) => res.json())
-      //   .then((res) => {
-      //     const result = res;
+          if (result === "wrong") {
+            alert("新增失敗，資料庫已有此筆資料");
+          } else {
 
-      //     if (result === "wrong") {
-      //       alert("新增失敗，資料庫已有此筆資料");
-      //     } else {
-      //       this.addItem.pro_img = result.pro_img;
+            const index = this.getQuestion.findIndex(
+              (item) => item.qa_id === this.addqaItem.qa_id
+            );
 
-      //       const index = this.dataList.findIndex(
-      //         (item) => item.pro_id === this.addItem.pro_id
-      //       );
+            this.getQuestion[index] = this.addqaItem;
+          }
 
-      //       this.dataList[index] = this.addItem;
-      //     }
-
-      //     this.addItem = { ...this.resetItem };
-      //     imgName.outerHTML = imgName.outerHTML;
-      //   });
+          this.addqaItem = { ...this.resetqaItem };
+        });
     },
   },
   mounted() {
