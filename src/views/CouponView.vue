@@ -73,7 +73,7 @@
     stripe
     border
     :columns="columns"
-    :data="data"
+    :data="dataList"
     width="1200"
   >
     <!-- 加入開關按鈕 -->
@@ -249,45 +249,122 @@ export default {
           slot: "edit_del", //加入編輯刪除欄位需加slot
         },
       ],
-      data: [
+      dataList: [
         ///表格內容資料
         {
           coupon_id: 1, //編號
-          coupon_discount_number: 200, //折扣金額
-          coupon_issue_date: "2022-12-20", //發送日期
-          coupon_valid_date: "2022-12-25", //生效日期
-          coupon_exp_date: "2023-01-15", //到期日期
-          coupon_quantity: 1000, //發行數量
+          coupon_discount_number: 0, //折扣金額
+          coupon_issue_date: "", //發送日期
+          coupon_valid_date: "", //生效日期
+          coupon_exp_date: "", //到期日期
+          coupon_quantity: 0, //發行數量
           coupon_given_numbers: 0, //已發數量
-          coupon_pricing_condition: 1000, //消費門檻
-          coupon_status: 1, // 1=上架,0=下架
+          coupon_pricing_condition: 0, //消費門檻
+          coupon_status: 0, // 1=上架,0=下架
         },
         {
           coupon_id: 2, //編號
-          coupon_discount_number: 5, //折扣金額
-          coupon_issue_date: "2022-12-18", //發送日期
-          coupon_valid_date: "2022-12-18", //生效日期
-          coupon_exp_date: "null", //到期日期
-          coupon_quantity: 2000, //發行數量
+          coupon_discount_number: 0, //折扣金額
+          coupon_issue_date: "", //發送日期
+          coupon_valid_date: "", //生效日期
+          coupon_exp_date: "", //到期日期
+          coupon_quantity: 0, //發行數量
           coupon_given_numbers: 0, //已發數量
-          coupon_pricing_condition: 100, //消費門檻
-          coupon_status: 1, // 1=上架,0=下架
+          coupon_pricing_condition: 0, //消費門檻
+          coupon_status: 0, // 1=上架,0=下架
         },
         {
           coupon_id: 3, //編號
-          coupon_discount_number: 5000, //折扣金額
-          coupon_issue_date: "2022-12-18", //發送日期
-          coupon_valid_date: "2022-12-18", //生效日期
-          coupon_exp_date: "null", //到期日期
-          coupon_quantity: 2000, //發行數量
+          coupon_discount_number: 0, //折扣金額
+          coupon_issue_date: "", //發送日期
+          coupon_valid_date: "", //生效日期
+          coupon_exp_date: "", //到期日期
+          coupon_quantity: 0, //發行數量
           coupon_given_numbers: 0, //已發數量
-          coupon_pricing_condition: 80000, //消費門檻
+          coupon_pricing_condition: 0, //消費門檻
+          coupon_status: 0, // 1=上架,0=下架
+        },
+        {
+          coupon_id: 4, //編號
+          coupon_discount_number: 0, //折扣金額
+          coupon_issue_date: "", //發送日期
+          coupon_valid_date: "", //生效日期
+          coupon_exp_date: "", //到期日期
+          coupon_quantity: 0, //發行數量
+          coupon_given_numbers: 0, //已發數量
+          coupon_pricing_condition: 0, //消費門檻
+          coupon_status: 0, // 1=上架,0=下架
+        },
+        {
+          coupon_id: 5, //編號
+          coupon_discount_number: 0, //折扣金額
+          coupon_issue_date: "", //發送日期
+          coupon_valid_date: "", //生效日期
+          coupon_exp_date: "", //到期日期
+          coupon_quantity: 0, //發行數量
+          coupon_given_numbers: 0, //已發數量
+          coupon_pricing_condition: 0, //消費門檻
+          coupon_status: 0, // 1=上架,0=下架
+        },
+        {
+          coupon_id: 6, //編號
+          coupon_discount_number: 0, //折扣金額
+          coupon_issue_date: "", //發送日期
+          coupon_valid_date: "", //生效日期
+          coupon_exp_date: "", //到期日期
+          coupon_quantity: 0, //發行數量
+          coupon_given_numbers: 0, //已發數量
+          coupon_pricing_condition: 0, //消費門檻
+          coupon_status: 0, // 1=上架,0=下架
+        },
+        {
+          coupon_id: 7, //編號
+          coupon_discount_number: 0, //折扣金額
+          coupon_issue_date: "", //發送日期
+          coupon_valid_date: "", //生效日期
+          coupon_exp_date: "", //到期日期
+          coupon_quantity: 0, //發行數量
+          coupon_given_numbers: 0, //已發數量
+          coupon_pricing_condition: 0, //消費門檻
+          coupon_status: 0, // 1=上架,0=下架
+        },
+        {
+          coupon_id: 8, //編號
+          coupon_discount_number: 0, //折扣金額
+          coupon_issue_date: "", //發送日期
+          coupon_valid_date: "", //生效日期
+          coupon_exp_date: "", //到期日期
+          coupon_quantity: 0, //發行數量
+          coupon_given_numbers: 0, //已發數量
+          coupon_pricing_condition: 0, //消費門檻
+          coupon_status: 0, // 1=上架,0=下架
+        },
+        {
+          coupon_id: 9, //編號
+          coupon_discount_number: 0, //折扣金額
+          coupon_issue_date: "", //發送日期
+          coupon_valid_date: "", //生效日期
+          coupon_exp_date: "", //到期日期
+          coupon_quantity: 0, //發行數量
+          coupon_given_numbers: 0, //已發數量
+          coupon_pricing_condition: 0, //消費門檻
+          coupon_status: 0, // 1=上架,0=下架
+        },
+        {
+          coupon_id: 10, //編號
+          coupon_discount_number: 0, //折扣金額
+          coupon_issue_date: "", //發送日期
+          coupon_valid_date: "", //生效日期
+          coupon_exp_date: "", //到期日期
+          coupon_quantity: 0, //發行數量
+          coupon_given_numbers: 0, //已發數量
+          coupon_pricing_condition: 0, //消費門檻
           coupon_status: 0, // 1=上架,0=下架
         },
       ],
       addItem: {
         //新增彈窗內容資料
-        id: "",
+        coupon_id: "",
         title: "",
         select: "",
         date: "",
@@ -303,6 +380,22 @@ export default {
     };
   },
   methods: {
+    async getData() {
+      // fetch(`${BASE_URL}/get_coupon_data.php`)
+      let selt = this;
+      await fetch(
+        `http://localhost/timevolts_pika_backend/public/phpfiles/get_coupon_data.php`
+      )
+        .then((res) => res.json())
+        .then((result) => {
+          selt.dataList = result;
+
+          //資料處理
+          //
+          selt.addItem.coupon_id = selt.dataList.length + 1;
+          console.log(selt);
+        });
+    },
     remove() {
       this.$Modal.confirm({
         content: "<p>確認刪除嗎?</p>",
@@ -316,6 +409,11 @@ export default {
       });
     },
   },
+  mounted() {},
+  created() {
+    this.getData();
+  },
+  computed: {},
 };
 </script>
 <style lang="scss" scoped>

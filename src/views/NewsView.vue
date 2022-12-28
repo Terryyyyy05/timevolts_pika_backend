@@ -111,13 +111,13 @@
   </template>
     <!-- 加入開關按鈕 -->
     
+    <!-- :true-value="parseInt(1)"
+      :false-value="parseInt(0)" -->
     <template #news_status="{row}">   
       <Switch 
       size="large" 
       true-color="#fab042" 
       false-color="#e6e6e6"
-        :true-value="parseInt(1)"
-        :false-value="parseInt(0)"
       v-model="row.news_status"
       @on-change="onChange(row)"
       >
@@ -130,9 +130,9 @@
       </Switch>
     </template>
 
-    <template #news_category="{ row }">
-      <text>{{ row.news_category }}</text>
-    </template>
+        <template #news_category="{ row }">
+            <text>{{ row.news_category }}</text>
+        </template>
 
     <!-- 加入編輯、刪除彈窗 -->
     <template #edit_del="{index}">
@@ -157,10 +157,10 @@
           </FormItem>
           <FormItem label="消息分類">
             <Select v-model="addItem.news_category" placeholder="請選擇">
-              <Option value="行程預訂">行程預訂</Option>
-              <Option value="歷史故事">歷史故事</Option>
-              <Option value="購物商城">購物商城</Option>
-              <Option value="其他消息">其他消息</Option>
+              <Option value="0">行程預訂</Option>
+              <Option value="1">歷史故事</Option>
+              <Option value="2">購物商城</Option>
+              <Option value="3">其他消息</Option>
             </Select>
           </FormItem>
         </Form>
@@ -177,36 +177,30 @@
           <FormItem label="消息圖片">
             <input type="file" multiple id="news_img" name="news_img" />
           </FormItem>
-
           <FormItem label="消息路徑">
-          <Select v-model="addItem.news_item_id" name="addItem.news_item_id" placeholder="請選擇">
-            <Option value="itineraryClassicView">itineraryClassicView</Option>
-            <Option value="history">history</Option>
-            <Option value="product">product</Option>
-            <Option value="home">home</Option>
-          </Select>
+            <Input v-model="addItem.news_item_id" placeholder="請輸入消息標籤路徑" name="news_item_id"></Input>
           </FormItem>
           <FormItem label="消息內容">
             <Input v-model="addItem.news_content" type="textarea" :autosize="{ minRows: 10, maxRows: 50 }"></Input>
           </FormItem>
           <FormItem label="狀態">
-            <Select v-model="addItem.news_status" placeholder="請選擇" style="width:100px" name="news_status">
-             <Option value="parseInt(1)">上架</Option>
-             <Option value="parseInt(0)">下架</Option>
+            <Select v-model="addItem.news_status" placeholder="請選擇" style="width:100px">
+             <Option value="1">上架</Option>
+             <Option value="0">下架</Option>
             </Select>
       </FormItem>
         </Form>
       </Modal>
 
-      <!-- 刪除按鈕 -->
-      <Button class="delete" @click="remove(index)">刪除</Button>
-    </template>
-  </Table>
+            <!-- 刪除按鈕 -->
+            <Button class="delete" @click="remove(index)">刪除</Button>
+        </template>
+    </Table>
 </template>
 
 <script>
 import { thisTypeAnnotation } from '@babel/types';
-import { BASE_URL } from "@/assets/js/commom.js";
+import { BASE_URL } from "@/assets/js/commom";
 
 export default {
   data() {
@@ -273,7 +267,7 @@ export default {
         },
         {
           title: "狀態",
-          key: "news_status",
+          // key: "news_status",
           slot:"news_status",
           align: "center",
           width: "100px", //加入開關鈕欄位需加slot
@@ -379,7 +373,7 @@ export default {
       });
     },
     onChange(row) {
-      if (row.news_status == 1) {
+      if (row.news_status) {
         this.$Message.info("上架狀態： 上架");
       } else {
         this.$Message.info("上架狀態： 下架");
@@ -428,33 +422,30 @@ export default {
         formData.append(`${key}`, this.addItem[key]);
       });
 
-      const imgName = document.getElementById("news_img").files[0];
-      // console.log("----------------",imgName);
-      formData.set("news_img", imgName);
+            const imgName = document.getElementById("news_img").files[0];
+            // console.log("----------------",imgName);
+            formData.set("news_img", imgName);
 
-      console.log(formData.get("news_img"));
+            console.log(formData.get("news_img"));
 
-      fetch(`${BASE_URL}/insert_news.php`, {
-        method: "POST",
-        body: formData,
-      })
-        .then((res) => res.json())
-        .then((res) => {
-          const result = res;
-          this.addItem.news_img = result.news_img;
-          console.log(result.news_img);
-          console.log(this.addItem);
-        });
+            fetch(`${BASE_URL}/insert_news.php`, {
+                method: "POST",
+                body: formData,
+            })
+                .then((res) => res.json())
+                .then((res) => {
+                    const result = res;
+                    this.addItem.news_img = result.news_img;
+                    console.log(result.news_img);
+                    console.log(this.addItem);
+                });
+        },
+        saveData() {},
     },
-    saveData(){
+    mounted() {
+        this.getData();
     },
-  },
-  mounted() {
-    this.getData();
-  },
-  computed:{
-    
-  },
+    computed: {},
 };
 </script>
 <style lang="scss" scoped>
