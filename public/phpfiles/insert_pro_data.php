@@ -2,12 +2,7 @@
 header('Access-Control-Allow-Origin:*');
 header("Content-Type:application/json;charset=utf-8");
 
-// echo json_encode($_POST["pro_status"]);
-// echo json_encode($_POST["pro_status"]? 1:0);
-
-// echo json_encode($_FILES["pro_img"]["error"]);
-// exit();
-
+require_once("./php_connect_books/connectBooks.php");
 require_once("./img_path.php");
 const MY_DIR = img_path;
 
@@ -47,7 +42,6 @@ switch($_FILES["pro_img"]["error"] ){
 if( $_FILES["pro_img"]["error"] === 0){
   	
 	try{
-		require_once("./connectBooks.php");
 
 		//sql 指令
     $checkSql = "SELECT `pro_id` FROM `product` where `pro_name` = '{$_POST["pro_name"]}'";
