@@ -91,32 +91,6 @@
                 <input id="itinerary_img_id" type="file" multiple />
             </FormItem>
         </Form>
-
-        <!-- <Form :model="addItem" :label-width="80">
-            <FormItem label="消息標題">
-                <Input
-                    v-model="addItem.title"
-                    placeholder="請輸入消息標b題"
-                ></Input>
-            </FormItem>
-            <FormItem label="日期">
-                <DatePicker
-                    type="date"
-                    placeholder="請選擇日期"
-                    v-model="addItem.date"
-                ></DatePicker>
-            </FormItem>
-            <FormItem label="消息圖片">
-                <input type="file" multiple />
-            </FormItem>
-            <FormItem label="消息內容">
-                <Input
-                    v-model="addItem.textarea"
-                    type="textarea"
-                    :autosize="{ minRows: 10, maxRows: 50 }"
-                ></Input>
-            </FormItem>
-        </Form> -->
     </Modal>
 
     <!-- 表格 -->
@@ -303,43 +277,6 @@ export default {
                     align: "center",
                     sortable: true,
                 },
-                // {
-                //     title: "消息分類",
-                //     width: "150px",
-                //     slot: "news_type",
-                //     align: "center",
-                //     filters: [
-                //         //篩選分類
-                //         {
-                //             label: "歷史故事",
-                //             value: 1,
-                //         },
-                //         {
-                //             label: "行程預訂",
-                //             value: 2,
-                //         },
-                //         {
-                //             label: "購物商城",
-                //             value: 3,
-                //         },
-                //         {
-                //             label: "其他消息",
-                //             value: 4,
-                //         },
-                //     ],
-                //     filterMultiple: false,
-                //     filterMethod(value, row) {
-                //         if (value === 1) {
-                //             return row.news_type === "歷史故事";
-                //         } else if (value === 2) {
-                //             return row.news_type === "行程預訂";
-                //         } else if (value === 3) {
-                //             return row.news_type === "購物商城";
-                //         } else {
-                //             return row.news_type === "其他消息";
-                //         }
-                //     },
-                // },
                 {
                     title: "行程結束日",
                     width: "130px",
@@ -403,6 +340,79 @@ export default {
                 itinerary_status: 0,
                 itinerary_img: "",
             },
+            ruleValidate: {
+                itinerary_name: [
+                    {
+                        required: true,
+                        message: "名字記得打拜託",
+                        trigger: "blur",
+                    },
+                ],
+                story_id: [
+                    {
+                        required: true,
+                        type: "number",
+                        message: "要輸入對喔",
+                        trigger: "blur",
+                    },
+                ],
+                itinerary_people: [
+                    {
+                        required: true,
+                        type: "number",
+                        message: "有幾人呢",
+                        trigger: "blur",
+                    },
+                ],
+                itinerary_start_date: [
+                    {
+                        required: true,
+                        type: "date",
+                        message: "啥時要開始啦",
+                        trigger: "blur",
+                    },
+                ],
+                itinerary_end_date: [
+                    {
+                        required: true,
+                        type: "date",
+                        message: "啥時要結束啦",
+                        trigger: "blur",
+                    },
+                ],
+                itinerary_signup_date: [
+                    {
+                        required: true,
+                        type: "date",
+                        message: "啥時要開始啦",
+                        trigger: "blur",
+                    },
+                ],
+                itinerary_signup_deadline: [
+                    {
+                        required: true,
+                        type: "date",
+                        message: "啥時要結束啦",
+                        trigger: "blur",
+                    },
+                ],
+                itinerary_price: [
+                    {
+                        required: true,
+                        type: "number",
+                        message: "不輸入是不用錢逆",
+                        trigger: "blur",
+                    },
+                ],
+                itinerary_img: [
+                    {
+                        required: true,
+                        type: "any",
+                        message: "商品數量輸入了嗎",
+                        trigger: "blur",
+                    },
+                ],
+            },
         };
     },
     methods: {
@@ -417,7 +427,7 @@ export default {
 
                     //------------------------
                     this.deleData(row);
-    
+
                     this.dataList.splice(index, 1);
                 },
                 onCancel: () => {
@@ -449,8 +459,7 @@ export default {
                 this.addItem.itinerary_signup_deadline
                     .toLocaleDateString()
                     .replace(/\//g, "-");
-            // "new_img"=>$fileName
-            // this.addItem.news_img =
+
             this.insertData(this.addItem);
         },
         clickEditBtn(index) {
@@ -460,13 +469,6 @@ export default {
         replaceItem(index) {
             this.$refs["updateForm"].validate((valid) => {
                 if (valid) {
-                    // this.addItem.pro_rest_amount = this.addItem.pro_onshelf_amount;
-                    // this.addItem.pro_onshelf_date = this.addItem.pro_onshelf_date
-                    //   .toLocaleDateString()
-                    //   .replace(/\//g, "-");
-
-                    // this.insertData(this.addItem);
-
                     this.addItem.itinerary_start_date =
                         this.addItem.itinerary_start_date
                             .toLocaleDateString()
@@ -484,29 +486,10 @@ export default {
                             .toLocaleDateString()
                             .replace(/\//g, "-");
                     this.updateData(index);
-
-                    // 帶移動
-                    // const index = this.dataList.findIndex(
-                    //   (item) => item.pro_id === this.addItem.pro_id
-                    // );
-
-                    // this.dataList[index] = this.addItem;
-                    // this.addItem = { ...this.resetItem };
                 } else {
                     alert("修改失敗，請確認表格是否輸入正確");
                 }
             });
-            // const index = this.data.findIndex(
-            //     (item) => item.itinerary_id === this.addItem.itinerary_id
-            // );
-
-            // this.addItem.itinerary_signup_date =
-            //     this.addItem.itinerary_signup_date
-            //         .toLocaleDateString()
-            //         .replace(/\//g, "-");
-
-            // this.data[index] = this.addItem;
-            // this.addItem = { ...this.resetItem };
         },
         cancelEdit() {
             this.addItem = { ...this.resetItem };
