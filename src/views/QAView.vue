@@ -10,6 +10,9 @@
     width="700px"
     class="addqa-popup"
     :styles="{ top: '30px' }"
+    ok-text="確認新增"
+    cancel-text="取消新增"
+    @on-ok="clickOk"
   >
     <Form :model="addqaItem" :label-width="80">
       <FormItem label="問題編號">
@@ -40,8 +43,8 @@
           placeholder="請選擇"
           style="width: 100px"
         >
-          <Option value="true">上架</Option>
-          <Option value="false">下架</Option>
+          <Option value="1">上架</Option>
+          <Option value="0">下架</Option>
         </Select>
       </FormItem>
     </Form>
@@ -56,9 +59,18 @@
     :data="getQuestion"
     width="1200"
   >
+    <template #qa_id="{ row }">
+      <Input type="text">{{ row.qa_id }}</Input>
+    </template>
     <!-- 加入開關按鈕 -->
-    <template #on_off>
-      <Switch size="large" true-color="#fab042" false-color="#e6e6e6">
+    <template #qa_status="{ row }">
+      <Switch
+        size="large"
+        true-color="#fab042"
+        false-color="#e6e6e6"
+        v-model="row.qa_status"
+        @on-change="onChange(row)"
+      >
         <template #open>
           <span>上架</span>
         </template>
@@ -73,18 +85,20 @@
     </template>
 
     <!-- 加入編輯彈窗 -->
-    <template #edit>
+    <template #edit="{ index }">
       <!-- 編輯按鈕 -->
-      <Button @click="modal3 = true" class="edit">編輯</Button>
+      <Button @click="clickEditBtn(index)" class="edit">編輯</Button>
       <!-- 編輯彈窗 -->
       <Modal
-        v-model="modal3"
+        v-model="modal3[index]"
         title="編輯最新消息"
         ok-text="確認修改"
         cancel-text="取消"
         width="700px"
         class="editnews-popup"
         :styles="{ top: '30px' }"
+        @on-ok="replaceItem"
+        @on-cancel="cancelEdit"
       >
         <Form :model="addqaItem" :label-width="80">
           <FormItem label="問題編號">
@@ -118,8 +132,8 @@
               placeholder="請選擇"
               style="width: 100px"
             >
-              <Option value="true">上架</Option>
-              <Option value="false">下架</Option>
+              <Option value="1">上架</Option>
+              <Option value="0">下架</Option>
             </Select>
           </FormItem>
         </Form>
@@ -136,7 +150,7 @@ export default {
   data() {
     return {
       modal1: false, //新增彈窗預設關閉
-      modal3: false, //編輯彈窗預設關閉
+      modal3: [], //編輯彈窗預設關閉
       columns: [
         ///表單表頭
         {
@@ -163,11 +177,11 @@ export default {
           align: "center",
         },
         {
-          title: "問題狀態",
+          title: "狀態",
           key: "qa_status",
           align: "center",
           width: "100px",
-          slot: "on_off", //加入開關鈕欄位需加slot
+          slot: "qa_status", //加入開關鈕欄位需加slot
         },
         {
           title: "編輯",
@@ -208,7 +222,7 @@ export default {
         qa_answer: "",
         qa_status: "",
       },
-      editqaItem: {
+      resetqaItem: {
         qa_id: "",
         qa_type: "",
         qa_title: "",
@@ -218,6 +232,38 @@ export default {
     };
   },
   methods: {
+    onChange(row) {
+      if (row.qa_status) {
+        this.$Message.info("上架狀態： 上架");
+      } else {
+        this.$Message.info("上架狀態： 下架");
+      }
+    },
+    clickOk() {
+      this.insertData(this.addqaItem);
+      setTimeout(() => {
+        this.getQuestion.push({ ...this.addqaItem });
+        this.addqaItem = { ...this.resetqaItem };
+      }, 5);
+    },
+    clickEditBtn(index) {
+      this.modal3[index] = true;
+      this.addqaItem = { ...this.getQuestion[index] };
+      // console.log(this.getNews[0]);
+    },
+    replaceItem() {
+      const index = this.getQuestion.findIndex(
+        (item) => item.qa_id === this.addqaItem.qa_id
+      );
+
+      this.getQuestion[index] = this.addqaItem;
+      this.addqaItem = { ...this.resetqaItem };
+    },
+    cancelEdit() {
+      this.addqaItem = { ...this.resetqaItem };
+      console.log(this.getQuestion[0]);
+    },
+
     getData() {
       fetch(`${BASE_URL}/getQuestion.php`)
         .then((res) => res.json())
@@ -225,10 +271,36 @@ export default {
           this.getQuestion = json;
         });
     },
+    insertData() {
+      const formData = new FormData();
+      const formDataKey = Object.keys(this.addqaItem);
+      formDataKey.forEach((key) => {
+        formData.append(`${key}`, this.addqaItem[key]);
+      });
+      fetch(`${BASE_URL}/addQuestion.php`, {
+        method: "POST",
+        body: formData,
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          const result = res;
+          console.log(this.addqaItem);
+        });
+    },
+    editData() {
+      fetch(`${BASE_URL}/editQuestion.php`, {
+        method: "POST",
+        body: formData,
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          const result = res;
+          console.log(this.addqaItem);
+        });
+    }
   },
-  created() {
+  mounted() {
     this.getData();
-    console.log(this);
   },
 };
 </script>

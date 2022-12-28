@@ -1,17 +1,16 @@
-<?php 
+<?php
 header('Access-Control-Allow-Origin:*');
 header("Content-Type:application/json;charset=utf-8");
-
 require_once("./php_connect_books/connectBooks.php");
-$sql = "SELECT * FROM product";
-$products = $pdo->query($sql);
-$prodRows = $products->fetchAll(PDO::FETCH_ASSOC);
-echo json_encode($prodRows);
+$sql = "SELECT * FROM coupon";
+$coupon = $pdo->query($sql);
+$couponData = $coupon->fetchAll(PDO::FETCH_ASSOC);
+echo json_encode($couponData);
 
 ?>
 
 
-<?php 
+<?php
 /*======另一個可能的範例
 
 require_once("../connectBooks.php");

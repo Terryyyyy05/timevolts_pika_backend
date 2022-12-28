@@ -2,16 +2,15 @@
 header('Access-Control-Allow-Origin:*');
 header("Content-Type:application/json;charset=utf-8");
 
-// echo json_encode($_POST["pro_status"]);
-// echo json_encode($_POST["pro_status"]? 1:0);
-
-// echo json_encode($_FILES["pro_img"]["error"]);
-// exit();
-
+require_once("./php_connect_books/connectBooks.php");
 require_once("./img_path.php");
 const MY_DIR = img_path;
 
-switch($_FILES["pro_img"]["error"] ){
+// 判斷有沒有傳圖片
+$test = isset($_FILES["pro_img"]);
+
+if ($test) {
+  switch($_FILES["pro_img"]["error"] ){
 	case UPLOAD_ERR_OK : 
 		
 		if( file_exists(MY_DIR) == false){
@@ -43,60 +42,85 @@ switch($_FILES["pro_img"]["error"] ){
         break;
     default:
         $msg = "上傳檔案失敗，錯誤代碼: ".$_FILES["error"]."請通知系統開發人員";
-}
-if( $_FILES["pro_img"]["error"] === 0){
-  	
-	try{
-		require_once("./connectBooks.php");
+  }
+  if( $_FILES["pro_img"]["error"] === 0){
+      
+    try{
+      // 刪除原本圖片
+      $checkImgSql = "SELECT `pro_img` FROM `product` where `pro_id` = '{$_POST["pro_id"]}'";
+      $products = $pdo->query($checkImgSql);
+      $prodRows = $products->fetchAll(PDO::FETCH_ASSOC);
+      unlink(MY_DIR . '/' . $prodRows[0]["pro_img"]);
 
-		//sql 指令
-    $checkSql = "SELECT `pro_id` FROM `product` where `pro_name` = '{$_POST["pro_name"]}'";
-    $products = $pdo->query($checkSql);
-    $prodRows = $products->fetchAll(PDO::FETCH_ASSOC);
-    
-    if($products->rowCount() > 0 ){
-      echo json_encode('wrong');
-      exit();
-    }
-    
-		$sql = "update product set pro_name = :pro_name,
-                               pro_info = :pro_info,
-                               pro_price = :pro_price,
-                               pro_img = :pro_img,
-                               pro_status = :pro_status,
-                               pro_onshelf_date = :pro_onshelf_date, 
-                               pro_class_name = :pro_class_name,
-                               pro_onshelf_amount = :pro_onshelf_amount,
-                               pro_rest_amount = :pro_rest_amount
-                               
-                               where pro_id = :pro_id";
-		//編譯, 執行
-		$products = $pdo->prepare($sql);	
-		$products->bindValue(":pro_id", $_POST["pro_id"]);
-		$products->bindValue(":pro_name", $_POST["pro_name"]);
-		$products->bindValue(":pro_class_name", $_POST["pro_class_name"]);
-		$products->bindValue(":pro_onshelf_date", $_POST["pro_onshelf_date"]);
-		$products->bindValue(":pro_info", $_POST["pro_info"]);
-		$products->bindValue(":pro_price", $_POST["pro_price"]);
-		$products->bindValue(":pro_onshelf_amount", $_POST["pro_onshelf_amount"]);
-		$products->bindValue(":pro_rest_amount", $_POST["pro_rest_amount"]);
-		$products->bindValue(":pro_status", $_POST["pro_status"]? 1:0);
-		$products->bindValue(":pro_img", $fileName);
-		$products->execute();
+      
+      $sql = "update product set pro_name = :pro_name,
+                                pro_info = :pro_info,
+                                pro_price = :pro_price,
+                                pro_img = :pro_img,
+                                pro_status = :pro_status,
+                                pro_onshelf_date = :pro_onshelf_date, 
+                                pro_class_name = :pro_class_name,
+                                pro_onshelf_amount = :pro_onshelf_amount,
+                                pro_rest_amount = :pro_rest_amount
+                                
+                                where pro_id = :pro_id";
+      //編譯, 執行
+      $products = $pdo->prepare($sql);	
+      $products->bindValue(":pro_id", $_POST["pro_id"]);
+      $products->bindValue(":pro_name", $_POST["pro_name"]);
+      $products->bindValue(":pro_class_name", $_POST["pro_class_name"]);
+      $products->bindValue(":pro_onshelf_date", $_POST["pro_onshelf_date"]);
+      $products->bindValue(":pro_info", $_POST["pro_info"]);
+      $products->bindValue(":pro_price", $_POST["pro_price"]);
+      $products->bindValue(":pro_onshelf_amount", $_POST["pro_onshelf_amount"]);
+      $products->bindValue(":pro_rest_amount", $_POST["pro_rest_amount"]);
+      $products->bindValue(":pro_status", $_POST["pro_status"]? 1:0);
+      $products->bindValue(":pro_img", $fileName);
+      $products->execute();
 
-    // $sql = "SELECT `pro_id` FROM `product` where `pro_name` = '{$_POST["pro_name"]}'";
-    // $products = $pdo->query($sql);
-    // $prodRows = $products->fetchAll(PDO::FETCH_ASSOC);
-    $msg = "更新成功";
-    
-	} catch (PDOException $e) {
-		$msg = "錯誤行號 : ".$e->getLine().", 錯誤訊息 : ".$e->getMessage();
-	}	
+      $msg = "更新成功";
+      
+    } catch (PDOException $e) {
+      $msg = "錯誤行號 : ".$e->getLine().", 錯誤訊息 : ".$e->getMessage();
+    }	
+  }
+  //輸出結果
+  $result = ["msg"=>$msg, "pro_img"=> $fileName];
+  echo json_encode($result);
+
+} else {
+  try{
+      $sql = "update product set pro_name = :pro_name,
+                                pro_info = :pro_info,
+                                pro_price = :pro_price,
+                                pro_onshelf_date = :pro_onshelf_date, 
+                                pro_class_name = :pro_class_name,
+                                pro_onshelf_amount = :pro_onshelf_amount,
+                                pro_rest_amount = :pro_rest_amount
+                          
+                                where pro_id = :pro_id";
+      //編譯, 執行
+      $products = $pdo->prepare($sql);	
+      $products->bindValue(":pro_id", $_POST["pro_id"]);
+      $products->bindValue(":pro_name", $_POST["pro_name"]);
+      $products->bindValue(":pro_class_name", $_POST["pro_class_name"]);
+      $products->bindValue(":pro_onshelf_date", $_POST["pro_onshelf_date"]);
+      $products->bindValue(":pro_info", $_POST["pro_info"]);
+      $products->bindValue(":pro_price", $_POST["pro_price"]);
+      $products->bindValue(":pro_onshelf_amount", $_POST["pro_onshelf_amount"]);
+      $products->bindValue(":pro_rest_amount", $_POST["pro_rest_amount"]);
+      // $products->bindValue(":pro_status", $_POST["pro_status"]? 1:0);
+
+      $products->execute();
+
+      $msg = "更新成功";
+      
+    } catch (PDOException $e) {
+      $msg = "錯誤行號 : ".$e->getLine().", 錯誤訊息 : ".$e->getMessage();
+    }	
+    //輸出結果
+      $result = ["msg"=>$msg];
+      echo json_encode($result);
 }
-//輸出結果
-// $result = array_merge($result, ["msg"=>$msg, "pro_img"=> $fileName]);
-// $result = ["msg"=>$msg, "pro_img"=> $fileName, "pro_id"=>$prodRows];
-$result = ["msg"=>$msg, "pro_img"=> $fileName];
-echo json_encode($result);
 
 ?>

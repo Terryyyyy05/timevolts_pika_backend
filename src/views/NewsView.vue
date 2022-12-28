@@ -31,10 +31,10 @@
         placeholder="請選擇"
         name="news_category"
         >
-          <Option value="0">行程預訂</Option>
-          <Option value="1">歷史故事</Option>
-          <Option value="2">購物商城</Option>
-          <Option value="3">其他消息</Option>
+          <Option value="行程預訂">行程預訂</Option>
+          <Option value="歷史故事">歷史故事</Option>
+          <Option value="購物商城">購物商城</Option>
+          <Option value="其他消息">其他消息</Option>
         </Select>
       </FormItem>
     </Form>
@@ -68,12 +68,13 @@
         <input type="file" multiple id="news_img" name="news_img"/>
       </FormItem>
       <FormItem label="消息路徑">
-        <Input 
-        v-model="addItem.news_item_id" 
-        placeholder="請輸入消息標籤路徑"
-        name="news_item_id"
-        ></Input>
-      </FormItem>
+          <Select v-model="addItem.news_item_id" name="addItem.news_item_id" placeholder="請選擇">
+            <Option value="itineraryClassicView">itineraryClassicView</Option>
+            <Option value="history">history</Option>
+            <Option value="product">product</Option>
+            <Option value="home">home</Option>
+          </Select>
+          </FormItem>
       <FormItem label="消息內容">
         <Input
           v-model="addItem.news_content"
@@ -89,8 +90,8 @@
         style="width:100px"
         name="news_status"
         >
-          <Option value="1">上架</Option>
-          <Option value="0">下架</Option>
+          <Option value="parseInt(1)">上架</Option>
+          <Option value="parseInt(0)">下架</Option>
         </Select>
       </FormItem>
     </Form>
@@ -129,9 +130,9 @@
       </Switch>
     </template>
 
-    <template #news_category="{ row }">
-      <text>{{ row.news_category }}</text>
-    </template>
+        <template #news_category="{ row }">
+            <text>{{ row.news_category }}</text>
+        </template>
 
     <!-- 加入編輯、刪除彈窗 -->
     <template #edit_del="{index}">
@@ -191,10 +192,10 @@
         </Form>
       </Modal>
 
-      <!-- 刪除按鈕 -->
-      <Button class="delete" @click="remove(index)">刪除</Button>
-    </template>
-  </Table>
+            <!-- 刪除按鈕 -->
+            <Button class="delete" @click="remove(index)">刪除</Button>
+        </template>
+    </Table>
 </template>
 
 <script>
@@ -421,33 +422,30 @@ export default {
         formData.append(`${key}`, this.addItem[key]);
       });
 
-      const imgName = document.getElementById("news_img").files[0];
-      // console.log("----------------",imgName);
-      formData.set("news_img", imgName);
+            const imgName = document.getElementById("news_img").files[0];
+            // console.log("----------------",imgName);
+            formData.set("news_img", imgName);
 
-      console.log(formData.get("news_img"));
+            console.log(formData.get("news_img"));
 
-      fetch(`${BASE_URL}/insert_news.php`, {
-        method: "POST",
-        body: formData,
-      })
-        .then((res) => res.json())
-        .then((res) => {
-          const result = res;
-          this.addItem.news_img = result.news_img;
-          console.log(result.news_img);
-          console.log(this.addItem);
-        });
+            fetch(`${BASE_URL}/insert_news.php`, {
+                method: "POST",
+                body: formData,
+            })
+                .then((res) => res.json())
+                .then((res) => {
+                    const result = res;
+                    this.addItem.news_img = result.news_img;
+                    console.log(result.news_img);
+                    console.log(this.addItem);
+                });
+        },
+        saveData() {},
     },
-    saveData(){
+    mounted() {
+        this.getData();
     },
-  },
-  mounted() {
-    this.getData();
-  },
-  computed:{
-    
-  },
+    computed: {},
 };
 </script>
 <style lang="scss" scoped>

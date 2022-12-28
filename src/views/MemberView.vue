@@ -307,7 +307,7 @@ export default {
       this.addItem = { ...this.resetItem };
     },
   },
-  created(){
+  mounted(){
     this.getData();
   }
 }
