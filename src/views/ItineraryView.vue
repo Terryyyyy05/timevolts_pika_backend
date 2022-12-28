@@ -22,10 +22,22 @@
             ref="addForm"
             :rules="ruleValidate"
         >
+            <FormItem label="行程編號" prop="itinerary_id">
+                <Input
+                    v-model="addItem.itinerary_id"
+                    placeholder="請輸入行程編號"
+                ></Input>
+            </FormItem>
             <FormItem label="行程名稱" prop="itinerary_name">
                 <Input
                     v-model="addItem.itinerary_name"
                     placeholder="請輸入行程名稱"
+                ></Input>
+            </FormItem>
+            <FormItem label="故事編號" prop="story_id">
+                <Input
+                    v-model="addItem.story_id"
+                    placeholder="請輸入故事編號"
                 ></Input>
             </FormItem>
 
@@ -36,21 +48,12 @@
                     v-model="addItem.itinerary_price"
                 />
             </FormItem>
-
-            <FormItem label="報名開始日" prop="itinerary_signup_date">
-                <DatePicker
-                    type="date"
-                    placeholder="請選擇日期"
-                    v-model="addItem.itinerary_signup_date"
-                ></DatePicker>
-            </FormItem>
-
-            <FormItem label="報名結束日" prop="itinerary_signup_deadline">
-                <DatePicker
-                    type="date"
-                    placeholder="請選擇日期"
-                    v-model="addItem.itinerary_signup_deadline"
-                ></DatePicker>
+            <FormItem label="行程人數" prop="itinerary_people">
+                <input
+                    type="number"
+                    placeholder="請輸入行程人數"
+                    v-model="addItem.itinerary_people"
+                />
             </FormItem>
 
             <FormItem label="行程開始日" prop="itinerary_start_date">
@@ -68,6 +71,21 @@
                     v-model="addItem.itinerary_end_date"
                 ></DatePicker>
             </FormItem>
+            <FormItem label="報名開始日" prop="itinerary_signup_date">
+                <DatePicker
+                    type="date"
+                    placeholder="請選擇日期"
+                    v-model="addItem.itinerary_signup_date"
+                ></DatePicker>
+            </FormItem>
+
+            <FormItem label="報名結束日" prop="itinerary_signup_deadline">
+                <DatePicker
+                    type="date"
+                    placeholder="請選擇日期"
+                    v-model="addItem.itinerary_signup_deadline"
+                ></DatePicker>
+            </FormItem>
 
             <FormItem label="行程圖片" prop="itinerary_img">
                 <input id="itinerary_img_id" type="file" multiple />
@@ -78,7 +96,7 @@
             <FormItem label="消息標題">
                 <Input
                     v-model="addItem.title"
-                    placeholder="請輸入消息標題"
+                    placeholder="請輸入消息標b題"
                 ></Input>
             </FormItem>
             <FormItem label="日期">
@@ -329,11 +347,13 @@ export default {
                 //新增彈窗內容資料
                 itinerary_id: "",
                 itinerary_name: "",
+                story_id: "",
                 itinerary_price: "",
-                itinerary_signup_date: "",
-                itinerary_signup_deadline: "",
+                itinerary_people: "",
                 itinerary_start_date: "",
                 itinerary_end_date: "",
+                itinerary_signup_date: "",
+                itinerary_signup_deadline: "",
                 itinerary_status: 0,
                 itinerary_img: "",
             },
@@ -341,11 +361,13 @@ export default {
                 // id: "addItem.id()",
                 itinerary_id: "",
                 itinerary_name: "",
+                story_id: "",
                 itinerary_price: "",
-                itinerary_signup_date: "",
-                itinerary_signup_deadline: "",
+                itinerary_people: "",
                 itinerary_start_date: "",
                 itinerary_end_date: "",
+                itinerary_signup_date: "",
+                itinerary_signup_deadline: "",
                 itinerary_status: 0,
                 itinerary_img: "",
             },
@@ -353,11 +375,13 @@ export default {
                 // id: "addItem.id()",
                 itinerary_id: "",
                 itinerary_name: "",
+                story_id: "",
                 itinerary_price: "",
-                itinerary_signup_date: "",
-                itinerary_signup_deadline: "",
+                itinerary_people: "",
                 itinerary_start_date: "",
                 itinerary_end_date: "",
+                itinerary_signup_date: "",
+                itinerary_signup_deadline: "",
                 itinerary_status: 0,
                 itinerary_img: "",
             },
@@ -407,6 +431,18 @@ export default {
                 this.addItem.itinerary_start_date
                     .toLocaleDateString()
                     .replace(/\//g, "-");
+                    this.addItem.itinerary_end_date =
+                this.addItem.itinerary_end_date
+                    .toLocaleDateString()
+                    .replace(/\//g, "-");
+                    this.addItem.itinerary_signup_date =
+                this.addItem.itinerary_signup_date
+                    .toLocaleDateString()
+                    .replace(/\//g, "-");
+                    this.addItem.itinerary_signup_deadline =
+                this.addItem.itinerary_signup_deadline
+                    .toLocaleDateString()
+                    .replace(/\//g, "-");
             // "new_img"=>$fileName
             // this.addItem.news_img =
             this.insertData(this.addItem);
@@ -438,6 +474,7 @@ export default {
                     this.dataList = result;
                 });
         },
+
         insertData() {
             const formData = new FormData();
             const formDataKey = Object.keys(this.addItem);
