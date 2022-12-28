@@ -2,8 +2,8 @@
 header('Access-Control-Allow-Origin:*');
 header("Content-Type:application/json;charset=utf-8");
 
-
-const MY_DIR = "image";
+require_once("./img_path.php");
+const MY_DIR = img_path;
 
 switch($_FILES["news_img"]["error"] ){
 	case UPLOAD_ERR_OK : 
