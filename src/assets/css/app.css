@@ -1,0 +1,43 @@
+.edit {
+  color: #fab042;
+  border: 1px solid #fab042;
+}
+
+.delete,
+.add {
+  background-color: #fab042;
+  color: #ffffff;
+  border: 1px solid #fab042;
+}
+
+.delete {
+  margin: 0 10px;
+}
+
+.add {
+  margin: 20px 0 0 0;
+  width: 80px;
+}
+
+.ivu-btn-primary {
+  background-color: #fab042;
+  border: 1px solid #fab042;
+}
+.ivu-btn-primary:hover {
+  background-color: #fec570;
+  border: 1px solid #fec570;
+}
+
+.table {
+  margin: 30px auto;
+}
+
+body {
+  background-color: #333333;
+}
+
+.ivu-menu-dark.ivu-menu-vertical .ivu-menu-item-group-title {
+  color: #fab042;
+  font-size: 20px;
+  font-weight: bold;
+}/*# sourceMappingURL=app.css.map */
