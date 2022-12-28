@@ -10,6 +10,7 @@ try {
                                qa_title = :qa_title,
                                qa_answer = :qa_answer,
                                qa_status = :qa_status,
+
                                where qa_id = :qa_id";
     //編譯, 執行
     $products = $pdo->prepare($sql);
@@ -21,9 +22,7 @@ try {
     $products->execute();
     $msg = "success";
 } catch (PDOException $e) {
-    $msg = "error_line: " . $e->getLine() . ", error_msg: " .
-        $e->getMessage();
+    $msg = "錯誤行號 : " . $e->getLine() . ", 錯誤訊息 : " . $e->getMessage();
 }
-$result = $msg;
+$result = ["msg"=>$msg];
 echo json_encode($result);
-?>
