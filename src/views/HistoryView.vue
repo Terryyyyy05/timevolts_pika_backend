@@ -14,58 +14,75 @@
       cancel-text="取消新增"
       @on-ok="clickOk"
    >
-      <Form :model="addItem" :label-width="80" :rules="ruleInline" inline>
-         <FormItem label="故事編號">
-            <Input
-               v-model="addItem.story_id"
-               placeholder="請輸入故事編號"
-            ></Input>
-         </FormItem>
-         <FormItem label="故事分類">
-            <Select v-model="addItem.story_classification" placeholder="請選擇">
-               <Option value="經典事件">經典事件</Option>
-               <Option value="期間限定">期間限定</Option>
-            </Select>
-         </FormItem>
-      </Form>
-      <Form :model="addItem" :label-width="80">
-         <FormItem label="故事名稱">
+      <Form
+         :model="addItem"
+         :label-width="80"
+         :rules="ruleValidate"
+         inline
+         method="post"
+         enctype="multipart/form-data"
+         ref="addForm"
+      >
+         <FormItem label="故事名稱" prop="story_name">
             <Input
                v-model="addItem.story_name"
                placeholder="請輸入故事標題"
             ></Input>
          </FormItem>
+         <FormItem label="故事分類" prop="story_classification">
+            <Select v-model="addItem.story_classification" placeholder="請選擇">
+               <Option value="經典行程">經典行程</Option>
+               <Option value="期間限定">期間限定</Option>
+            </Select>
+         </FormItem>
       </Form>
-      <Form :model="addItem" :label-width="80" :rules="ruleInline" inline>
-         <FormItem label="故事年代">
+      <Form
+         :model="addItem"
+         :label-width="80"
+         :rules="ruleValidate"
+         inline
+         method="post"
+         enctype="multipart/form-data"
+         ref="addForm"
+      >
+         <FormItem label="故事年代" prop="story_age">
             <Input
                v-model="addItem.story_age"
                placeholder="請輸入故事年代"
+               type="number"
             ></Input>
          </FormItem>
-         <FormItem label="穿越日期">
+         <FormItem label="穿越日期" prop="itinerary_number_of_years">
             <Input
                v-model="addItem.itinerary_number_of_years"
                placeholder="請輸入確切穿越日期"
             ></Input>
          </FormItem>
       </Form>
-      <Form :model="addItem" :label-width="80" :rules="ruleInline" inline>
-         <FormItem label="危險度">
+      <Form
+         :model="addItem"
+         :label-width="80"
+         :rules="ruleValidate"
+         inline
+         method="post"
+         enctype="multipart/form-data"
+         ref="addForm"
+      >
+         <FormItem label="危險度" prop="story_risk">
             <Select v-model="addItem.story_risk" placeholder="請選擇危險度">
                <Option value="低">低</Option>
                <Option value="中">中</Option>
                <Option value="高">高</Option>
             </Select>
          </FormItem>
-         <FormItem label="特色">
+         <FormItem label="特色" prop="story_specialty">
             <Select v-model="addItem.story_specialty" placeholder="請選擇特色">
                <Option value="奇聞軼事">奇聞軼事</Option>
                <Option value="歷史事件">歷史事件</Option>
                <Option value="宗教事件">宗教事件</Option>
             </Select>
          </FormItem>
-         <FormItem label="地區">
+         <FormItem label="地區" prop="story_spot">
             <Select v-model="addItem.story_spot" placeholder="請選擇地區">
                <Option value="歐洲">歐洲</Option>
                <Option value="北美洲">北美洲</Option>
@@ -75,7 +92,7 @@
                <Option value="大洋洲">大洋洲</Option>
             </Select>
          </FormItem>
-         <FormItem label="故事簡介">
+         <FormItem label="故事簡介" prop="story_intro">
             <Input
                v-model="addItem.story_intro"
                type="textarea"
@@ -84,20 +101,25 @@
             ></Input>
          </FormItem>
       </Form>
-      <Form :model="addItem" :label-width="80">
-         <FormItem label="故事大圖">
-            <input
-               id="story_banner_id"
-               type="file"
-               ref="bannerInput"
-               multiple
-            />
+      <Form
+         :model="addItem"
+         :label-width="80"
+         :rules="ruleValidate"
+         method="post"
+         enctype="multipart/form-data"
+         ref="addForm"
+      >
+         <FormItem label="故事大圖" prop="story_img">
+            <input id="story_banner_id" type="file" multiple />
          </FormItem>
-         <FormItem label="段落一" style="font-weight: 700"> </FormItem>
-         <FormItem label="故事圖片1">
-            <input id="story_img01_id" type="file" ref="img01Input" multiple />
+         <FormItem label="段落一" style="font-weight: 700"></FormItem>
+         <FormItem label="故事圖片" prop="story_img">
+            <input id="story_img01_id" type="file" multiple />
          </FormItem>
-         <FormItem label="故事內容">
+         <FormItem label="標題" prop="story_title_01">
+            <input v-model="addItem.story_title_01" placeholder="請輸入標題" />
+         </FormItem>
+         <FormItem label="故事內容" prop="story_content_01">
             <Input
                v-model="addItem.story_content_01"
                type="textarea"
@@ -105,10 +127,13 @@
             ></Input>
          </FormItem>
          <FormItem label="段落二" style="font-weight: 700"> </FormItem>
-         <FormItem label="故事圖片2">
-            <input id="story_img02_id" type="file" ref="img02Input" multiple />
+         <FormItem label="故事圖片" prop="story_img">
+            <input id="story_img02_id" type="file" multiple />
          </FormItem>
-         <FormItem label="故事內容">
+         <FormItem label="標題" prop="story_title_02">
+            <input v-model="addItem.story_title_02" placeholder="請輸入標題" />
+         </FormItem>
+         <FormItem label="故事內容" prop="story_content_02">
             <Input
                v-model="addItem.story_content_02"
                type="textarea"
@@ -116,10 +141,13 @@
             ></Input>
          </FormItem>
          <FormItem label="段落三" style="font-weight: 700"> </FormItem>
-         <FormItem label="故事圖片3">
-            <input id="story_img03_id" type="file" ref="img03Input" multiple />
+         <FormItem label="故事圖片" prop="story_img">
+            <input id="story_img03_id" type="file" multiple />
          </FormItem>
-         <FormItem label="故事內容">
+         <FormItem label="標題" prop="story_title_03">
+            <input v-model="addItem.story_title_03" placeholder="請輸入標題" />
+         </FormItem>
+         <FormItem label="故事內容" prop="story_content_03">
             <Input
                v-model="addItem.story_content_03"
                type="textarea"
@@ -127,10 +155,13 @@
             ></Input>
          </FormItem>
          <FormItem label="段落四" style="font-weight: 700"> </FormItem>
-         <FormItem label="故事圖片4">
-            <input id="story_img04_id" type="file" ref="img04Input" multiple />
+         <FormItem label="故事圖片" prop="story_img">
+            <input id="story_img04_id" type="file" multiple />
          </FormItem>
-         <FormItem label="故事內容">
+         <FormItem label="標題" prop="story_title_04">
+            <input v-model="addItem.story_title_04" placeholder="請輸入標題" />
+         </FormItem>
+         <FormItem label="故事內容" prop="story_content_04">
             <Input
                v-model="addItem.story_content_04"
                type="textarea"
@@ -138,10 +169,13 @@
             ></Input>
          </FormItem>
          <FormItem label="段落五" style="font-weight: 700"> </FormItem>
-         <FormItem label="故事圖片5">
-            <input id="story_img05_id" type="file" ref="img05Input" multiple />
+         <FormItem label="故事圖片" prop="story_img">
+            <input id="story_img05_id" type="file" multiple />
          </FormItem>
-         <FormItem label="故事內容">
+         <FormItem label="標題" prop="story_title_05">
+            <input v-model="addItem.story_title_05" placeholder="請輸入標題" />
+         </FormItem>
+         <FormItem label="故事內容" prop="story_content_05">
             <Input
                v-model="addItem.story_content_05"
                type="textarea"
@@ -197,13 +231,18 @@
             width="700px"
             class="editnews-popup"
             :styles="{ top: '30px' }"
+            @on-ok="replaceItem(row.story_name)"
+            @on-cancel="cancelEdit"
          >
-            <Form :model="addItem" :label-width="80" :rules="ruleInline" inline>
-               <FormItem label="故事編號">
-                  <Input
-                     v-model="addItem.story_id"
-                     placeholder="請輸入故事編號"
-                  ></Input>
+            <Form
+               :model="addItem"
+               :label-width="80"
+               :rules="ruleValidate"
+               inline
+               ref="updateForm"
+            >
+               <FormItem label="故事編號" prop="story_id">
+                  <text>{{ addItem.story_id }}</text>
                </FormItem>
                <FormItem label="故事分類" prop="story_classification">
                   <Select
@@ -215,30 +254,47 @@
                   </Select>
                </FormItem>
             </Form>
-            <Form :model="addItem" :label-width="80">
-               <FormItem label="故事名稱">
+            <Form
+               :model="addItem"
+               :label-width="80"
+               :rules="ruleValidate"
+               ref="updateForm"
+            >
+               <FormItem label="故事名稱" prop="story_name">
                   <Input
                      v-model="addItem.story_name"
                      placeholder="請輸入故事標題"
                   ></Input>
                </FormItem>
             </Form>
-            <Form :model="addItem" :label-width="80" :rules="ruleInline" inline>
-               <FormItem label="故事年代">
+            <Form
+               :model="addItem"
+               :label-width="80"
+               :rules="ruleValidate"
+               inline
+               ref="updateForm"
+            >
+               <FormItem label="故事年代" prop="story_age">
                   <Input
                      v-model="addItem.story_age"
                      placeholder="請輸入故事年代"
                   ></Input>
                </FormItem>
-               <FormItem label="穿越日期">
+               <FormItem label="穿越日期" prop="story_age">
                   <Input
                      v-model="addItem.itinerary_number_of_years"
                      placeholder="請輸入確切穿越日期"
                   ></Input>
                </FormItem>
             </Form>
-            <Form :model="addItem" :label-width="80" :rules="ruleInline" inline>
-               <FormItem label="危險度">
+            <Form
+               :model="addItem"
+               :label-width="80"
+               :rules="ruleValidate"
+               inline
+               ref="updateForm"
+            >
+               <FormItem label="危險度" prop="story_risk">
                   <Select
                      v-model="addItem.story_risk"
                      placeholder="請選擇危險度"
@@ -248,7 +304,7 @@
                      <Option value="高">高</Option>
                   </Select>
                </FormItem>
-               <FormItem label="特色">
+               <FormItem label="特色" prop="story_specialty">
                   <Select
                      v-model="addItem.story_specialty"
                      placeholder="請選擇特色"
@@ -258,7 +314,7 @@
                      <Option value="宗教事件">宗教事件</Option>
                   </Select>
                </FormItem>
-               <FormItem label="地區">
+               <FormItem label="地區" prop="story_spot">
                   <Select v-model="addItem.story_spot" placeholder="請選擇地區">
                      <Option value="歐洲">歐洲</Option>
                      <Option value="北美洲">北美洲</Option>
@@ -268,7 +324,7 @@
                      <Option value="大洋洲">大洋洲</Option>
                   </Select>
                </FormItem>
-               <FormItem label="故事簡介">
+               <FormItem label="故事簡介" prop="story_intro">
                   <Input
                      v-model="addItem.story_intro"
                      type="textarea"
@@ -277,25 +333,36 @@
                   ></Input>
                </FormItem>
             </Form>
-            <Form :model="addItem" :label-width="80">
+            <Form
+               :model="addItem"
+               :label-width="80"
+               :rules="ruleValidate"
+               ref="updateForm"
+            >
                <FormItem label="故事大圖">
                   <input
-                     id="story_banner_id"
+                     id="story_banner_id_update"
                      type="file"
                      ref="bannerInput"
                      multiple
                   />
                </FormItem>
                <FormItem label="段落一" style="font-weight: 700"> </FormItem>
-               <FormItem label="故事圖片1">
+               <FormItem label="故事圖片">
                   <input
-                     id="story_img01_id"
+                     id="story_img01_id_update"
                      type="file"
                      ref="img01Input"
                      multiple
                   />
                </FormItem>
-               <FormItem label="故事內容">
+               <FormItem label="標題" prop="story_title_01">
+                  <input
+                     v-model="addItem.story_title_01"
+                     placeholder="請輸入標題"
+                  />
+               </FormItem>
+               <FormItem label="故事內容" prop="story_content_01">
                   <Input
                      v-model="addItem.story_content_01"
                      type="textarea"
@@ -303,15 +370,21 @@
                   ></Input>
                </FormItem>
                <FormItem label="段落二" style="font-weight: 700"> </FormItem>
-               <FormItem label="故事圖片2">
+               <FormItem label="故事圖片">
                   <input
-                     id="story_img02_id"
+                     id="story_img02_id_update"
                      type="file"
                      ref="img02Input"
                      multiple
                   />
                </FormItem>
-               <FormItem label="故事內容">
+               <FormItem label="標題" prop="story_title_02">
+                  <input
+                     v-model="addItem.story_title_02"
+                     placeholder="請輸入標題"
+                  />
+               </FormItem>
+               <FormItem label="故事內容" prop="story_content_02">
                   <Input
                      v-model="addItem.story_content_02"
                      type="textarea"
@@ -319,15 +392,21 @@
                   ></Input>
                </FormItem>
                <FormItem label="段落三" style="font-weight: 700"> </FormItem>
-               <FormItem label="故事圖片3">
+               <FormItem label="故事圖片">
                   <input
-                     id="story_img03_id"
+                     id="story_img03_id_update"
                      type="file"
                      ref="img03Input"
                      multiple
                   />
                </FormItem>
-               <FormItem label="故事內容">
+               <FormItem label="標題" prop="story_title_03">
+                  <input
+                     v-model="addItem.story_title_03"
+                     placeholder="請輸入標題"
+                  />
+               </FormItem>
+               <FormItem label="故事內容" prop="story_content_03">
                   <Input
                      v-model="addItem.story_content_03"
                      type="textarea"
@@ -335,15 +414,21 @@
                   ></Input>
                </FormItem>
                <FormItem label="段落四" style="font-weight: 700"> </FormItem>
-               <FormItem label="故事圖片4">
+               <FormItem label="故事圖片">
                   <input
-                     id="story_img04_id"
+                     id="story_img04_id_update"
                      type="file"
                      ref="img04Input"
                      multiple
                   />
                </FormItem>
-               <FormItem label="故事內容">
+               <FormItem label="標題" prop="story_title_04">
+                  <input
+                     v-model="addItem.story_title_04"
+                     placeholder="請輸入標題"
+                  />
+               </FormItem>
+               <FormItem label="故事內容" prop="story_content_04">
                   <Input
                      v-model="addItem.story_content_04"
                      type="textarea"
@@ -351,15 +436,21 @@
                   ></Input>
                </FormItem>
                <FormItem label="段落五" style="font-weight: 700"> </FormItem>
-               <FormItem label="故事圖片5">
+               <FormItem label="故事圖片">
                   <input
-                     id="story_img05_id"
+                     id="story_img05_id_update"
                      type="file"
                      ref="img05Input"
                      multiple
                   />
                </FormItem>
-               <FormItem label="故事內容">
+               <FormItem label="標題" prop="story_title_05">
+                  <input
+                     v-model="addItem.story_title_05"
+                     placeholder="請輸入標題"
+                  />
+               </FormItem>
+               <FormItem label="故事內容" prop="story_content_05">
                   <Input
                      v-model="addItem.story_content_05"
                      type="textarea"
@@ -463,7 +554,7 @@ export default {
          dataList: [],
          addItem: {
             //新增彈窗內容資料
-            story_id: "",
+            // story_id: "",
             story_classification: "",
             story_name: "",
             story_risk: "",
@@ -483,14 +574,190 @@ export default {
             story_content_04: "",
             story_content_05: "",
             story_status: 0,
+            story_banner: "",
+            story_img_1: "",
+            story_img_2: "",
+            story_img_3: "",
+            story_img_4: "",
+            story_img_5: "",
          },
-         // editItem: {
-         //    // id: "addItem.story_id()",
-         //    title: "",
-         //    select: "",
-         //    date: "",
-         //    textarea: "",
-         // },
+         resetItem: {
+            // story_id: "",
+            story_classification: "",
+            story_name: "",
+            story_risk: "",
+            story_specialty: "",
+            story_spot: "",
+            story_intro: "",
+            story_age: "",
+            itinerary_number_of_years: "",
+            story_title_01: "",
+            story_title_02: "",
+            story_title_03: "",
+            story_title_04: "",
+            story_title_05: "",
+            story_content_01: "",
+            story_content_02: "",
+            story_content_03: "",
+            story_content_04: "",
+            story_content_05: "",
+            story_status: 0,
+            story_banner: "",
+            story_img_1: "",
+            story_img_2: "",
+            story_img_3: "",
+            story_img_4: "",
+            story_img_5: "",
+         },
+         ruleValidate: {
+            story_name: [
+               {
+                  required: true,
+                  type: "string",
+                  message: "請輸入故事名稱",
+                  trigger: "blur",
+               },
+            ],
+            story_classification: [
+               {
+                  required: true,
+                  message: "請選擇故事分類",
+                  trigger: "blur",
+               },
+            ],
+            story_age: [
+               {
+                  required: true,
+                  message: "請輸入故事年代",
+                  trigger: "blur",
+               },
+            ],
+            itinerary_number_of_years: [
+               {
+                  required: true,
+                  type: "date",
+                  message: "請選擇確切穿越日期",
+                  trigger: "blur",
+               },
+            ],
+            story_risk: [
+               {
+                  required: true,
+                  message: "請選擇危險度",
+                  trigger: "blur",
+               },
+            ],
+            story_specialty: [
+               {
+                  required: true,
+                  message: "請選擇特色",
+                  trigger: "blur",
+               },
+            ],
+            story_spot: [
+               {
+                  required: true,
+                  message: "請選擇地區",
+                  trigger: "blur",
+               },
+            ],
+            story_intro: [
+               {
+                  required: true,
+                  type: "string",
+                  message: "請選擇地區",
+                  trigger: "blur",
+               },
+            ],
+            story_title_01: [
+               {
+                  required: true,
+                  type: "string",
+                  message: "請輸入故事標題",
+                  trigger: "blur",
+               },
+            ],
+            story_title_02: [
+               {
+                  required: true,
+                  type: "string",
+                  message: "請輸入故事標題",
+                  trigger: "blur",
+               },
+            ],
+            story_title_03: [
+               {
+                  required: true,
+                  type: "string",
+                  message: "請輸入故事標題",
+                  trigger: "blur",
+               },
+            ],
+            story_title_04: [
+               {
+                  required: true,
+                  type: "string",
+                  message: "請輸入故事標題",
+                  trigger: "blur",
+               },
+            ],
+            story_title_05: [
+               {
+                  required: true,
+                  type: "string",
+                  message: "請輸入故事標題",
+                  trigger: "blur",
+               },
+            ],
+            story_content_01: [
+               {
+                  required: true,
+                  type: "string",
+                  message: "請輸入故事標題",
+                  trigger: "blur",
+               },
+            ],
+            story_content_02: [
+               {
+                  required: true,
+                  type: "string",
+                  message: "請輸入故事標題",
+                  trigger: "blur",
+               },
+            ],
+            story_content_03: [
+               {
+                  required: true,
+                  type: "string",
+                  message: "請輸入故事標題",
+                  trigger: "blur",
+               },
+            ],
+            story_content_04: [
+               {
+                  required: true,
+                  type: "string",
+                  message: "請輸入故事標題",
+                  trigger: "blur",
+               },
+            ],
+            story_content_05: [
+               {
+                  required: true,
+                  type: "string",
+                  message: "請輸入故事標題",
+                  trigger: "blur",
+               },
+            ],
+            // story_img: [
+            //    {
+            //       required: true,
+            //       type: "any",
+            //       message: "請選擇圖片",
+            //       trigger: "blur",
+            //    },
+            // ],
+         },
       };
    },
    mounted() {
@@ -517,7 +784,7 @@ export default {
             .then((res) => res.json())
             .then((result) => {
                this.dataList = result;
-               console.log(this.dataList);
+               // console.log(this.dataList);
             });
       },
       onChange(row) {
@@ -559,7 +826,66 @@ export default {
                // console.log(this.addItem);
             });
       },
+      replaceItem(index) {
+         this.$refs["updateForm"].validate((valid) => {
+            if (valid) {
+               this.updateData(index);
+            } else {
+               alert("修改失敗，請確認表格是否輸入正確");
+            }
+         });
+      },
+      updateData(name) {},
       deleData(row) {},
+      clickOk() {
+         this.$refs["addForm"].validate((valid) => {
+            if (valid) {
+               this.insertData(this.addItem);
+            } else {
+               alert("新增失敗，請確認表格是否輸入正確");
+            }
+         });
+      },
+      insertData() {
+         const formData = new FormData();
+         const formDataKey = Object.keys(this.addItem);
+         formDataKey.forEach((key) => {
+            formData.append(`${key}`, this.addItem[key]);
+         });
+
+         let bannerName = document.getElementById("story_banner_id");
+         formData.set("story_banner", bannerName.files[0]);
+
+         for (let i = 1; i < 6; i++) {
+            let imgName = document.getElementById(`story_img0${i}_id`);
+            formData.set(`story_img_${i}`, imgName.files[0]);
+         }
+         console.log(formData.story_name);
+
+         fetch(`${BASE_URL}/insert_story_data.php`, {
+            method: "POST",
+            body: formData,
+         })
+            .then((res) => res.json())
+            .then((res) => {
+               const result = res;
+
+               if (result === "wrong") {
+                  alert("新增失敗，資料庫已有此筆資料");
+               } else {
+                  this.addItem.story_img_1 = result.story_img_1;
+                  this.addItem.story_img_2 = result.story_img_2;
+                  this.addItem.story_img_3 = result.story_img_3;
+                  this.addItem.story_img_4 = result.story_img_4;
+                  this.addItem.story_img_5 = result.story_img_5;
+                  this.addItem.story_id = result.story_id[0].story_id;
+                  this.dataList.push({ ...this.addItem });
+               }
+
+               this.addItem = { ...this.resetItem };
+               imgName.outerHTML = imgName.outerHTML;
+            });
+      },
    },
 };
 </script>
