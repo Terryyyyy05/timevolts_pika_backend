@@ -586,6 +586,7 @@ export default {
                     imgName.outerHTML = imgName.outerHTML;
                 });
         },
+        
     },
     mounted() {
         this.getData();
