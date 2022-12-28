@@ -2,6 +2,7 @@
 header('Access-Control-Allow-Origin:*');
 header("Content-Type:application/json;charset=utf-8");
 
+require_once("./php_connect_books/connectBooks.php");
 require_once("./img_path.php");
 $imgPath = img_path;
 
@@ -9,13 +10,12 @@ try{
   $imgFile = $_POST["pro_img"];
 
   if (file_exists("$imgPath/$imgFile") == false) {
-    echo "NONO圖片梅刪掉";
+    echo "NONO圖片沒刪掉";
     exit();
   }
   $imgFile = $_POST["pro_img"];
   unlink("$imgPath/$imgFile");
 
-  require_once("./connectBooks.php");
   $sql = "delete FROM product where pro_id = :pro_id";
   
   $products = $pdo->prepare($sql);	

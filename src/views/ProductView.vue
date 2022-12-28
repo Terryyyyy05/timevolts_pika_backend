@@ -107,13 +107,14 @@
       <!-- 編輯彈窗 -->
       <Modal
         v-model="modal3[index]"
+        :id="row.pro_name"
         title="編輯商品資訊"
         ok-text="確認修改"
         cancel-text="取消"
         width="700px"
         class="editnews-popup"
         :styles="{ top: '30px' }"
-        @on-ok="replaceItem"
+        @on-ok="replaceItem(row.pro_name)"
         @on-cancel="cancelEdit"
       >
         <Form
@@ -161,7 +162,7 @@
             />
           </FormItem>
           <FormItem label="商品圖片">
-            <input id="pro_img_id_update" type="file" multiple />
+            <input class="pro_img_id_update" type="file" multiple />
           </FormItem>
           <FormItem label="商品資訊" prop="pro_info">
             <Input
@@ -418,7 +419,7 @@ export default {
       this.modal3[index] = true;
       this.addItem = { ...this.dataList[index] };
     },
-    replaceItem() {
+    replaceItem(index) {
       this.$refs["updateForm"].validate((valid) => {
         if (valid) {
           // this.addItem.pro_rest_amount = this.addItem.pro_onshelf_amount;
@@ -432,7 +433,7 @@ export default {
             .toLocaleDateString()
             .replace(/\//g, "-");
 
-          this.updateData();
+          this.updateData(index);
 
           // 帶移動
           // const index = this.dataList.findIndex(
@@ -501,44 +502,41 @@ export default {
           console.log(result);
         });
     },
-    updateData() {
-      let imgName = document.getElementById("pro_img_id_update");
-      console.log(imgName.files);
+    updateData(name) {
+      let imgName = document.querySelector(`#${name} .pro_img_id_update`);
+      console.log(imgName.files[0]);
 
-      console.log(this.addItem);
       const formData = new FormData();
       const formDataKey = Object.keys(this.addItem);
       formDataKey.forEach((key) => {
         formData.append(`${key}`, this.addItem[key]);
       });
 
-      
       formData.set("pro_img", imgName.files[0]);
-      
 
-      // fetch(`${BASE_URL}/update_pro_data.php`, {
-      //   method: "POST",
-      //   body: formData,
-      // })
-      //   .then((res) => res.json())
-      //   .then((res) => {
-      //     const result = res;
+      fetch(`${BASE_URL}/update_pro_data.php`, {
+        method: "POST",
+        body: formData,
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          const result = res;
 
-      //     if (result === "wrong") {
-      //       alert("新增失敗，資料庫已有此筆資料");
-      //     } else {
-      //       this.addItem.pro_img = result.pro_img;
+          if (result === "wrong") {
+            alert("新增失敗，資料庫已有此筆資料");
+          } else {
+            this.addItem.pro_img = result.pro_img;
 
-      //       const index = this.dataList.findIndex(
-      //         (item) => item.pro_id === this.addItem.pro_id
-      //       );
+            const index = this.dataList.findIndex(
+              (item) => item.pro_id === this.addItem.pro_id
+            );
 
-      //       this.dataList[index] = this.addItem;
-      //     }
+            this.dataList[index] = this.addItem;
+          }
 
-      //     this.addItem = { ...this.resetItem };
-      //     imgName.outerHTML = imgName.outerHTML;
-      //   });
+          this.addItem = { ...this.resetItem };
+          imgName.outerHTML = imgName.outerHTML;
+        });
     },
   },
 
