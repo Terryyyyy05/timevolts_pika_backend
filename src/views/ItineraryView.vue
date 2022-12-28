@@ -165,52 +165,84 @@
                 width="700px"
                 class="editnews-popup"
                 :styles="{ top: '30px' }"
-                @on-ok="replaceItem"
+                @on-ok="replaceItem(row.itinerary_name)"
                 @on-cancel="cancelEdit"
             >
-                <!-- <Form
-                    :model="editItem"
+                <Form
+                    :model="addItem"
                     :label-width="80"
-                    :rules="ruleInline"
-                    inline
+                    :rules="ruleValidate"
+                    ref="updateForm"
                 >
-                    <FormItem label="消息編號" :model="addItem">
-                        <text>{{ addItem.id }}</text>
+                    <FormItem label="行程編號">
+                        <text>{{ addItem.itinerary_id }}</text>
                     </FormItem>
-                    <FormItem label="消息分類">
-                        <Select v-model="editItem.select" placeholder="請選擇">
-                            <Option value="歷史故事">歷史故事</Option>
-                            <Option value="行程預訂">行程預訂</Option>
-                            <Option value="購物商城">購物商城</Option>
-                            <Option value="其他消息">其他消息</Option>
-                        </Select>
-                    </FormItem>
-                </Form>
-                <Form :model="editItem" :label-width="80">
-                    <FormItem label="消息標題">
+                    <FormItem label="行程名稱" prop="itinerary_name">
                         <Input
-                            v-model="editItem.title"
-                            placeholder="請輸入消息標題"
+                            v-model="addItem.itinerary_name"
+                            placeholder="請輸入行程名稱"
                         ></Input>
                     </FormItem>
-                    <FormItem label="日期">
+                    <FormItem label="故事編號" prop="story_id">
+                        <Input
+                            v-model="addItem.story_id"
+                            placeholder="請輸入故事編號"
+                        ></Input>
+                    </FormItem>
+
+                    <FormItem label="行程單價" prop="itinerary_price">
+                        <input
+                            type="number"
+                            placeholder="請輸入行程單價"
+                            v-model="addItem.itinerary_price"
+                        />
+                    </FormItem>
+                    <FormItem label="行程人數" prop="itinerary_people">
+                        <input
+                            type="number"
+                            placeholder="請輸入行程人數"
+                            v-model="addItem.itinerary_people"
+                        />
+                    </FormItem>
+
+                    <FormItem label="行程開始日" prop="itinerary_start_date">
                         <DatePicker
                             type="date"
                             placeholder="請選擇日期"
-                            v-model="editItem.date"
+                            v-model="addItem.itinerary_start_date"
                         ></DatePicker>
                     </FormItem>
-                    <FormItem label="消息圖片">
-                        <input type="file" multiple />
+
+                    <FormItem label="行程結束日" prop="itinerary_end_date">
+                        <DatePicker
+                            type="date"
+                            placeholder="請選擇日期"
+                            v-model="addItem.itinerary_end_date"
+                        ></DatePicker>
                     </FormItem>
-                    <FormItem label="消息內容">
-                        <Input
-                            v-model="editItem.textarea"
-                            type="textarea"
-                            :autosize="{ minRows: 10, maxRows: 50 }"
-                        ></Input>
+                    <FormItem label="報名開始日" prop="itinerary_signup_date">
+                        <DatePicker
+                            type="date"
+                            placeholder="請選擇日期"
+                            v-model="addItem.itinerary_signup_date"
+                        ></DatePicker>
                     </FormItem>
-                </Form> -->
+
+                    <FormItem
+                        label="報名結束日"
+                        prop="itinerary_signup_deadline"
+                    >
+                        <DatePicker
+                            type="date"
+                            placeholder="請選擇日期"
+                            v-model="addItem.itinerary_signup_deadline"
+                        ></DatePicker>
+                    </FormItem>
+
+                    <FormItem label="行程圖片" prop="itinerary_img">
+                        <input id="itinerary_img_id" type="file" multiple />
+                    </FormItem>
+                </Form>
             </Modal>
 
             <!-- 刪除按鈕 -->
@@ -330,19 +362,7 @@ export default {
                     slot: "edit_del", //加入編輯刪除欄位需加slot
                 },
             ],
-            dataList: [
-                ///表格內容資料
-                // {
-                //     itinerary_id: "1",
-                //     itinerary_name: "11",
-                //     itinerary_price: "200000",
-                //     itinerary_signup_date: "2022-12-22",
-                //     itinerary_signup_deadline: "2023-01-25",
-                //     itinerary_start_date: "2023-02-01",
-                //     itinerary_end_date: "2023-02-05",
-                //     itinerary_status: 0,
-                // },
-            ],
+            dataList: [],
             addItem: {
                 //新增彈窗內容資料
                 itinerary_id: "",
@@ -358,7 +378,6 @@ export default {
                 itinerary_img: "",
             },
             resetItem: {
-                // id: "addItem.id()",
                 itinerary_id: "",
                 itinerary_name: "",
                 story_id: "",
@@ -372,7 +391,6 @@ export default {
                 itinerary_img: "",
             },
             editItem: {
-                // id: "addItem.id()",
                 itinerary_id: "",
                 itinerary_name: "",
                 story_id: "",
@@ -395,8 +413,11 @@ export default {
                 cancelText: "先不要好ㄌ",
                 onOk: () => {
                     this.$Message.info("確認刪除");
-                    this.deleData(row);
+                    //------------------------
 
+                    //------------------------
+                    this.deleData(row);
+    
                     this.dataList.splice(index, 1);
                 },
                 onCancel: () => {
@@ -413,33 +434,18 @@ export default {
             console.log(row);
         },
         clickOk() {
-            // this.$refs["addForm"].validate((valid) => {
-            //     if (valid) {
-            //         this.addItem.pro_rest_amount =
-            //             this.addItem.pro_onshelf_amount;
-            //         this.addItem.itinerary_signup_date =
-            //             this.addItem.itinerary_signup_date
-            //                 .toLocaleDateString()
-            //                 .replace(/\//g, "-");
-
-            //         this.insertData(this.addItem);
-            //     } else {
-            //         alert("新增失敗，請確認表格是否輸入正確");
-            //     }
-            // });
             this.addItem.itinerary_start_date =
                 this.addItem.itinerary_start_date
                     .toLocaleDateString()
                     .replace(/\//g, "-");
-                    this.addItem.itinerary_end_date =
-                this.addItem.itinerary_end_date
-                    .toLocaleDateString()
-                    .replace(/\//g, "-");
-                    this.addItem.itinerary_signup_date =
+            this.addItem.itinerary_end_date = this.addItem.itinerary_end_date
+                .toLocaleDateString()
+                .replace(/\//g, "-");
+            this.addItem.itinerary_signup_date =
                 this.addItem.itinerary_signup_date
                     .toLocaleDateString()
                     .replace(/\//g, "-");
-                    this.addItem.itinerary_signup_deadline =
+            this.addItem.itinerary_signup_deadline =
                 this.addItem.itinerary_signup_deadline
                     .toLocaleDateString()
                     .replace(/\//g, "-");
@@ -451,18 +457,56 @@ export default {
             this.modal3[index] = true;
             this.addItem = { ...this.dataList[index] };
         },
-        replaceItem() {
-            const index = this.data.findIndex(
-                (item) => item.itinerary_id === this.addItem.itinerary_id
-            );
+        replaceItem(index) {
+            this.$refs["updateForm"].validate((valid) => {
+                if (valid) {
+                    // this.addItem.pro_rest_amount = this.addItem.pro_onshelf_amount;
+                    // this.addItem.pro_onshelf_date = this.addItem.pro_onshelf_date
+                    //   .toLocaleDateString()
+                    //   .replace(/\//g, "-");
 
-            this.addItem.itinerary_signup_date =
-                this.addItem.itinerary_signup_date
-                    .toLocaleDateString()
-                    .replace(/\//g, "-");
+                    // this.insertData(this.addItem);
 
-            this.data[index] = this.addItem;
-            this.addItem = { ...this.resetItem };
+                    this.addItem.itinerary_start_date =
+                        this.addItem.itinerary_start_date
+                            .toLocaleDateString()
+                            .replace(/\//g, "-");
+                    this.addItem.itinerary_end_date =
+                        this.addItem.itinerary_end_date
+                            .toLocaleDateString()
+                            .replace(/\//g, "-");
+                    this.addItem.itinerary_signup_date =
+                        this.addItem.itinerary_signup_date
+                            .toLocaleDateString()
+                            .replace(/\//g, "-");
+                    this.addItem.itinerary_signup_deadline =
+                        this.addItem.itinerary_signup_deadline
+                            .toLocaleDateString()
+                            .replace(/\//g, "-");
+                    this.updateData(index);
+
+                    // 帶移動
+                    // const index = this.dataList.findIndex(
+                    //   (item) => item.pro_id === this.addItem.pro_id
+                    // );
+
+                    // this.dataList[index] = this.addItem;
+                    // this.addItem = { ...this.resetItem };
+                } else {
+                    alert("修改失敗，請確認表格是否輸入正確");
+                }
+            });
+            // const index = this.data.findIndex(
+            //     (item) => item.itinerary_id === this.addItem.itinerary_id
+            // );
+
+            // this.addItem.itinerary_signup_date =
+            //     this.addItem.itinerary_signup_date
+            //         .toLocaleDateString()
+            //         .replace(/\//g, "-");
+
+            // this.data[index] = this.addItem;
+            // this.addItem = { ...this.resetItem };
         },
         cancelEdit() {
             this.addItem = { ...this.resetItem };
@@ -518,6 +562,45 @@ export default {
                 .then((res) => res.json())
                 .then((result) => {
                     console.log(result);
+                });
+        },
+        updateData(name) {
+            let imgName = document.querySelector(
+                `#${name} .itinerary_img_id_update`
+            );
+            console.log(imgName.files[0]);
+
+            const formData = new FormData();
+            const formDataKey = Object.keys(this.addItem);
+            formDataKey.forEach((key) => {
+                formData.append(`${key}`, this.addItem[key]);
+            });
+
+            formData.set("itineary_img", imgName.files[0]);
+
+            fetch(`${BASE_URL}/update_itinerary.php`, {
+                method: "POST",
+                body: formData,
+            })
+                .then((res) => res.json())
+                .then((res) => {
+                    const result = res;
+
+                    if (result === "wrong") {
+                        alert("新增失敗，資料庫已有此筆資料");
+                    } else {
+                        this.addItem.itinerary_img = result.itinerary_img;
+
+                        const index = this.dataList.findIndex(
+                            (item) =>
+                                item.itinerary_id === this.addItem.itinerary_id
+                        );
+
+                        this.dataList[index] = this.addItem;
+                    }
+
+                    this.addItem = { ...this.resetItem };
+                    imgName.outerHTML = imgName.outerHTML;
                 });
         },
     },
