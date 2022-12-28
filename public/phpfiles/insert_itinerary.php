@@ -59,18 +59,20 @@ if ($_FILES["itinerary_img"]["error"] === 0) {
             exit();
         }
 
-        $sql = "insert into product values (:itinerary_name, :itinerary_price, :itinerary_signup_date, :itinerary_signup_deadline, :itinerary_start_date, :itinerary_end_date, :itinerary_status)";
+        $sql = "insert into itinerary values (null, :itinerary_name, :story_id, :itinerary_price, :itinerary_people, :itinerary_start_date, :itinerary_end_date, :itinerary_signup_date, :itinerary_signup_deadline, :itinerary_status, :itinerary_img)";
         //編譯, 執行
         $products = $pdo->prepare($sql);
         // $products->bindValue(":itinerary_id", $_POST["itinerary_id"]);
         $products->bindValue(":itinerary_name", $_POST["itinerary_name"]);
+        $products->bindValue(":story_id", $_POST["story_id"]);
         $products->bindValue(":itinerary_price", $_POST["itinerary_price"]);
-        $products->bindValue(":itinerary_signup_date", $_POST["itinerary_signup_date"]);
-        $products->bindValue(":itinerary_signup_deadline", $_POST["itinerary_signup_deadline"]);
+        $products->bindValue(":itinerary_people", $_POST["itinerary_people"]);
         $products->bindValue(":itinerary_start_date", $_POST["itinerary_start_date"]);
         $products->bindValue(":itinerary_end_date", $_POST["itinerary_end_date"]);
+        $products->bindValue(":itinerary_signup_date", $_POST["itinerary_signup_date"]);
+        $products->bindValue(":itinerary_signup_deadline", $_POST["itinerary_signup_deadline"]);
         $products->bindValue(":itinerary_status", $_POST["itinerary_status"] ? 1 : 0);
-        // $products->bindValue(":itinerary_img", $fileName);
+        $products->bindValue(":itinerary_img", $fileName);
         $products->execute();
 
         $sql = "SELECT `itinerary_id` FROM `itinerary` where `itinerary_name` = '{$_POST["itinerary_name"]}'";

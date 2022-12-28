@@ -103,78 +103,82 @@
             <text>{{ row.pro_class_name }}</text>
         </template>
 
-    <!-- 加入編輯、刪除彈窗 -->
-    <template #edit_del="{ index, row }">
-      <!-- 編輯按鈕 -->
-      <Button @click="clickEditBtn(index)" class="edit">編輯</Button>
-      <!-- 編輯彈窗 -->
-      <Modal
-        v-model="modal3[index]"
-        title="編輯商品資訊"
-        ok-text="確認修改"
-        cancel-text="取消"
-        width="700px"
-        class="editnews-popup"
-        :styles="{ top: '30px' }"
-        @on-ok="replaceItem"
-        @on-cancel="cancelEdit"
-      >
-        <Form
-          :model="addItem"
-          :label-width="80"
-          :rules="ruleValidate"
-          ref="updateForm"
-        >
-          <FormItem label="商品編號">
-            <text>{{ addItem.pro_id }}</text>
-          </FormItem>
-          <FormItem label="商品分類" prop="pro_class_name">
-            <Select v-model="addItem.pro_class_name" placeholder="請選擇">
-              <Option value="旅行必備">旅行必備</Option>
-              <Option value="醫療用品">醫療用品</Option>
-              <Option value="應急糧食">應急糧食</Option>
-              <Option value="求生用品">求生用品</Option>
-            </Select>
-          </FormItem>
-          <FormItem label="商品名稱" prop="pro_name">
-            <Input
-              v-model="addItem.pro_name"
-              placeholder="請輸入商品名稱"
-            ></Input>
-          </FormItem>
-          <FormItem label="上架日期" prop="pro_onshelf_date">
-            <DatePicker
-              type="date"
-              placeholder="請選擇日期"
-              v-model="addItem.pro_onshelf_date"
-            ></DatePicker>
-          </FormItem>
-          <FormItem label="商品單價" prop="pro_price">
-            <input
-              type="number"
-              placeholder="請輸入商品單價"
-              v-model="addItem.pro_price"
-            />
-          </FormItem>
-          <FormItem label="商品數量" prop="pro_onshelf_amount">
-            <input
-              type="number"
-              placeholder="請更新商品上架數量"
-              v-model="addItem.pro_onshelf_amount"
-            />
-          </FormItem>
-          <FormItem label="商品圖片">
-            <input id="pro_img_id_update" type="file" multiple />
-          </FormItem>
-          <FormItem label="商品資訊" prop="pro_info">
-            <Input
-              v-model="addItem.pro_info"
-              type="textarea"
-              :autosize="{ minRows: 10, maxRows: 50 }"
-            ></Input>
-          </FormItem>
-        </Form>
-      </Modal>
+        <!-- 加入編輯、刪除彈窗 -->
+        <template #edit_del="{ index, row }">
+            <!-- 編輯按鈕 -->
+            <Button @click="clickEditBtn(index)" class="edit">編輯</Button>
+            <!-- 編輯彈窗 -->
+            <Modal
+                v-model="modal3[index]"
+                :id="row.pro_name"
+                title="編輯商品資訊"
+                ok-text="確認修改"
+                cancel-text="取消"
+                width="700px"
+                class="editnews-popup"
+                :styles="{ top: '30px' }"
+                @on-ok="replaceItem(row.pro_name)"
+                @on-cancel="cancelEdit"
+            >
+                <Form
+                    :model="addItem"
+                    :label-width="80"
+                    :rules="ruleValidate"
+                    ref="updateForm"
+                >
+                    <FormItem label="商品編號">
+                        <text>{{ addItem.pro_id }}</text>
+                    </FormItem>
+                    <FormItem label="商品分類" prop="pro_class_name">
+                        <Select
+                            v-model="addItem.pro_class_name"
+                            placeholder="請選擇"
+                        >
+                            <Option value="旅行必備">旅行必備</Option>
+                            <Option value="醫療用品">醫療用品</Option>
+                            <Option value="應急糧食">應急糧食</Option>
+                            <Option value="求生用品">求生用品</Option>
+                        </Select>
+                    </FormItem>
+                    <FormItem label="商品名稱" prop="pro_name">
+                        <Input
+                            v-model="addItem.pro_name"
+                            placeholder="請輸入商品名稱"
+                        ></Input>
+                    </FormItem>
+                    <FormItem label="上架日期" prop="pro_onshelf_date">
+                        <DatePicker
+                            type="date"
+                            placeholder="請選擇日期"
+                            v-model="addItem.pro_onshelf_date"
+                        ></DatePicker>
+                    </FormItem>
+                    <FormItem label="商品單價" prop="pro_price">
+                        <input
+                            type="number"
+                            placeholder="請輸入商品單價"
+                            v-model="addItem.pro_price"
+                        />
+                    </FormItem>
+                    <FormItem label="商品數量" prop="pro_onshelf_amount">
+                        <input
+                            type="number"
+                            placeholder="請更新商品上架數量"
+                            v-model="addItem.pro_onshelf_amount"
+                        />
+                    </FormItem>
+                    <FormItem label="商品圖片">
+                        <input class="pro_img_id_update" type="file" multiple />
+                    </FormItem>
+                    <FormItem label="商品資訊" prop="pro_info">
+                        <Input
+                            v-model="addItem.pro_info"
+                            type="textarea"
+                            :autosize="{ minRows: 10, maxRows: 50 }"
+                        ></Input>
+                    </FormItem>
+                </Form>
+            </Modal>
 
             <!-- 刪除按鈕 -->
             <Button class="delete" @click="remove(index, row)">刪除</Button>
@@ -387,12 +391,15 @@ export default {
             });
         },
         onChange(row) {
+            console.log(row.pro_status);
             if (row.pro_status) {
                 this.$Message.info("上架狀態： 上架");
             } else {
                 this.$Message.info("上架狀態： 下架");
             }
             console.log(row);
+
+            this.updateStatus(row.pro_id, row.pro_status);
         },
         clickOk() {
             this.$refs["addForm"].validate((valid) => {
@@ -419,56 +426,57 @@ export default {
             //   .toLocaleDateString()
             //   .replace(/\//g, "-");
 
-      // this.insertData(this.addItem);
-    },
-    clickEditBtn(index) {
-      this.modal3[index] = true;
-      this.addItem = { ...this.dataList[index] };
-    },
-    replaceItem() {
-      this.$refs["updateForm"].validate((valid) => {
-        if (valid) {
-          // this.addItem.pro_rest_amount = this.addItem.pro_onshelf_amount;
-          // this.addItem.pro_onshelf_date = this.addItem.pro_onshelf_date
-          //   .toLocaleDateString()
-          //   .replace(/\//g, "-");
+            // this.insertData(this.addItem);
+        },
+        clickEditBtn(index) {
+            this.modal3[index] = true;
+            this.addItem = { ...this.dataList[index] };
+        },
+        replaceItem(index) {
+            this.$refs["updateForm"].validate((valid) => {
+                if (valid) {
+                    // this.addItem.pro_rest_amount = this.addItem.pro_onshelf_amount;
+                    // this.addItem.pro_onshelf_date = this.addItem.pro_onshelf_date
+                    //   .toLocaleDateString()
+                    //   .replace(/\//g, "-");
 
-          // this.insertData(this.addItem);
+                    // this.insertData(this.addItem);
 
-          this.addItem.pro_onshelf_date = this.addItem.pro_onshelf_date
-            .toLocaleDateString()
-            .replace(/\//g, "-");
+                    this.addItem.pro_onshelf_date =
+                        this.addItem.pro_onshelf_date
+                            .toLocaleDateString()
+                            .replace(/\//g, "-");
 
-          this.updateData();
+                    this.updateData(index);
 
-          // 帶移動
-          // const index = this.dataList.findIndex(
-          //   (item) => item.pro_id === this.addItem.pro_id
-          // );
+                    // 帶移動
+                    // const index = this.dataList.findIndex(
+                    //   (item) => item.pro_id === this.addItem.pro_id
+                    // );
 
-          // this.dataList[index] = this.addItem;
-          // this.addItem = { ...this.resetItem };
-        } else {
-          alert("修改失敗，請確認表格是否輸入正確");
-        }
-      });
-    },
-    cancelEdit() {
-      this.addItem = { ...this.resetItem };
-    },
-    getData() {
-      fetch(`${BASE_URL}/get_pro_data.php`)
-        .then((res) => res.json())
-        .then((result) => {
-          this.dataList = result;
-        });
-    },
-    insertData() {
-      const formData = new FormData();
-      const formDataKey = Object.keys(this.addItem);
-      formDataKey.forEach((key) => {
-        formData.append(`${key}`, this.addItem[key]);
-      });
+                    // this.dataList[index] = this.addItem;
+                    // this.addItem = { ...this.resetItem };
+                } else {
+                    alert("修改失敗，請確認表格是否輸入正確");
+                }
+            });
+        },
+        cancelEdit() {
+            this.addItem = { ...this.resetItem };
+        },
+        getData() {
+            fetch(`${BASE_URL}/get_pro_data.php`)
+                .then((res) => res.json())
+                .then((result) => {
+                    this.dataList = result;
+                });
+        },
+        insertData() {
+            const formData = new FormData();
+            const formDataKey = Object.keys(this.addItem);
+            formDataKey.forEach((key) => {
+                formData.append(`${key}`, this.addItem[key]);
+            });
 
             let imgName = document.getElementById("pro_img_id");
             formData.set("pro_img", imgName.files[0]);
@@ -499,55 +507,67 @@ export default {
             formData.append("pro_id", row.pro_id);
             formData.append("pro_img", row.pro_img);
 
-      fetch(`${BASE_URL}/dele_pro_data.php`, {
-        method: "POST",
-        body: formData,
-      })
-        .then((res) => res.json())
-        .then((result) => {
-          console.log(result);
-        });
+            fetch(`${BASE_URL}/dele_pro_data.php`, {
+                method: "POST",
+                body: formData,
+            })
+                .then((res) => res.json())
+                .then((result) => {
+                    console.log(result);
+                });
+        },
+        updateData(name) {
+            let imgName = document.querySelector(`#${name} .pro_img_id_update`);
+            console.log(imgName.files[0]);
+
+            const formData = new FormData();
+            const formDataKey = Object.keys(this.addItem);
+            formDataKey.forEach((key) => {
+                formData.append(`${key}`, this.addItem[key]);
+            });
+
+            formData.set("pro_img", imgName.files[0]);
+
+            fetch(`${BASE_URL}/update_pro_data.php`, {
+                method: "POST",
+                body: formData,
+            })
+                .then((res) => res.json())
+                .then((res) => {
+                    const result = res;
+
+                    if (result === "wrong") {
+                        alert("新增失敗，資料庫已有此筆資料");
+                    } else {
+                        this.addItem.pro_img = result.pro_img;
+
+                        const index = this.dataList.findIndex(
+                            (item) => item.pro_id === this.addItem.pro_id
+                        );
+
+                        this.dataList[index] = this.addItem;
+                    }
+
+                    this.addItem = { ...this.resetItem };
+                    imgName.outerHTML = imgName.outerHTML;
+                });
+        },
+        updateStatus(pro_id, pro_status) {
+            const formData = new FormData();
+            formData.append("pro_status", pro_status);
+            formData.append("pro_id", pro_id);
+
+            fetch(`${BASE_URL}/update_pro_status.php`, {
+                method: "POST",
+                body: formData,
+            })
+                .then((res) => res.json())
+                .then((res) => {
+                    const result = res;
+                    console.log(result);
+                });
+        },
     },
-    updateData() {
-      let imgName = document.getElementById("pro_img_id_update");
-      console.log(imgName.files);
-
-      console.log(this.addItem);
-      const formData = new FormData();
-      const formDataKey = Object.keys(this.addItem);
-      formDataKey.forEach((key) => {
-        formData.append(`${key}`, this.addItem[key]);
-      });
-
-      
-      formData.set("pro_img", imgName.files[0]);
-      
-
-      // fetch(`${BASE_URL}/update_pro_data.php`, {
-      //   method: "POST",
-      //   body: formData,
-      // })
-      //   .then((res) => res.json())
-      //   .then((res) => {
-      //     const result = res;
-
-      //     if (result === "wrong") {
-      //       alert("新增失敗，資料庫已有此筆資料");
-      //     } else {
-      //       this.addItem.pro_img = result.pro_img;
-
-      //       const index = this.dataList.findIndex(
-      //         (item) => item.pro_id === this.addItem.pro_id
-      //       );
-
-      //       this.dataList[index] = this.addItem;
-      //     }
-
-      //     this.addItem = { ...this.resetItem };
-      //     imgName.outerHTML = imgName.outerHTML;
-      //   });
-    },
-  },
 
     mounted() {
         this.getData();
