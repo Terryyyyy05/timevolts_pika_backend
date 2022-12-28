@@ -1,33 +1,31 @@
-<?php 
+<?php
 header('Access-Control-Allow-Origin:*');
 header("Content-Type:application/json;charset=utf-8");
 
+require_once("./php_connect_books/connectBooks.php");
 require_once("./img_path.php");
 $imgPath = img_path;
 
-try{
-  $imgFile = $_POST["pro_img"];
+try {
+    $imgFile = $_POST["itinerary_img"];
 
-  if (file_exists("$imgPath/$imgFile") == false) {
-    echo "NONO圖片梅刪掉";
-    exit();
-  }
-  $imgFile = $_POST["pro_img"];
-  unlink("$imgPath/$imgFile");
+    if (file_exists("$imgPath/$imgFile") == false) {
+        echo "NONO圖片梅刪掉";
+        exit();
+    }
+    $imgFile = $_POST["itinerary_img"];
+    unlink("$imgPath/$imgFile");
 
-  require_once("./connectBooks.php");
-  $sql = "delete FROM product where pro_id = :pro_id";
-  
-  $products = $pdo->prepare($sql);	
-  $products->bindValue(":pro_id", $_POST["pro_id"]);
-  $products->execute();
+    $sql = "delete FROM itinerary where itinerary_id = :itinerary_id";
 
-  $msg = "刪除成功";
+    $products = $pdo->prepare($sql);
+    $products->bindValue(":itinerary_id", $_POST["itinerary_id"]);
+    $products->execute();
 
-  
+    $msg = "刪除成功";
 } catch (PDOException $e) {
-  $msg = "錯誤行號 : ".$e->getLine().", 錯誤訊息 : ".$e->getMessage();
+    $msg = "錯誤行號 : " . $e->getLine() . ", 錯誤訊息 : " . $e->getMessage();
 }
 
-$result = ["msg"=>$msg];
+$result = ["msg" => $msg];
 echo json_encode($result);
