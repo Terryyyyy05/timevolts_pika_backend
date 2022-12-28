@@ -2,6 +2,7 @@
 header('Access-Control-Allow-Origin:*');
 header("Content-Type:application/json;charset=utf-8");
 
+require_once("./php_connect_books/connectBooks.php");
 require_once("./img_path.php");
 const MY_DIR = img_path;
 
@@ -44,7 +45,7 @@ if( $_FILES["news_img"]["error"] === 0){
 		require_once("./connectBooks.php");
 
 		//sql 指令
-    $checkSql = "SELECT `news_id` FROM `news` where `news_title` = '{$_POST["pro_title"]}'";
+    $checkSql = "SELECT `news_id` FROM `news` where `news_id` = '{$_POST["news_id"]}'";
     $products = $pdo->query($checkSql);
     $prodRows = $products->fetchAll(PDO::FETCH_ASSOC);
     
