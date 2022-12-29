@@ -860,7 +860,7 @@ export default {
             let imgName = document.getElementById(`story_img0${i}_id`);
             formData.set(`story_img_${i}`, imgName.files[0]);
          }
-         console.log(formData.story_name);
+         console.log(formData.entries());
 
          fetch(`${BASE_URL}/insert_story_data.php`, {
             method: "POST",
