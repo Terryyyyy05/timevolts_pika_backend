@@ -410,7 +410,6 @@ export default {
           if (result === "wrong") {
             alert("新增失敗，資料庫已有此筆資料");
           } else {
-
             const index = this.getQuestion.findIndex(
               (item) => item.qa_id === this.addqaItem.qa_id
             );
