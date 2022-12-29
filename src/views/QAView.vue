@@ -278,9 +278,9 @@ export default {
     remove(index, row) {
       console.log(row);
       this.$Modal.confirm({
-        content: "<p>確認刪除嗎?</p>",
-        okText: "刪刪刪",
-        cancelText: "還是不要好了",
+        content: "<p>請再次確認是否需要刪除?</p>",
+        okText: "確認刪除",
+        cancelText: "取消刪除",
         onOk: () => {
           this.$Message.info("確認刪除");
           this.deleData(row);
