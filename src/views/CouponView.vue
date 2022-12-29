@@ -281,7 +281,9 @@ export default {
       console.log(index);
 
       if (row.coupon_given_numbers != 0) {
-        selt.$Message.info("優惠卷已被領取，不能刪除");
+        selt.$Message.info(
+          "優惠卷已被領取，不能刪除，但可以先下架避免發放更多優惠卷"
+        );
       } else {
         this.$Modal.confirm({
           content: "<p>您確認刪除這筆資料嗎?</p><p>刪除後就找不回來唷!</p>",
