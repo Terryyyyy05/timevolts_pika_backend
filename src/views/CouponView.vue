@@ -162,7 +162,15 @@
       </Modal>
 
       <!-- 刪除按鈕 -->
-      <Button class="delete" @click="remove(index, row)">刪除</Button>
+      <Button
+        v-if="dataList[index].coupon_given_numbers != 0"
+        class="notDelete delete"
+        @click="remove(index, row)"
+        >已發送中</Button
+      >
+      <Button v-else class="delete" @click="remove(index, row)"
+        >完全刪除</Button
+      >
     </template>
   </Table>
 </template>
@@ -241,7 +249,7 @@ export default {
           slot: "on_off", //加入開關鈕欄位需加slot
         },
         {
-          title: "編輯/刪除",
+          title: "刪除",
           key: "edit",
           align: "center",
           slot: "edit_del", //加入編輯刪除欄位需加slot
@@ -433,7 +441,7 @@ export default {
         });
         selt.$Message.info("已新增一筆資料");
         // 重新撈資料
-        this.getData();
+        this.renew();
       }
     },
     cancelData() {
@@ -461,10 +469,15 @@ export default {
   mounted() {},
   created() {
     this.getData();
+    // this.$set(this.dataList, "add", 0);
   },
   computed: {},
 };
 </script>
 <style lang="scss" scoped>
 @import "@/assets/css/app.scss";
+.notDelete {
+  background: #ccc;
+  border: 1px solid #ccc;
+}
 </style>
