@@ -61,21 +61,6 @@
         ></DatePicker>
       </FormItem>
     </Form>
-    <Switch
-      before-change
-      v-model="addItem.couponStatus"
-      @on-change="change"
-      size="large"
-      true-color="#fab042"
-      false-color="#e6e6e6"
-    >
-      <template #open>
-        <span>上架</span>
-      </template>
-      <template #close>
-        <span>下架</span>
-      </template>
-    </Switch>
   </Modal>
 
   <!-- 表格 -->
@@ -89,7 +74,15 @@
   >
     <!-- 加入開關按鈕 -->
     <template #on_off="{ row }">
-      <Switch size="large" true-color="#fab042" false-color="#e6e6e6">
+      <Switch
+        size="large"
+        true-color="#fab042"
+        false-color="#e6e6e6"
+        v-model="row.coupon_status"
+        :true-value="parseInt(1)"
+        :false-value="parseInt(0)"
+        @on-change="onChange(row)"
+      >
         <template #open>
           <span>上架</span>
         </template>
@@ -106,7 +99,7 @@
     <!-- 加入編輯、刪除彈窗 -->
     <template #edit_del="{ index, row }">
       <!-- 編輯按鈕 -->
-      <Button @click="modal3 = true">編輯</Button>
+      <Button @click="clickEditBtn(index)" class="edit">編輯</Button>
       <!-- 編輯彈窗 -->
       <Modal
         v-model="modal3"
@@ -166,20 +159,6 @@
             ></DatePicker>
           </FormItem>
         </Form>
-        <Switch
-          before-change
-          v-model="editItem.couponStatus"
-          size="large"
-          true-color="#fab042"
-          false-color="#e6e6e6"
-        >
-          <template #open disabled>
-            <span>上架</span>
-          </template>
-          <template #close>
-            <span>下架</span>
-          </template>
-        </Switch>
       </Modal>
 
       <!-- 刪除按鈕 -->
@@ -256,7 +235,7 @@ export default {
         },
         {
           title: "上下架狀態",
-          key: "couponStatus",
+          key: "coupon_status",
           align: "center",
           width: "120px",
           slot: "on_off", //加入開關鈕欄位需加slot
@@ -268,119 +247,7 @@ export default {
           slot: "edit_del", //加入編輯刪除欄位需加slot
         },
       ],
-      dataList: [
-        ///表格內容資料
-        {
-          coupon_id: 1, //編號
-          coupon_discount_number: 0, //折扣金額
-          coupon_issue_date: "", //發送日期
-          coupon_valid_date: "", //生效日期
-          coupon_exp_date: "", //到期日期
-          coupon_quantity: 0, //發行數量
-          coupon_given_numbers: 0, //已發數量
-          coupon_pricing_condition: 0, //消費門檻
-          coupon_status: 0, // 1=上架,0=下架
-        },
-        {
-          coupon_id: 2, //編號
-          coupon_discount_number: 0, //折扣金額
-          coupon_issue_date: "", //發送日期
-          coupon_valid_date: "", //生效日期
-          coupon_exp_date: "", //到期日期
-          coupon_quantity: 0, //發行數量
-          coupon_given_numbers: 0, //已發數量
-          coupon_pricing_condition: 0, //消費門檻
-          coupon_status: 0, // 1=上架,0=下架
-        },
-        {
-          coupon_id: 3, //編號
-          coupon_discount_number: 0, //折扣金額
-          coupon_issue_date: "", //發送日期
-          coupon_valid_date: "", //生效日期
-          coupon_exp_date: "", //到期日期
-          coupon_quantity: 0, //發行數量
-          coupon_given_numbers: 0, //已發數量
-          coupon_pricing_condition: 0, //消費門檻
-          coupon_status: 0, // 1=上架,0=下架
-        },
-        {
-          coupon_id: 4, //編號
-          coupon_discount_number: 0, //折扣金額
-          coupon_issue_date: "", //發送日期
-          coupon_valid_date: "", //生效日期
-          coupon_exp_date: "", //到期日期
-          coupon_quantity: 0, //發行數量
-          coupon_given_numbers: 0, //已發數量
-          coupon_pricing_condition: 0, //消費門檻
-          coupon_status: 0, // 1=上架,0=下架
-        },
-        {
-          coupon_id: 5, //編號
-          coupon_discount_number: 0, //折扣金額
-          coupon_issue_date: "", //發送日期
-          coupon_valid_date: "", //生效日期
-          coupon_exp_date: "", //到期日期
-          coupon_quantity: 0, //發行數量
-          coupon_given_numbers: 0, //已發數量
-          coupon_pricing_condition: 0, //消費門檻
-          coupon_status: 0, // 1=上架,0=下架
-        },
-        {
-          coupon_id: 6, //編號
-          coupon_discount_number: 0, //折扣金額
-          coupon_issue_date: "", //發送日期
-          coupon_valid_date: "", //生效日期
-          coupon_exp_date: "", //到期日期
-          coupon_quantity: 0, //發行數量
-          coupon_given_numbers: 0, //已發數量
-          coupon_pricing_condition: 0, //消費門檻
-          coupon_status: 0, // 1=上架,0=下架
-        },
-        {
-          coupon_id: 7, //編號
-          coupon_discount_number: 0, //折扣金額
-          coupon_issue_date: "", //發送日期
-          coupon_valid_date: "", //生效日期
-          coupon_exp_date: "", //到期日期
-          coupon_quantity: 0, //發行數量
-          coupon_given_numbers: 0, //已發數量
-          coupon_pricing_condition: 0, //消費門檻
-          coupon_status: 0, // 1=上架,0=下架
-        },
-        {
-          coupon_id: 8, //編號
-          coupon_discount_number: 0, //折扣金額
-          coupon_issue_date: "", //發送日期
-          coupon_valid_date: "", //生效日期
-          coupon_exp_date: "", //到期日期
-          coupon_quantity: 0, //發行數量
-          coupon_given_numbers: 0, //已發數量
-          coupon_pricing_condition: 0, //消費門檻
-          coupon_status: 0, // 1=上架,0=下架
-        },
-        {
-          coupon_id: 9, //編號
-          coupon_discount_number: 0, //折扣金額
-          coupon_issue_date: "", //發送日期
-          coupon_valid_date: "", //生效日期
-          coupon_exp_date: "", //到期日期
-          coupon_quantity: 0, //發行數量
-          coupon_given_numbers: 0, //已發數量
-          coupon_pricing_condition: 0, //消費門檻
-          coupon_status: 0, // 1=上架,0=下架
-        },
-        {
-          coupon_id: 10, //編號
-          coupon_discount_number: 0, //折扣金額
-          coupon_issue_date: "", //發送日期
-          coupon_valid_date: "", //生效日期
-          coupon_exp_date: "", //到期日期
-          coupon_quantity: 0, //發行數量
-          coupon_given_numbers: 0, //已發數量
-          coupon_pricing_condition: 0, //消費門檻
-          coupon_status: 0, // 1=上架,0=下架
-        },
-      ],
+      dataList: [],
       addItem: {
         //新增彈窗內容資料
         coupon_id: "",
@@ -443,17 +310,36 @@ export default {
     },
 
     onChange(row) {
-      console.log(row.pro_status);
-      if (row.pro_status) {
+      console.log(row.coupon_status);
+      if (row.coupon_status) {
         this.$Message.info("上架狀態： 上架");
       } else {
         this.$Message.info("上架狀態： 下架");
       }
       console.log(row);
 
-      this.updateStatus(row.pro_id, row.pro_status);
+      this.updateStatus(row.coupon_id, row.coupon_status);
+    },
+    updateStatus(coupon_id, coupon_status) {
+      const formData = new FormData();
+      formData.append("coupon_status", coupon_status);
+      formData.append("coupon_id", coupon_id);
+
+      fetch(`${BASE_URL}/update_coupon_status.php`, {
+        method: "POST",
+        body: formData,
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          const result = res;
+          console.log(result);
+        });
     },
 
+    clickEditBtn(index) {
+      this.modal3[index] = true;
+      this.addItem = { ...this.dataList[index] };
+    },
     async getData() {
       let selt = this;
       await fetch(`${BASE_URL}/get_coupon_data.php`)
