@@ -393,7 +393,7 @@ export default {
         });
     },
     updateData() {
-      // console.log(this.addqaItem);
+      console.log(this.addqaItem);
       const formData = new FormData();
       const formDataKey = Object.keys(this.addqaItem);
       formDataKey.forEach((key) => {

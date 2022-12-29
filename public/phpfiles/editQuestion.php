@@ -8,7 +8,7 @@ try {
     $sql = "update faq set  qa_type = :qa_type,
                             qa_title = :qa_title,
                             qa_answer = :qa_answer,
-                            qa_status = :qa_status,
+                            qa_status = :qa_status
 
                             where qa_id = :qa_id";
     //編譯, 執行
