@@ -15,39 +15,55 @@
     @on-ok="newData"
     @on-Cancel="cancelData"
   >
-    <Form
-      :model="addItem"
-      :label-width="80"
-      :rules="ruleInline"
-      id="newform"
-      inline
-    >
+    <Form :model="addItem" :label-width="80" :rules="ruleInline" inline>
       <!-- <FormItem label="折扣卷ID">
         <Input v-model="addItem.coupon_id" placeholder="ID" disabled></Input>
       </FormItem> -->
       <FormItem label="折扣金額">
-        <Input
+        <InputNumber
+          style="width: 200px"
+          controls-outside
+          :formatter="
+            (value) => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+          "
+          :min="1"
+          model-value
           v-model="addItem.coupon_discount_number"
-          name="coupon_discount_number"
           placeholder="請輸入折扣金額"
-        ></Input>
+        ></InputNumber>
       </FormItem>
       <FormItem label="發行數量">
-        <Input
+        <InputNumber
+          editable
+          style="width: 200px"
+          :min="1"
+          controls-outside
           v-model="addItem.coupon_quantity"
           placeholder="請輸入發行數量"
-        ></Input>
+        ></InputNumber>
       </FormItem>
       <FormItem label="消費門檻">
-        <Input
+        <InputNumber
+          style="width: 200px"
+          controls-outside
+          :formatter="
+            (value) => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+          "
+          :min="addItem.coupon_discount_number"
           v-model="addItem.coupon_pricing_condition"
           placeholder="請輸入門檻金額"
-        ></Input>
+          :class="{
+            error:
+              !addItem.coupon_discount_number >
+              addItem.coupon_pricing_condition,
+          }"
+        ></InputNumber>
       </FormItem>
     </Form>
     <Form :model="addItem">
       <FormItem label="發送日期">
         <DatePicker
+          :min="1"
           type="date"
           v-model="addItem.coupon_issue_date"
           placeholder="請輸入發送日期"
@@ -266,12 +282,12 @@ export default {
       addItem: {
         //新增彈窗內容資料
         coupon_id: "",
-        coupon_discount_number: "1",
-        coupon_quantity: "100",
-        coupon_pricing_condition: "3",
-        coupon_issue_date: "2022-12-01",
-        coupon_valid_date: "2022-12-29",
-        coupon_exp_date: "2023-01-31",
+        coupon_discount_number: "",
+        coupon_quantity: "",
+        coupon_pricing_condition: "",
+        coupon_issue_date: "",
+        coupon_valid_date: "",
+        coupon_exp_date: "",
         coupon_status: 0,
         couponStatus: false,
       },
@@ -334,9 +350,9 @@ export default {
     onChange(row) {
       console.log(row.coupon_status);
       if (row.coupon_status) {
-        this.$Message.info("上架狀態： 上架");
+        this.$Message.success("上架狀態： 上架");
       } else {
-        this.$Message.info("上架狀態： 下架");
+        this.$Message.success("上架狀態： 下架");
       }
       console.log(row);
 
@@ -396,16 +412,29 @@ export default {
       let selt = this;
       let AddItem = selt.addItem;
 
-      // 整理資料
-      //新增couponStatus的布林值，轉為coupon_status 0 or 1
-      // selt.addItem.coupon_id = selt.addItem.coupon_id;
-      if (selt.addItem.couponStatus == true) {
-        selt.addItem.coupon_status == 1;
-      } else if (selt.addItem.couponStatus == false) {
-        selt.addItem.coupon_status == 0;
+      // 檢查是否為空值、錯誤
+      if (AddItem.coupon_discount_number == "") {
+        return selt.$Message.warning("「折扣金額」不得為空");
+      } else if (AddItem.coupon_quantity == "") {
+        return selt.$Message.warning("「發送數量」不得為空");
+      } else if (AddItem.coupon_pricing_condition == "") {
+        return selt.$Message.warning("「消費門檻」不得為空");
+      } else if (
+        AddItem.coupon_pricing_condition < AddItem.coupon_discount_number
+      ) {
+        return selt.$Message.warning("「消費門檻」不得低於「折扣金額」");
+      } else if (AddItem.coupon_issue_date == "") {
+        return selt.$Message.warning("「發送日期」不得為空");
+      } else if (AddItem.coupon_valid_date == "") {
+        return selt.$Message.warning("「生效日期」不得為空");
+      } else {
+        // 通過驗證
+        this.newDataTidy();
       }
-      console.log(selt.addItem);
-
+    },
+    newDataTidy() {
+      let selt = this;
+      let AddItem = selt.addItem;
       // 檢查資料是否為數字
       function isNumber(inputs) {
         return parseFloat(inputs).toString() != "NaN";
@@ -436,7 +465,7 @@ export default {
           //消費門檻
           if (isNumber(AddItem.coupon_pricing_condition)) {
             // 新增資料
-            NewData();
+            insertNewData();
           } else {
             selt.$Message.info("消費門檻錯誤");
           }
@@ -449,7 +478,7 @@ export default {
       return;
 
       // 新增資料
-      function NewData() {
+      function insertNewData() {
         // fetch(`${BASE_URL}/insert_new_coupon_data.php`)
         let formData = new FormData();
         formData.append("action", "newData");
@@ -511,6 +540,11 @@ export default {
   mounted() {},
   created() {
     this.getData();
+    function OnlyNumber(obj) {
+      if (obj.value != obj.value.replace(/[^0-9\.]/g, "")) {
+        obj.value = obj.value.replace(/[^0-9\.-]/g, "");
+      }
+    }
     // this.$set(this.dataList, "add", 0);
   },
   computed: {},
@@ -521,5 +555,8 @@ export default {
 .notDelete {
   background: #ccc;
   border: 1px solid #ccc;
+}
+.error input::-webkit-input-placeholder {
+  color: red;
 }
 </style>
