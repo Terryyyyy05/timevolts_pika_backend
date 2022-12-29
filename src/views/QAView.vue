@@ -278,9 +278,9 @@ export default {
     remove(index, row) {
       console.log(row);
       this.$Modal.confirm({
-        content: "<p>確認刪除嗎?</p>",
-        okText: "刪刪刪",
-        cancelText: "還是不要好了",
+        content: "<p>請再次確認是否需要刪除?</p>",
+        okText: "確認刪除",
+        cancelText: "取消刪除",
         onOk: () => {
           this.$Message.info("確認刪除");
           this.deleData(row);
@@ -293,13 +293,13 @@ export default {
       });
     },
     onChange(row) {
-      console.log(row.qa_status);
+      // console.log(row.qa_status);
       if (row.qa_status) {
         this.$Message.info("上架狀態： 上架");
       } else {
         this.$Message.info("上架狀態： 下架");
       }
-      console.log(row);
+      // console.log(row);
 
       this.updateStatus(row.qa_id, row.qa_status);
     },
@@ -321,7 +321,7 @@ export default {
       this.addqaItem = { ...this.getQuestion[index] };
       // console.log(this.getNews[0]);
     },
-    replaceItem() {
+    replaceItem(index) {
       this.$refs["updateForm"].validate((valid) => {
         if (valid) {
           // this.addItem.pro_rest_amount = this.addItem.pro_onshelf_amount;
@@ -330,7 +330,7 @@ export default {
           //   .replace(/\//g, "-");
 
           // this.insertData(this.addItem);
-          this.updateData();
+          this.updateData(index);
 
           // 帶移動
           // const index = this.dataList.findIndex(
@@ -379,7 +379,7 @@ export default {
         });
     },
     deleData(row) {
-      console.log(row.qa_id);
+      // console.log(row.qa_id);
       const formData = new FormData();
       formData.append("qa_id", row.qa_id);
 
@@ -410,7 +410,6 @@ export default {
           if (result === "wrong") {
             alert("新增失敗，資料庫已有此筆資料");
           } else {
-
             const index = this.getQuestion.findIndex(
               (item) => item.qa_id === this.addqaItem.qa_id
             );
@@ -419,6 +418,21 @@ export default {
           }
 
           this.addqaItem = { ...this.resetqaItem };
+        });
+    },
+    updateStatus(qa_id, qa_status) {
+      const formData = new FormData();
+      formData.append("qa_status", qa_status);
+      formData.append("qa_id", qa_id);
+
+      fetch(`${BASE_URL}/updateQuestionStatus.php`, {
+        method: "POST",
+        body: formData,
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          const result = res;
+          console.log(result);
         });
     },
   },
