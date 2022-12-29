@@ -99,7 +99,7 @@
     <!-- 加入編輯、刪除彈窗 -->
     <template #edit_del="{ index, row }">
       <!-- 編輯按鈕 -->
-      <Button @click="clickEditBtn(index)" class="edit">編輯</Button>
+      <!-- <Button @click="clickEditBtn(index)" class="edit">編輯</Button> -->
       <!-- 編輯彈窗 -->
       <Modal
         v-model="modal3"
@@ -279,20 +279,25 @@ export default {
       let selt = this;
       console.log(row);
       console.log(index);
-      this.$Modal.confirm({
-        content: "<p>您確認刪除這筆資料嗎?</p><p>刪除後就找不回來唷!</p>",
-        okText: "確定刪除",
-        cancelText: "取消刪除",
-        onOk: () => {
-          selt.$Message.info("優惠卷已刪除");
-          selt.deleData(row);
-          console.log(selt.dataList.splice(index, 1));
-          selt.dataList.splice(index, 1);
-        },
-        onCancel: () => {
-          this.$Message.info("取消");
-        },
-      });
+
+      if (row.coupon_given_numbers != 0) {
+        selt.$Message.info("優惠卷已被領取，不能刪除");
+      } else {
+        this.$Modal.confirm({
+          content: "<p>您確認刪除這筆資料嗎?</p><p>刪除後就找不回來唷!</p>",
+          okText: "確定刪除",
+          cancelText: "取消刪除",
+          onOk: () => {
+            selt.$Message.info("優惠卷已刪除");
+            selt.deleData(row);
+            console.log(selt.dataList.splice(index, 1));
+            selt.dataList.splice(index, 1);
+          },
+          onCancel: () => {
+            this.$Message.info("取消");
+          },
+        });
+      }
     },
     deleData(row) {
       console.log(row.pro_id);
