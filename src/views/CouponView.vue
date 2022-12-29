@@ -15,13 +15,20 @@
     @on-ok="newData"
     @on-Cancel="cancelData"
   >
-    <Form :model="addItem" :label-width="80" :rules="ruleInline" inline>
+    <Form
+      :model="addItem"
+      :label-width="80"
+      :rules="ruleInline"
+      id="newform"
+      inline
+    >
       <!-- <FormItem label="折扣卷ID">
         <Input v-model="addItem.coupon_id" placeholder="ID" disabled></Input>
       </FormItem> -->
       <FormItem label="折扣金額">
         <Input
           v-model="addItem.coupon_discount_number"
+          name="coupon_discount_number"
           placeholder="請輸入折扣金額"
         ></Input>
       </FormItem>
@@ -375,7 +382,6 @@ export default {
           selt.addItem.coupon_id = selt.dataList.length + 1;
           console.log(selt);
         });
-      console.log(selt.dataList);
     },
     couponStatus() {
       console.log("EEE");
@@ -399,24 +405,30 @@ export default {
         selt.addItem.coupon_status == 0;
       }
       console.log(selt.addItem);
+
+      // 檢查資料是否為數字
+      function isNumber(inputs) {
+        return parseFloat(inputs).toString() != "NaN";
+      }
+
+      // 整理日期
+      typeof str == "string";
       selt.addItem.coupon_issue_date = selt.addItem.coupon_issue_date
         .toLocaleDateString()
         .replace(/\//g, "-")
         .substr(0, 10);
       selt.addItem.coupon_valid_date = selt.addItem.coupon_valid_date
         .toLocaleDateString()
-        .replace(/\//g, "-");
+        .replace(/\//g, "-")
+        .substr(0, 10);
       if (selt.addItem.coupon_exp_date != "") {
         selt.addItem.coupon_exp_date = selt.addItem.coupon_exp_date
           .toLocaleDateString()
-          .replace(/\//g, "-");
+          .replace(/\//g, "-")
+          .substr(0, 10);
       }
       console.log("BBB");
-
-      // 檢查資料是否為數字
-      function isNumber(inputs) {
-        return parseFloat(inputs).toString() != "NaN";
-      }
+      console.log(selt.addItem);
       // 折價金額
       if (isNumber(AddItem.coupon_discount_number)) {
         //發行數量
@@ -439,19 +451,35 @@ export default {
       // 新增資料
       function NewData() {
         // fetch(`${BASE_URL}/insert_new_coupon_data.php`)
+        let formData = new FormData();
+        formData.append("action", "newData");
+        formData.append(
+          "coupon_discount_number",
+          AddItem.coupon_discount_number
+        );
+        formData.append("coupon_quantity", AddItem.coupon_quantity);
+        formData.append(
+          "coupon_pricing_condition",
+          AddItem.coupon_pricing_condition
+        );
+        formData.append("coupon_issue_date", AddItem.coupon_issue_date);
+        formData.append("coupon_valid_date", AddItem.coupon_valid_date);
+        formData.append("coupon_exp_date", AddItem.coupon_exp_date);
+        formData.append("coupon_status", AddItem.coupon_status);
+
         fetch(`${BASE_URL}/insert_new_coupon_data.php`, {
           method: "POST",
-          body: JSON.stringify({
-            action: "newData",
-            // coupon_id: AddItem.coupon_id,
-            coupon_discount_number: AddItem.coupon_discount_number,
-            coupon_quantity: AddItem.coupon_quantity,
-            coupon_pricing_condition: AddItem.coupon_pricing_condition,
-            coupon_issue_date: AddItem.coupon_issue_date,
-            coupon_valid_date: AddItem.coupon_valid_date,
-            coupon_exp_date: AddItem.coupon_exp_date,
-            coupon_status: AddItem.coupon_status,
-          }),
+          body: formData,
+          // body: JSON.stringify({
+          //   action: "newData",
+          //   coupon_discount_number: AddItem.coupon_discount_number,
+          //   coupon_quantity: AddItem.coupon_quantity,
+          //   coupon_pricing_condition: AddItem.coupon_pricing_condition,
+          //   coupon_issue_date: AddItem.coupon_issue_date,
+          //   coupon_valid_date: AddItem.coupon_valid_date,
+          //   coupon_exp_date: AddItem.coupon_exp_date,
+          //   coupon_status: AddItem.coupon_status,
+          // }),
         });
         selt.$Message.info("已新增一筆資料");
         // 重新撈資料
