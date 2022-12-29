@@ -392,12 +392,26 @@ export default {
 
       // 整理資料
       //新增couponStatus的布林值，轉為coupon_status 0 or 1
-      AddItem.coupon_id = AddItem.coupon_id;
-      if (AddItem.couponStatus == true) {
-        AddItem.coupon_status == 1;
-      } else if (AddItem.couponStatus == false) {
-        AddItem.coupon_status == 0;
+      // selt.addItem.coupon_id = selt.addItem.coupon_id;
+      if (selt.addItem.couponStatus == true) {
+        selt.addItem.coupon_status == 1;
+      } else if (selt.addItem.couponStatus == false) {
+        selt.addItem.coupon_status == 0;
       }
+      console.log(selt.addItem);
+      selt.addItem.coupon_issue_date = selt.addItem.coupon_issue_date
+        .toLocaleDateString()
+        .replace(/\//g, "-")
+        .substr(0, 10);
+      selt.addItem.coupon_valid_date = selt.addItem.coupon_valid_date
+        .toLocaleDateString()
+        .replace(/\//g, "-");
+      if (selt.addItem.coupon_exp_date != "") {
+        selt.addItem.coupon_exp_date = selt.addItem.coupon_exp_date
+          .toLocaleDateString()
+          .replace(/\//g, "-");
+      }
+      console.log("BBB");
 
       // 檢查資料是否為數字
       function isNumber(inputs) {
@@ -429,7 +443,7 @@ export default {
           method: "POST",
           body: JSON.stringify({
             action: "newData",
-            coupon_id: AddItem.coupon_id,
+            // coupon_id: AddItem.coupon_id,
             coupon_discount_number: AddItem.coupon_discount_number,
             coupon_quantity: AddItem.coupon_quantity,
             coupon_pricing_condition: AddItem.coupon_pricing_condition,
@@ -441,7 +455,7 @@ export default {
         });
         selt.$Message.info("已新增一筆資料");
         // 重新撈資料
-        this.renew();
+        this.getData();
       }
     },
     cancelData() {
