@@ -293,13 +293,13 @@ export default {
       });
     },
     onChange(row) {
-      console.log(row.qa_status);
+      // console.log(row.qa_status);
       if (row.qa_status) {
         this.$Message.info("上架狀態： 上架");
       } else {
         this.$Message.info("上架狀態： 下架");
       }
-      console.log(row);
+      // console.log(row);
 
       this.updateStatus(row.qa_id, row.qa_status);
     },
@@ -321,7 +321,7 @@ export default {
       this.addqaItem = { ...this.getQuestion[index] };
       // console.log(this.getNews[0]);
     },
-    replaceItem() {
+    replaceItem(index) {
       this.$refs["updateForm"].validate((valid) => {
         if (valid) {
           // this.addItem.pro_rest_amount = this.addItem.pro_onshelf_amount;
@@ -330,7 +330,7 @@ export default {
           //   .replace(/\//g, "-");
 
           // this.insertData(this.addItem);
-          this.updateData();
+          this.updateData(index);
 
           // 帶移動
           // const index = this.dataList.findIndex(
@@ -379,7 +379,7 @@ export default {
         });
     },
     deleData(row) {
-      console.log(row.qa_id);
+      // console.log(row.qa_id);
       const formData = new FormData();
       formData.append("qa_id", row.qa_id);
 
@@ -393,7 +393,7 @@ export default {
         });
     },
     updateData() {
-      console.log(this.addqaItem);
+      // console.log(this.addqaItem);
       const formData = new FormData();
       const formDataKey = Object.keys(this.addqaItem);
       formDataKey.forEach((key) => {
@@ -418,6 +418,21 @@ export default {
           }
 
           this.addqaItem = { ...this.resetqaItem };
+        });
+    },
+    updateStatus(qa_id, qa_status) {
+      const formData = new FormData();
+      formData.append("qa_status", qa_status);
+      formData.append("qa_id", qa_id);
+
+      fetch(`${BASE_URL}/updateQuestionStatus.php`, {
+        method: "POST",
+        body: formData,
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          const result = res;
+          console.log(result);
         });
     },
   },

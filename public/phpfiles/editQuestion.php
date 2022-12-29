@@ -5,12 +5,12 @@ header("Content-Type:application/json;charset=utf-8");
 try {
     require_once("./php_connect_books/connectBooks.php");
 
-    $sql = "update faq set     qa_type = :qa_type,
-                               qa_title = :qa_title,
-                               qa_answer = :qa_answer,
-                               qa_status = :qa_status,
+    $sql = "update faq set  qa_type = :qa_type,
+                            qa_title = :qa_title,
+                            qa_answer = :qa_answer,
+                            qa_status = :qa_status,
 
-                               where qa_id = :qa_id";
+                            where qa_id = :qa_id";
     //編譯, 執行
     $products = $pdo->prepare($sql);
     $products->bindValue(":qa_id", $_POST["qa_id"]);
