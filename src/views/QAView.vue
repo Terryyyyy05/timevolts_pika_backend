@@ -200,7 +200,7 @@ export default {
         },
         {
           title: "編輯/刪除",
-          width: "200px",
+          width: "203px",
           key: "edit",
           align: "center",
           slot: "edit_del", //加入編輯刪除欄位需加slot
