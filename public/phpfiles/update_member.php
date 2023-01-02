@@ -1,18 +1,16 @@
 <?php 
 header('Access-Control-Allow-Origin:*');
 header("Content-Type:application/json;charset=utf-8");
-
+require_once("./php_connect_books/connectBooks.php");
 
     try{
-        require_once("./php_connect_books/connectBooks.php");
-
-        $sql = "update member set mem_status = :mem_status
+        $sql = "UPDATE member SET mem_status = :mem_status
                             
-                                  where mem_id = :mem_id";
+                                  WHERE mem_id = :mem_id";
         //編譯, 執行
         $member = $pdo->prepare($sql);
         $member->bindValue(":mem_id", $_POST["mem_id"]);	
-        $products->bindValue(":mem_status", $_POST["mem_status"]);
+        $member->bindValue(":mem_status", $_POST["mem_status"]);
         
   
         $member->execute();
