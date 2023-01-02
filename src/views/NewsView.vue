@@ -10,7 +10,7 @@
       <FormItem label="消息編號">
         <Input v-model="addItem.news_id" placeholder="請輸入消息編號"></Input>
       </FormItem>
-      <FormItem label="消息分類">
+      <FormItem label="消息分類" prop="news_category">
         <Select v-model="addItem.news_category" :value="news_category" placeholder="請選擇" name="news_category">
           <Option value="行程預訂">行程預訂</Option>
           <Option value="歷史故事">歷史故事</Option>
@@ -61,8 +61,8 @@
     <!-- 加入開關按鈕 -->
 
     <template #news_status="{ row }">
-      <Switch size="large" true-color="#fab042" false-color="#e6e6e6" :true-value="parseInt(1)"
-        :false-value="parseInt(0)" v-model="row.news_status" @on-change="onChange(row)">
+      <Switch size="large" true-color="#fab042" false-color="#e6e6e6" :true-value=parseInt(1)
+        :false-value=parseInt(0) v-model="row.news_status" @on-change="onChange(row)">
         <template #open>
           <span>上架</span>
         </template>
@@ -82,13 +82,18 @@
       <Button @click="clickEditBtn(index)" class="edit">編輯</Button>
       <!-- 編輯彈窗 -->
       <Modal v-model="modal3[index]" title="編輯最新消息" ok-text="確認修改" cancel-text="取消" width="700px" class="editnews-popup"
-        :styles="{ top: '30px' }" @on-ok="replaceItem" @on-cancel="cancelEdit">
+        :styles="{ top: '30px' }" @on-ok="replaceItem(row.news_id)" @on-cancel="cancelEdit">
 
-        <Form :model="addItem" :label-width="80" inline>
+        <Form 
+        :model="addItem" 
+        :label-width="80" 
+        name="updateForm"
+        ref="updateForm"
+        inline>
           <FormItem label="消息編號" :model="addItem">
             <text>{{ addItem.news_id }}</text>
           </FormItem>
-          <FormItem label="消息分類">
+          <FormItem label="消息分類" prop="news_category">
             <Select v-model="addItem.news_category" placeholder="請選擇">
               <Option value="行程預訂">行程預訂</Option>
               <Option value="歷史故事">歷史故事</Option>
@@ -158,8 +163,7 @@ export default {
           title: "消息分類",
           width: "150px",
           align: "center",
-          key: "news_category",
-          // key:"news_category",
+          slot:"news_category",
           filters: [
             //篩選分類
             {
@@ -199,7 +203,7 @@ export default {
         },
         {
           title: "狀態",
-          // key: "news_status",
+          key: "news_status",
           slot: "news_status",
           align: "center",
           width: "100px", //加入開關鈕欄位需加slot
@@ -270,7 +274,7 @@ export default {
         news_add_date: '',
         news_category: '',
         news_hashtag: '',
-        nees_status: '',
+        news_status: '',
         news_img: '',
         news_item_id: '',
         news_content: ''
@@ -281,7 +285,7 @@ export default {
         news_add_date: '',
         news_category: '',
         news_hashtag: '',
-        nees_status: '',
+        news_status: '',
         news_img: '',
         news_item_id: '',
         news_content: ''
@@ -290,7 +294,6 @@ export default {
   },
   methods: {
     remove(index, row) {
-      // console.log(index);
       this.$Modal.confirm({
         content: "<p>確認刪除嗎?</p>",
         okText: "刪刪刪拉",
@@ -311,6 +314,7 @@ export default {
       } else {
         this.$Message.info("上架狀態： 下架");
       }
+      this.updateStatus(row.news_id, row.news_status);
     },
     clickOk() {
       this.addItem.news_add_date = this.addItem.news_add_date
@@ -323,17 +327,23 @@ export default {
       this.addItem = { ...this.getNews[index] };
       // console.log(this.getNews[0]);
     },
-    replaceItem() {
-      const index = this.getNews.findIndex((item) => item.news_id === this.addItem.news_id);
-
+    replaceItem(index) {
+      // const index = this.getNews.findIndex((item) => item.news_id === this.addItem.news_id);
+      this.$refs["updateForm"].validate((valid) => {
+                if (valid) {
 
       this.addItem.news_add_date = this.addItem.news_add_date.toLocaleDateString().replace(/\//g, "-");
-      this.getNews[index] = this.addItem;
-      this.addItem = { ...this.resetItem };
+      this.updateData(index);
+      // this.getNews[index] = this.addItem;
+      // this.addItem = { ...this.resetItem };
+    } else {
+                    alert("修改失敗，請確認表格是否輸入正確");
+                }
+              });
     },
     cancelEdit() {
       this.addItem = { ...this.resetItem };
-      console.log(this.getNews[0]);
+      // console.log(this.getNews[0]);
     },
     getData() {
       fetch(`${BASE_URL}/getNews.php`)
@@ -380,7 +390,57 @@ export default {
           console.log(result);
         });
     },
-    
+    updateData(name) {
+            let imgName = document.querySelector(`#${name} .news_img_id_update`);
+            console.log(imgName.files[0]);
+
+            const formData = new FormData();
+            const formDataKey = Object.keys(this.addItem);
+            formDataKey.forEach((key) => {
+                formData.append(`${key}`, this.addItem[key]);
+            });
+
+            formData.set("news_img", imgName.files[0]);
+
+            fetch(`${BASE_URL}/update_pro_data.php`, {
+                method: "POST",
+                body: formData,
+            })
+                .then((res) => res.json())
+                .then((res) => {
+                    const result = res;
+
+                    if (result === "wrong") {
+                        alert("新增失敗，資料庫已有此筆資料");
+                    } else {
+                        this.addItem.news_img = result.news_img;
+
+                        const index = this.getData.findIndex(
+                            (item) => item.news_id === this.addItem.news_id
+                        );
+
+                        this.getData[index] = this.addItem;
+                    }
+
+                    this.addItem = { ...this.resetItem };
+                    imgName.outerHTML = imgName.outerHTML;
+                });
+        },
+        updateStatus(news_id, news_status) {
+            const formData = new FormData();
+            formData.append("news_status", news_status);
+            formData.append("news_id", news_id);
+
+            fetch(`${BASE_URL}/update_news_status.php`, {
+                method: "POST",
+                body: formData,
+            })
+                .then((res) => res.json())
+                .then((res) => {
+                    const result = res;
+                    console.log(result);
+                });
+        },
     saveData() { },
   },
   mounted() {

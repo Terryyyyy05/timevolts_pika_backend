@@ -2,11 +2,8 @@
 header('Access-Control-Allow-Origin:*');
 header("Content-Type:application/json;charset=utf-8");
 
-//線上
-const MY_DIR = "../../../news";
-//local
-// require_once("./img_path.php");
-// const MY_DIR = img_path;
+require_once("./img_path.php");
+const MY_DIR = img_path;
 
 switch($_FILES["news_img"]["error"] ){
 	case UPLOAD_ERR_OK : 
