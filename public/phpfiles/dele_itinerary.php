@@ -9,12 +9,12 @@ $imgPath = img_path;
 try {
     $imgFile = $_POST["itinerary_img"];
 
-    if (file_exists("$imgPath/$imgFile") == false) {
-        echo "NONO圖片梅刪掉";
-        exit();
-    }
-    $imgFile = $_POST["itinerary_img"];
-    unlink("$imgPath/$imgFile");
+    // if (file_exists("$imgPath/$imgFile") == false) {
+    //     echo "NONO圖片梅刪掉";
+    //     exit();
+    // }
+    // $imgFile = $_POST["itinerary_img"];
+    // unlink("$imgPath/$imgFile");
 
     $sql = "delete FROM itinerary where itinerary_id = :itinerary_id";
 

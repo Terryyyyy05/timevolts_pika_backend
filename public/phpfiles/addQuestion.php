@@ -13,8 +13,14 @@ try {
         echo json_encode('wrong');
         exit();
     }
+    // Set Auto Increment to 1 each time
+    $sqlAutoIncrement = "ALTER TABLE faq AUTO_INCREMENT=1";
+    
+    $productsAutoIncrement = $pdo->prepare($sqlAutoIncrement);
+    $productsAutoIncrement->execute();
 
-    $sql = "insert into faq values (null, :qa_type, :qa_title, :qa_answer, :qa_status)";
+    // Insert new data
+    $sql = "INSERT INTO faq VALUES (null, :qa_type, :qa_title, :qa_answer, :qa_status)";
     //編譯, 執行
     $products = $pdo->prepare($sql);
     // $products->bindValue(":qa_id", $_POST["qa_id"]);
