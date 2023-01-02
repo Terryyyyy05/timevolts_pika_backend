@@ -455,9 +455,11 @@ export default {
           .toLocaleDateString()
           .replace(/\//g, "-")
           .substr(0, 10);
+      } else {
+        selt.addItem.coupon_exp_date = "null";
       }
-      console.log("BBB");
-      console.log(selt.addItem);
+      // console.log("BBB");
+      // console.log(selt.addItem);
       // 折價金額
       if (isNumber(AddItem.coupon_discount_number)) {
         //發行數量
