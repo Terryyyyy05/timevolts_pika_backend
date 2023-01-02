@@ -384,24 +384,11 @@ export default {
         .then((res) => res.json())
         .then((result) => {
           selt.dataList = result;
-
-          //資料處理
-          //新增couponStatus屬性代替coupon_status計算布林值
-          for (let i = 0; i < selt.dataList.length; i++) {
-            if (selt.dataList[i].coupon_status == 1) {
-              selt.dataList[i]["couponStatus"] = true;
-            } else if (selt.dataList[i].coupon_status == 0) {
-              selt.dataList[i]["couponStatus"] = false;
-            }
-          }
-
-          selt.addItem.coupon_id = selt.dataList.length + 1;
+          // selt.addItem.coupon_id = selt.dataList.length + 1;
           console.log(selt);
         });
     },
-    couponStatus() {
-      console.log("EEE");
-      console.log(dataList.coupon_status);
+    async couponStatus() {
       if ((dataList.coupon_status = 1)) {
         return true;
       } else {
@@ -414,33 +401,41 @@ export default {
 
       // 檢查是否為空值、錯誤
       if (AddItem.coupon_discount_number == "") {
-        return selt.$Message.warning("「折扣金額」不得為空");
+        selt.$Message.warning("「折扣金額」不得為空");
       } else if (AddItem.coupon_quantity == "") {
-        return selt.$Message.warning("「發送數量」不得為空");
+        selt.$Message.warning("「發送數量」不得為空");
       } else if (AddItem.coupon_pricing_condition == "") {
-        return selt.$Message.warning("「消費門檻」不得為空");
+        selt.$Message.warning("「消費門檻」不得為空");
       } else if (
         AddItem.coupon_pricing_condition < AddItem.coupon_discount_number
       ) {
-        return selt.$Message.warning("「消費門檻」不得低於「折扣金額」");
+        selt.$Message.warning("「消費門檻」不得低於「折扣金額」");
       } else if (AddItem.coupon_issue_date == "") {
-        return selt.$Message.warning("「發送日期」不得為空");
+        selt.$Message.warning("「發送日期」不得為空");
       } else if (AddItem.coupon_valid_date == "") {
-        return selt.$Message.warning("「生效日期」不得為空");
+        selt.$Message.warning("「生效日期」不得為空");
       } else {
-        // 通過驗證
-        this.newDataTidy();
+        // 檢查資料是否為數字
+        function isNumber(inputs) {
+          return parseFloat(inputs).toString() != "NaN";
+        }
+        if (!isNumber(AddItem.coupon_discount_number)) {
+          selt.$Message.info("折價金額錯誤");
+        } else if (!isNumber(AddItem.coupon_quantity)) {
+          selt.$Message.info("消費門檻錯誤");
+        } else if (!isNumber(AddItem.coupon_pricing_condition)) {
+          selt.$Message.info("發行數量錯誤");
+        } else {
+          // 通過驗證
+          this.newDataTidy();
+        }
       }
     },
     newDataTidy() {
       let selt = this;
       let AddItem = selt.addItem;
-      // 檢查資料是否為數字
-      function isNumber(inputs) {
-        return parseFloat(inputs).toString() != "NaN";
-      }
 
-      // 整理日期
+      // 整理日期格式、判定有無期限
       typeof str == "string";
       selt.addItem.coupon_issue_date = selt.addItem.coupon_issue_date
         .toLocaleDateString()
@@ -455,68 +450,72 @@ export default {
           .toLocaleDateString()
           .replace(/\//g, "-")
           .substr(0, 10);
+        // 送出一般的資料
+        this.insertNewData(AddItem);
       } else {
-        selt.addItem.coupon_exp_date = "null";
+        selt.addItem.coupon_exp_date == "null";
+        // 送出無期限的資料
+        this.insertNullExpData(AddItem);
       }
-      // console.log("BBB");
-      // console.log(selt.addItem);
-      // 折價金額
-      if (isNumber(AddItem.coupon_discount_number)) {
-        //發行數量
-        if (isNumber(AddItem.coupon_quantity)) {
-          //消費門檻
-          if (isNumber(AddItem.coupon_pricing_condition)) {
-            // 新增資料
-            insertNewData();
-          } else {
-            selt.$Message.info("消費門檻錯誤");
-          }
-        } else {
-          selt.$Message.info("發行數量錯誤");
-        }
-      } else {
-        selt.$Message.info("折價金額錯誤");
-      }
-      return;
 
       // 新增資料
-      function insertNewData() {
-        // fetch(`${BASE_URL}/insert_new_coupon_data.php`)
-        let formData = new FormData();
-        formData.append("action", "newData");
-        formData.append(
-          "coupon_discount_number",
-          AddItem.coupon_discount_number
-        );
-        formData.append("coupon_quantity", AddItem.coupon_quantity);
-        formData.append(
-          "coupon_pricing_condition",
-          AddItem.coupon_pricing_condition
-        );
-        formData.append("coupon_issue_date", AddItem.coupon_issue_date);
-        formData.append("coupon_valid_date", AddItem.coupon_valid_date);
-        formData.append("coupon_exp_date", AddItem.coupon_exp_date);
-        formData.append("coupon_status", AddItem.coupon_status);
-
-        fetch(`${BASE_URL}/insert_new_coupon_data.php`, {
-          method: "POST",
-          body: formData,
-          // body: JSON.stringify({
-          //   action: "newData",
-          //   coupon_discount_number: AddItem.coupon_discount_number,
-          //   coupon_quantity: AddItem.coupon_quantity,
-          //   coupon_pricing_condition: AddItem.coupon_pricing_condition,
-          //   coupon_issue_date: AddItem.coupon_issue_date,
-          //   coupon_valid_date: AddItem.coupon_valid_date,
-          //   coupon_exp_date: AddItem.coupon_exp_date,
-          //   coupon_status: AddItem.coupon_status,
-          // }),
-        });
-        selt.$Message.info("已新增一筆資料");
-        // 重新撈資料
-        this.getData();
-      }
+      // if (AddItem.coupon_exp_date != "null") {
+      //   console.log(AddItem.coupon_exp_date);
+      // } else {
+      //   console.log(AddItem.coupon_exp_date);
+      // }
     },
+
+    // 新增資料
+    insertNewData(AddItem) {
+      let formData = new FormData();
+      formData.append("action", "newData");
+      formData.append("coupon_discount_number", AddItem.coupon_discount_number);
+      formData.append("coupon_quantity", AddItem.coupon_quantity);
+      formData.append(
+        "coupon_pricing_condition",
+        AddItem.coupon_pricing_condition
+      );
+      formData.append("coupon_issue_date", AddItem.coupon_issue_date);
+      formData.append("coupon_valid_date", AddItem.coupon_valid_date);
+      formData.append("coupon_exp_date", AddItem.coupon_exp_date);
+      formData.append("coupon_status", AddItem.coupon_status);
+
+      fetch(`${BASE_URL}/insert_new_coupon_data.php`, {
+        method: "POST",
+        body: formData,
+      });
+      selt.$Message.info("已新增一筆資料");
+      // 重新撈資料
+      this.getData();
+    },
+
+    // 新增無期限資料
+    insertNullExpData(AddItem) {
+      let nullExpFormData = new FormData();
+      nullExpFormData.append("action", "nullExpData");
+      nullExpFormData.append(
+        "coupon_discount_number",
+        AddItem.coupon_discount_number
+      );
+      nullExpFormData.append("coupon_quantity", AddItem.coupon_quantity);
+      nullExpFormData.append(
+        "coupon_pricing_condition",
+        AddItem.coupon_pricing_condition
+      );
+      nullExpFormData.append("coupon_issue_date", AddItem.coupon_issue_date);
+      nullExpFormData.append("coupon_valid_date", AddItem.coupon_valid_date);
+      nullExpFormData.append("coupon_status", AddItem.coupon_status);
+
+      fetch(`${BASE_URL}/insert_null_exp_coupon_data.php`, {
+        method: "POST",
+        body: nullExpFormData,
+      });
+      selt.$Message.info("已新增一筆資料");
+      // 重新撈資料
+      this.getData();
+    },
+
     cancelData() {
       this.$Message.info("已取消新增");
     },
@@ -539,14 +538,16 @@ export default {
       });
     },
   },
-  mounted() {},
-  created() {
+  mounted() {
     this.getData();
-    function OnlyNumber(obj) {
-      if (obj.value != obj.value.replace(/[^0-9\.]/g, "")) {
-        obj.value = obj.value.replace(/[^0-9\.-]/g, "");
-      }
-    }
+  },
+  created() {
+    // this.getData();
+    // function OnlyNumber(obj) {
+    //   if (obj.value != obj.value.replace(/[^0-9\.]/g, "")) {
+    //     obj.value = obj.value.replace(/[^0-9\.-]/g, "");
+    //   }
+    // }
     // this.$set(this.dataList, "add", 0);
   },
   computed: {},
