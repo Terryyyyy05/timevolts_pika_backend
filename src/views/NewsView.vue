@@ -61,8 +61,8 @@
     <!-- 加入開關按鈕 -->
 
     <template #news_status="{ row }">
-      <Switch size="large" true-color="#fab042" false-color="#e6e6e6" :true-value=parseInt(1)
-        :false-value=parseInt(0) v-model="row.news_status" @on-change="onChange(row)">
+      <Switch size="large" true-color="#fab042" false-color="#e6e6e6" :true-value="parseInt(1)"
+        :false-value="parseInt(0)" v-model="row.news_status" @on-change="onChange(row)">
         <template #open>
           <span>上架</span>
         </template>
