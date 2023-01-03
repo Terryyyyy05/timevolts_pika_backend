@@ -226,8 +226,8 @@
             true-color="#fab042"
             false-color="#e6e6e6"
             v-model="row.story_status"
-            :true-value="1"
-            :false-value="0"
+            :true-value="1+''"
+            :false-value="0+''"
             @on-change="onChange(row)"
          >
             <template #open>
