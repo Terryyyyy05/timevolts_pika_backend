@@ -73,6 +73,7 @@ export default {
             body: JSON.stringify({
                account: this.account.val,
                password: this.password.val,
+               
             }),
          });
 
@@ -81,10 +82,14 @@ export default {
          if (responseData.errMsg) {
             window.alert(`${responseData.errMsg}`);
             this.loginIsValid = false;
-         } else if (this.loginIsValid) {
+         } else if(responseData.errMsg1){
+            window.alert(`${responseData.errMsg1}`);
+            console.log(`${responseData.errMsg1}`);
+            this.loginIsValid = false;
+         } else if (responseData.msg === "登入成功") {
             window.alert(`歡迎登入，${responseData.adminName}`);
             this.$router.push({ path: "/member" });
-         }
+         } 
       },
    },
 };

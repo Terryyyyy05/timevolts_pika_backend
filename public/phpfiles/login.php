@@ -17,15 +17,38 @@ try {
 
    $msg = '';
    $errMsg = '';
-   if ($admin->rowCount() == 0) { //找不到
+   $errMsg1 = '';
+   // if ($admin->rowCount() == 0) { //找不到
+   //    $errMsg .= "帳密錯誤,請重新登入";
+   //    echo json_encode(["errMsg" => $errMsg]);
+      
+   // } else {
+   //    $msg .= "登入成功";
+   //    $adminRow = $admin->fetch(PDO::FETCH_ASSOC);
+   //    echo json_encode(["adminName" => $adminRow["admin_name"], "msg" => $msg]);
+
+   //    if ($adminRow["admin_status"]===0) {
+   //       $errMsg1 .= "你已離職囉，請離開";
+   //       echo json_encode(["errMsg1" => $errMsg1]);
+   //    }
+   // }
+
+   if ($admin->rowCount() == 0) { 
       $errMsg .= "帳密錯誤,請重新登入";
       echo json_encode(["errMsg" => $errMsg]);
    } else {
-      $msg .= "登入成功";
       $adminRow = $admin->fetch(PDO::FETCH_ASSOC);
-      echo json_encode(["adminName" => $adminRow["admin_name"], "msg" => $msg]);
+   
+      if ($adminRow["admin_status"] === 0) {
+         $errMsg1 .= "你已離職囉，請離開";
+         echo json_encode(["errMsg1" => $errMsg1]);
+      } else {
+         $msg .= "登入成功";
+         echo json_encode(["adminName" => $adminRow["admin_name"], "msg" => $msg]);
+      }
    }
 } catch (PDOException $e) {
-   // $errMsg .= "錯誤 : " . $e->getMessage() . "<br>";
-   // $errMsg .= "行號 : " . $e->getLine() . "<br>";
+   $errMsg .= "錯誤 : " . $e->getMessage() . "<br>";
+   $errMsg .= "行號 : " . $e->getLine() . "<br>";
 }
+

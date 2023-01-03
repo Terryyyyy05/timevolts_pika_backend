@@ -1,7 +1,7 @@
 <template>
   <the-heading heading="後台帳號管理系統"></the-heading>
   <!-- 新增彈窗按鈕 -->
-  <Button @click="modal1 = true" class="admin">新增 +</Button>
+  <Button @click="modal1 = true" class="add">新增 +</Button>
   <!-- 新增彈窗 -->
   <Modal 
   v-model="modal1" 
@@ -21,33 +21,35 @@
       ref="addForm"
       :rules="ruleValidate"
       >
-        <FormItem label="員工編號">
-          <Input v-model="addItem.admin_id" placeholder="請輸入編號"></Input>
-        </FormItem>
-        <FormItem label="管理員姓名">
+        <FormItem label="管理員姓名"
+        prop="admin_name">
           <Input v-model="addItem.admin_name" placeholder="請輸入姓名"></Input>
         </FormItem>
-        <FormItem label="管理員帳號">
+        <FormItem label="管理員帳號"
+        prop="admin_account">
           <Input v-model="addItem.admin_account" placeholder="請輸入帳號"></Input>
         </FormItem>
-        <FormItem label="管理員密碼">
+        <FormItem label="管理員密碼"
+        prop="admin_psw">
           <Input v-model="addItem.admin_psw" placeholder="請輸入密碼"></Input>
         </FormItem>
-        <FormItem label="管理員權限">
+        <!-- <FormItem label="再次輸入"
+        prop="admin_pswConfirm">
+          <Input v-model="addItem.admin_pswConfirm" placeholder="再輸入密碼"></Input>
+        </FormItem> -->
+        <FormItem label="管理員權限"
+        prop="admin_authority">
           <Select v-model="addItem.admin_authority" placeholder="請選擇" style="width:100px">
             <Option value="1">超級權限</Option>
             <Option value="2">一般</Option>
             <Option value="3">停權</Option>
           </Select>
         </FormItem>
-        <FormItem label="在職狀態">
-          <Select v-model="addItem.admin_status" placeholder="請選擇" style="width:100px">
-            <Option value="在職">在職</Option>
-            <Option value="離職">離職</Option>
-          </Select>
-        </FormItem>
       </Form>
   </Modal>
+
+
+
 
   <!-- 表格 -->
   <Table 
@@ -77,23 +79,24 @@
     </template>
 
     <template #admin_authority="{ row }">   
-      <text>{{ row.admin_authority }}</text>
+      <text>{{authorityText[row.admin_authority]}}</text>
     </template>
 
     <!-- 加入編輯、刪除彈窗 -->
-    <template #edit_admin="{index}">
+    <template #edit_admin="{index, row}">
       <!-- 編輯按鈕 -->
       <Button @click="clickEditBtn(index)" class="edit">編輯</Button>
       <!-- 編輯彈窗 -->
       <Modal 
       v-model="modal3[index]" 
+      :id="row.admin_name"
       title="編輯會員資料" 
       ok-text="確認修改"
       cancel-text="取消" 
       width="500px" 
       class="editadmin-popup"
       :styles="{top: '30px'}"
-      @on-ok="replaceItem"
+      @on-ok="replaceItem(row.admin_name)"
       @on-cancel="cancelEdit"
       >
       
@@ -104,18 +107,26 @@
         ref="updateForm"
         >
         <FormItem label="員工編號">
-          <Input v-model="addItem.admin_id" placeholder="請輸入編號"></Input>
+         <text>{{ addItem.admin_id }}</text>
         </FormItem>
-        <FormItem label="管理員姓名">
+        <FormItem label="管理員姓名"
+        prop="admin_name">
           <Input v-model="addItem.admin_name" placeholder="請輸入姓名"></Input>
         </FormItem>
-        <FormItem label="管理員帳號">
-          <Input v-model="addItem.admin_account" placeholder="請輸入帳號"></Input>
+        <FormItem label="管理員帳號"
+        prop="admin_account">
+        <Input v-model="addItem.admin_account" placeholder="請輸入帳號"></Input>
         </FormItem>
-        <FormItem label="管理員密碼">
+        <FormItem label="管理員密碼"
+        prop="admin_psw">
           <Input type="password" v-model="addItem.admin_psw" placeholder="請輸入密碼"></Input>
         </FormItem>
-        <FormItem label="管理員權限">
+        <!-- <FormItem label="再次確認密碼"
+        prop="admin_pswConfirm">
+          <Input type="password" v-model="addItem.admin_pswConfirm" placeholder="請輸入密碼"></Input>
+        </FormItem> -->
+        <FormItem label="管理員權限"
+        prop="admin_authority">
           <Select v-model="addItem.admin_authority" placeholder="請選擇" style="width:100px">
             <Option value="1">超級權限</Option>
             <Option value="2">一般</Option>
@@ -123,10 +134,7 @@
           </Select>
         </FormItem>
         <FormItem label="在職狀態">
-          <Select v-model="addItem.admin_status" placeholder="請選擇" style="width:100px">
-            <Option value="1">在職</Option>
-            <Option value="0">離職</Option>
-          </Select>
+          <text>{{ addItem.admin_status === 0 ? "離職" : "在職" }}</text>
         </FormItem>
       </Form>
       </Modal>
@@ -140,6 +148,11 @@ import { BASE_URL } from "@/assets/js/commom";
 export default {
   data() {
     return {
+      authorityText: {
+        1: "超級權限",
+        2: "一般",
+        3: "停權"
+      },
       modal1: false,  //新增彈窗預設關閉
       modal3: [],  //編輯彈窗預設關閉
       columns: [  ///表單表頭
@@ -172,17 +185,27 @@ export default {
           filters: [
           {
               label: "超級權限",
-              value: 1
+              value: "超級權限"
             },
             {
               label: "一般",
-              value: 2
+              value: "一般"
             },
             {
               label: "停權",
-              value: 3
+              value: "停權"
             },
-          ]
+          ],
+          filterMultiple: false,
+          filterMethod(value, row) {
+            if (value === "超級權限") {
+              return row.admin_authority === 1;
+            } else if (value === "一般") {
+              return row.admin_authority === 2;
+            }else {
+              return row.admin_authority === 3
+            }
+          }
         },
         {
           title: '在職狀態',
@@ -199,41 +222,6 @@ export default {
           slot:'edit_admin'
         },
       ],
-      // data: [     ///表格內容資料
-      //   {
-      //     id: '1000001',
-      //     name: '張咚咚',
-      //     account: '123123',
-      //     password:'sdfsdfsdfsdf',
-      //     permission:'',
-      //     admin_status:'在職',
-      //   },
-      //   {
-      //     id: '1000002',
-      //     name: '張西西',
-      //     account: '123123',
-      //     password:'sdfsdfsdfsdf',
-      //     permission:'',
-      //     admin_status:'在職',
-      //   },
-      //   {
-      //     id: '1000003',
-      //     name: '張喃喃',
-      //     account: '123123',
-      //     password:'sdfsdfsdfsdf',
-      //     permission:'',
-      //     admin_status:'在職',
-      //   },
-      //   {
-      //     id: '1000004',
-      //     name: '張北北',
-      //     account: '123123',
-      //     password:'sdfsdfsdfsdf',
-      //     permission:'',
-      //     admin_status:'在職',
-      //   },
-       
-      // ],
       dataList:[],
       addItem: {   //新增彈窗內容資料
         // admin_id: '',
@@ -276,68 +264,58 @@ export default {
             trigger: "blur",
           },
         ],
-        admin_authority: 2,
-        admin_status: 1
+        // admin_pswConfirm:[
+        //   {
+        //     required: true,
+        //     type: "string",
+        //     message: "密碼先預設",
+        //     trigger: "blur",
+        //   },
+        // ],
+        admin_authority: [
+          {
+          required: true,
+          type: "string",
+          message: "請選擇權限",
+          trigger: "blur",
+          }
+        ],
       }
     }
   },
+  
   methods:{
-    remove(index, row) {
-      // console.log(index);
-      this.$Modal.confirm({
-        content: "<p>確認刪除嗎?</p>",
-        okText: "刪刪刪拉",
-        cancelText: "先不要好ㄌ",
-        onOk: () => {
-          this.$Message.info("確認刪除");
-          this.deleData(row);
-
-          this.dataList.splice(index, 1);
-        },
-        onCancel: () => {
-          this.$Message.info("取消");
-        },
-      });
-    },
     onChange(row) {
       if (row.admin_status) {
-        this.$Message.info("上架狀態： 在職");
+        this.$Message.info("管理員狀態： 在職");
       } else {
-        this.$Message.info("上架狀態： 離職");
+        this.$Message.info("管理員狀態： 離職");
       }
+      this.updateStatus(row.admin_id, row.admin_status);
     },
-    //這裡不懂
-  //   clickOk() {
-  //     this.$refs["addForm"].validate((valid) => {
-  //       if (valid) {
-  //         this.addItem.pro_rest_amount = this.addItem.pro_onshelf_amount;
-  //         this.addItem.pro_onshelf_date = this.addItem.pro_onshelf_date
-  //           .toLocaleDateString()
-  //           .replace(/\//g, "-");
+    clickOk() {
+      this.$refs["addForm"].validate((valid) => {
+        if (valid) {
 
-  //         this.insertData(this.addItem);
-  //         } else {
-  //         alert("新增失敗，請確認表格是否輸入正確");
-  //         }
-  //     });
-  // },
+          this.insertData(this.addItem);
+          } else {
+          alert("新增失敗，請確認表格是否輸入正確");
+          }
+      });
+  },
     clickEditBtn(index) {
       this.modal3[index] = true;
       this.addItem = { ...this.dataList[index] };
     },
-    // replaceItem() {
-    //   this.$refs["updateForm"].validate((valid) => {
-    //     if (valid) {
-    //       this.addItem.pro_onshelf_date = this.addItem.pro_onshelf_date
-    //         .toLocaleDateString()
-    //         .replace(/\//g, "-");
-
-    //       this.updateData();
-    //     } else {
-    //       alert("修改失敗，請確認表格是否輸入正確");
-    //     }
-    //   });
-    // },
+    replaceItem() {
+      this.$refs["updateForm"].validate((valid) => {
+        if (valid) {
+          this.updateData(index);
+        } else {
+          alert("修改失敗，請確認表格是否輸入正確");
+        }
+      });
+    },
     cancelEdit() {
       this.addItem = { ...this.resetItem };
     },
@@ -348,10 +326,84 @@ export default {
           this.dataList = result;
         });
     },
+    insertData() {
+      const formData = new FormData();
+      const formDataKey = Object.keys(this.addItem);
+      formDataKey.forEach((key) => {
+          formData.append(`${key}`, this.addItem[key]);
+      });
+      fetch(`${BASE_URL}/insert_admin_staff.php`, {
+          method: "POST",
+          body: formData,
+      })
+      .then((res) => res.json())
+      .then((res) => {
+          const result = res;
+
+          if (result === "wrong") {
+              alert("新增失敗，資料庫已有此筆資料");
+          } else {
+              this.addItem.admin_id = result.admin[0].admin_id;
+              this.dataList.push({ ...this.addItem });
+          }
+
+          this.addItem = { ...this.resetItem };
+      });
+    },
+    updateData(name) {
+      const formData = new FormData();
+      const formDataKey = Object.keys(this.addItem);
+      formDataKey.forEach((key) => {
+          formData.append(`${key}`, this.addItem[key]);
+      });
+
+      fetch(`${BASE_URL}/updateAdmin.php`, {
+          method: "POST",
+          body: formData,
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          const result = res;
+
+          if (result === "wrong") {
+              alert("新增失敗，資料庫已有此筆資料");
+          } else {
+              const index = this.dataList.findIndex(
+                  (item) => item.admin_id === this.addItem.admin_id
+              );
+
+              this.dataList[index] = this.addItem;
+          }
+
+          this.addItem = { ...this.resetItem };
+        });
+      },
+
+
+
+
+      
+    updateStatus(admin_id, admin_status) {
+      const formData = new FormData();
+      formData.append("admin_status", admin_status);
+      formData.append("admin_id", admin_id);
+
+      fetch(`${BASE_URL}/update_admin_status.php`, {
+          method: "POST",
+          body: formData,
+      })
+          .then((res) => res.json())
+          .then((res) => {
+              const result = res;
+              console.log(result);
+          });
+      },
   },
+  
   mounted(){
     this.getData();
   }
+  
 }
 
 </script>
