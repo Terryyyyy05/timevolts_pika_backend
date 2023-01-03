@@ -20,27 +20,50 @@
         <Input v-model="addItem.coupon_id" placeholder="ID" disabled></Input>
       </FormItem> -->
       <FormItem label="折扣金額">
-        <Input
+        <InputNumber
+          style="width: 200px"
+          controls-outside
+          :formatter="
+            (value) => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+          "
+          :min="1"
+          model-value
           v-model="addItem.coupon_discount_number"
           placeholder="請輸入折扣金額"
-        ></Input>
+        ></InputNumber>
       </FormItem>
       <FormItem label="發行數量">
-        <Input
+        <InputNumber
+          editable
+          style="width: 200px"
+          :min="1"
+          controls-outside
           v-model="addItem.coupon_quantity"
           placeholder="請輸入發行數量"
-        ></Input>
+        ></InputNumber>
       </FormItem>
       <FormItem label="消費門檻">
-        <Input
+        <InputNumber
+          style="width: 200px"
+          controls-outside
+          :formatter="
+            (value) => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+          "
+          :min="addItem.coupon_discount_number"
           v-model="addItem.coupon_pricing_condition"
           placeholder="請輸入門檻金額"
-        ></Input>
+          :class="{
+            error:
+              !addItem.coupon_discount_number >
+              addItem.coupon_pricing_condition,
+          }"
+        ></InputNumber>
       </FormItem>
     </Form>
     <Form :model="addItem">
       <FormItem label="發送日期">
         <DatePicker
+          :min="1"
           type="date"
           v-model="addItem.coupon_issue_date"
           placeholder="請輸入發送日期"
@@ -259,12 +282,12 @@ export default {
       addItem: {
         //新增彈窗內容資料
         coupon_id: "",
-        coupon_discount_number: "1",
-        coupon_quantity: "100",
-        coupon_pricing_condition: "3",
-        coupon_issue_date: "2022-12-01",
-        coupon_valid_date: "2022-12-29",
-        coupon_exp_date: "2023-01-31",
+        coupon_discount_number: "",
+        coupon_quantity: "",
+        coupon_pricing_condition: "",
+        coupon_issue_date: "",
+        coupon_valid_date: "",
+        coupon_exp_date: "",
         coupon_status: 0,
         couponStatus: false,
       },
@@ -327,9 +350,9 @@ export default {
     onChange(row) {
       console.log(row.coupon_status);
       if (row.coupon_status) {
-        this.$Message.info("上架狀態： 上架");
+        this.$Message.success("上架狀態： 上架");
       } else {
-        this.$Message.info("上架狀態： 下架");
+        this.$Message.success("上架狀態： 下架");
       }
       console.log(row);
 
@@ -361,25 +384,11 @@ export default {
         .then((res) => res.json())
         .then((result) => {
           selt.dataList = result;
-
-          //資料處理
-          //新增couponStatus屬性代替coupon_status計算布林值
-          for (let i = 0; i < selt.dataList.length; i++) {
-            if (selt.dataList[i].coupon_status == 1) {
-              selt.dataList[i]["couponStatus"] = true;
-            } else if (selt.dataList[i].coupon_status == 0) {
-              selt.dataList[i]["couponStatus"] = false;
-            }
-          }
-
-          selt.addItem.coupon_id = selt.dataList.length + 1;
+          // selt.addItem.coupon_id = selt.dataList.length + 1;
           console.log(selt);
         });
-      console.log(selt.dataList);
     },
-    couponStatus() {
-      console.log("EEE");
-      console.log(dataList.coupon_status);
+    async couponStatus() {
       if ((dataList.coupon_status = 1)) {
         return true;
       } else {
@@ -390,74 +399,123 @@ export default {
       let selt = this;
       let AddItem = selt.addItem;
 
-      // 整理資料
-      //新增couponStatus的布林值，轉為coupon_status 0 or 1
-      // selt.addItem.coupon_id = selt.addItem.coupon_id;
-      if (selt.addItem.couponStatus == true) {
-        selt.addItem.coupon_status == 1;
-      } else if (selt.addItem.couponStatus == false) {
-        selt.addItem.coupon_status == 0;
+      // 檢查是否為空值、錯誤
+      if (AddItem.coupon_discount_number == "") {
+        selt.$Message.warning("「折扣金額」不得為空");
+      } else if (AddItem.coupon_quantity == "") {
+        selt.$Message.warning("「發送數量」不得為空");
+      } else if (AddItem.coupon_pricing_condition == "") {
+        selt.$Message.warning("「消費門檻」不得為空");
+      } else if (
+        AddItem.coupon_pricing_condition < AddItem.coupon_discount_number
+      ) {
+        selt.$Message.warning("「消費門檻」不得低於「折扣金額」");
+      } else if (AddItem.coupon_issue_date == "") {
+        selt.$Message.warning("「發送日期」不得為空");
+      } else if (AddItem.coupon_valid_date == "") {
+        selt.$Message.warning("「生效日期」不得為空");
+      } else {
+        // 檢查資料是否為數字
+        function isNumber(inputs) {
+          return parseFloat(inputs).toString() != "NaN";
+        }
+        if (!isNumber(AddItem.coupon_discount_number)) {
+          selt.$Message.info("折價金額錯誤");
+        } else if (!isNumber(AddItem.coupon_quantity)) {
+          selt.$Message.info("消費門檻錯誤");
+        } else if (!isNumber(AddItem.coupon_pricing_condition)) {
+          selt.$Message.info("發行數量錯誤");
+        } else {
+          // 通過驗證
+          this.newDataTidy();
+        }
       }
-      console.log(selt.addItem);
+    },
+    newDataTidy() {
+      let selt = this;
+      let AddItem = selt.addItem;
+
+      // 整理日期格式、判定有無期限
+      typeof str == "string";
       selt.addItem.coupon_issue_date = selt.addItem.coupon_issue_date
         .toLocaleDateString()
         .replace(/\//g, "-")
         .substr(0, 10);
       selt.addItem.coupon_valid_date = selt.addItem.coupon_valid_date
         .toLocaleDateString()
-        .replace(/\//g, "-");
+        .replace(/\//g, "-")
+        .substr(0, 10);
       if (selt.addItem.coupon_exp_date != "") {
         selt.addItem.coupon_exp_date = selt.addItem.coupon_exp_date
           .toLocaleDateString()
-          .replace(/\//g, "-");
-      }
-      console.log("BBB");
-
-      // 檢查資料是否為數字
-      function isNumber(inputs) {
-        return parseFloat(inputs).toString() != "NaN";
-      }
-      // 折價金額
-      if (isNumber(AddItem.coupon_discount_number)) {
-        //發行數量
-        if (isNumber(AddItem.coupon_quantity)) {
-          //消費門檻
-          if (isNumber(AddItem.coupon_pricing_condition)) {
-            // 新增資料
-            NewData();
-          } else {
-            selt.$Message.info("消費門檻錯誤");
-          }
-        } else {
-          selt.$Message.info("發行數量錯誤");
-        }
+          .replace(/\//g, "-")
+          .substr(0, 10);
+        // 送出一般的資料
+        this.insertNewData(AddItem);
       } else {
-        selt.$Message.info("折價金額錯誤");
+        selt.addItem.coupon_exp_date == "null";
+        // 送出無期限的資料
+        this.insertNullExpData(AddItem);
       }
-      return;
 
       // 新增資料
-      function NewData() {
-        // fetch(`${BASE_URL}/insert_new_coupon_data.php`)
-        fetch(`${BASE_URL}/insert_new_coupon_data.php`, {
-          method: "POST",
-          body: JSON.stringify({
-            action: "newData",
-            // coupon_id: AddItem.coupon_id,
-            coupon_discount_number: AddItem.coupon_discount_number,
-            coupon_quantity: AddItem.coupon_quantity,
-            coupon_pricing_condition: AddItem.coupon_pricing_condition,
-            coupon_issue_date: AddItem.coupon_issue_date,
-            coupon_valid_date: AddItem.coupon_valid_date,
-            coupon_exp_date: AddItem.coupon_exp_date,
-            coupon_status: AddItem.coupon_status,
-          }),
-        });
-        selt.$Message.info("已新增一筆資料");
-        // 重新撈資料
-        this.getData();
-      }
+      // if (AddItem.coupon_exp_date != "null") {
+      //   console.log(AddItem.coupon_exp_date);
+      // } else {
+      //   console.log(AddItem.coupon_exp_date);
+      // }
     },
+
+    // 新增資料
+    insertNewData(AddItem) {
+      let formData = new FormData();
+      formData.append("action", "newData");
+      formData.append("coupon_discount_number", AddItem.coupon_discount_number);
+      formData.append("coupon_quantity", AddItem.coupon_quantity);
+      formData.append(
+        "coupon_pricing_condition",
+        AddItem.coupon_pricing_condition
+      );
+      formData.append("coupon_issue_date", AddItem.coupon_issue_date);
+      formData.append("coupon_valid_date", AddItem.coupon_valid_date);
+      formData.append("coupon_exp_date", AddItem.coupon_exp_date);
+      formData.append("coupon_status", AddItem.coupon_status);
+
+      fetch(`${BASE_URL}/insert_new_coupon_data.php`, {
+        method: "POST",
+        body: formData,
+      });
+      selt.$Message.info("已新增一筆資料");
+      // 重新撈資料
+      this.getData();
+    },
+
+    // 新增無期限資料
+    insertNullExpData(AddItem) {
+      let nullExpFormData = new FormData();
+      nullExpFormData.append("action", "nullExpData");
+      nullExpFormData.append(
+        "coupon_discount_number",
+        AddItem.coupon_discount_number
+      );
+      nullExpFormData.append("coupon_quantity", AddItem.coupon_quantity);
+      nullExpFormData.append(
+        "coupon_pricing_condition",
+        AddItem.coupon_pricing_condition
+      );
+      nullExpFormData.append("coupon_issue_date", AddItem.coupon_issue_date);
+      nullExpFormData.append("coupon_valid_date", AddItem.coupon_valid_date);
+      nullExpFormData.append("coupon_status", AddItem.coupon_status);
+
+      fetch(`${BASE_URL}/insert_null_exp_coupon_data.php`, {
+        method: "POST",
+        body: nullExpFormData,
+      });
+      selt.$Message.info("已新增一筆資料");
+      // 重新撈資料
+      this.getData();
+    },
+
     cancelData() {
       this.$Message.info("已取消新增");
     },
@@ -480,9 +538,16 @@ export default {
       });
     },
   },
-  mounted() {},
-  created() {
+  mounted() {
     this.getData();
+  },
+  created() {
+    // this.getData();
+    // function OnlyNumber(obj) {
+    //   if (obj.value != obj.value.replace(/[^0-9\.]/g, "")) {
+    //     obj.value = obj.value.replace(/[^0-9\.-]/g, "");
+    //   }
+    // }
     // this.$set(this.dataList, "add", 0);
   },
   computed: {},
@@ -493,5 +558,8 @@ export default {
 .notDelete {
   background: #ccc;
   border: 1px solid #ccc;
+}
+.error input::-webkit-input-placeholder {
+  color: red;
 }
 </style>

@@ -3,7 +3,8 @@
   <!-- 表格 -->
   <Table 
   class="table" 
-  stripe border 
+  stripe 
+  border 
   :columns="columns" 
   :data="dataList" 
   width="1200">
@@ -34,26 +35,27 @@
     <!-- 加入編輯、刪除彈窗 -->
     <template #edit_member="{index, row}">
       <!-- 編輯按鈕 -->
-      <Button @click="clickEditBtn(index)" class="edit">編輯</Button>
+      <Button @click="clickEditBtn(index)" class="edit">編輯與查看</Button>
       <!-- 編輯彈窗 -->
       <Modal 
       v-model="modal[index]" 
       :id="row.mem_name"
       title="編輯會員資料" 
-      ok-text="確認修改" 
+      ok-text="確認" 
       cancel-text="取消" 
       width="700px" 
       class="editmember-popup"
       :styles="{top: '30px'}"
-      @on-ok="replaceItem(row.mem_name)"
-      @on-cancel="cancelEdit"
       >
       
         <Form 
         :model="addItem" 
         :label-width="80"
+        method="post"
+        enctype="multipart/form-data"
+        ref="updateForm"
         inline>
-          <FormItem label="姓名" :model="addItem">
+          <FormItem label="姓名">
             <text>{{addItem.mem_name}}</text>
           </FormItem>
           <FormItem label="會員頭貼" style="margin-left:200px">
@@ -64,7 +66,6 @@
         <Form 
         :model="addItem" 
         :label-width="80"
-        :rules="ruleValidate"
         ref="updateForm">
           <FormItem label="信箱">
             <text>{{addItem.mem_email}}</text>
@@ -76,10 +77,7 @@
             <text>{{addItem.mem_address}}</text>
           </FormItem>
           <FormItem label="會員狀態">
-            <Select v-model="addItem.mem_status" placeholder="狀態" style="width:100px">
-              <Option value="1">正常</Option>
-              <Option value="0">停權</Option>
-            </Select>
+            <text>{{ addItem.mem_status === 0 ? "停權" : "正常" }}</text>
           </FormItem>
         </Form>
       </Modal>
@@ -158,27 +156,9 @@ export default {
           key: 'mem_status',
           align: 'center',
           slot: 'mem_status',  //加入開關鈕欄位需加slot
-          filters: [   //篩選分類
-            {
-              label: '正常',
-              value: 1
-            },
-            {
-              label: '停權',
-              value: 0
-            }
-          ],
-          filterMultiple: false,
-          filterMethod(value, row) {
-            if (value === 1) {
-              return row.mem_status === "正常";
-            } else if (value === 0) {
-              return row.mem_status === "停權";
-            }
-          }
         },
         {
-          title: '編輯',
+          title: '編輯與查看',
           width: '185px',
           key: 'edit_member',
           align: 'center',
@@ -187,7 +167,7 @@ export default {
       ],
       dataList:[],
       addItem: {
-        // mem_id: "",
+        mem_id: "",
         mem_name: "",
         mem_email: "",
         mem_psw: "",
@@ -197,29 +177,6 @@ export default {
         mem_level: "",
         mem_status: "",
         mem_photo: "",
-      },
-      restItem: {
-        // mem_id: "",
-        mem_name: "",
-        mem_email: "",
-        mem_psw: "",
-        mem_phone: "",
-        mem_address: "",
-        mem_signup_date: "",
-        mem_level: "",
-        mem_status: "",
-        mem_photo: "",
-      },
-      ruleValidate: {
-        
-        mem_status: [
-            {
-                required: true,
-                type: "any",
-                message: "離職還是在職",
-                trigger: "blur",
-            },
-        ],
       },
       // memberItem: {
       //   name:'',
@@ -241,24 +198,11 @@ export default {
       } else {
         this.$Message.info("會員狀態： 停權");
       }
-      console.log(row);
       this.updateStatus(row.mem_id, row.mem_status);
     },
     clickEditBtn(index) {
       this.modal[index] = true;
       this.addItem = { ...this.dataList[index] };
-    },
-    replaceItem(index) {
-      this.$refs["updateForm"].validate((valid) => {
-        if (valid) {
-          this.updateStatus(row.mem_id, row.mem_status);
-        }else {
-               alert("修改失敗，請確認表格是否輸入正確");
-            }
-        });
-    },
-    cancelEdit() {
-      this.addItem = { ...this.resetItem };
     },
     updateStatus(mem_id, mem_status) {
       const formData = new FormData();
@@ -272,7 +216,6 @@ export default {
         .then((res) => res.json())
         .then((res) => {
           const result = res;
-          console.log(result);
         });
     },
   },

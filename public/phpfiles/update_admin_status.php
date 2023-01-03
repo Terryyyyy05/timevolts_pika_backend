@@ -4,13 +4,13 @@ header("Content-Type:application/json;charset=utf-8");
 require_once("./php_connect_books/connectBooks.php");
 
     try{
-        $sql = "UPDATE member SET mem_status = :mem_status
+        $sql = "UPDATE admin_panel SET admin_status = :admin_status
                             
-                                  WHERE mem_id = :mem_id";
+                                  WHERE admin_id = :admin_id";
         //編譯, 執行
         $member = $pdo->prepare($sql);
-        $member->bindValue(":mem_id", $_POST["mem_id"]);	
-        $member->bindValue(":mem_status", $_POST["mem_status"]);
+        $member->bindValue(":admin_id", $_POST["admin_id"]);	
+        $member->bindValue(":admin_status", $_POST["admin_status"]);
         
   
         $member->execute();

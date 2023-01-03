@@ -10,8 +10,8 @@
                <input
                   type="text"
                   placeholder="帳號"
-                  v-model.trim="acount.val"
-                  @blur="clearValidity('acount')"
+                  v-model.trim="account.val"
+                  @blur="clearValidity('account')"
                />
                <input
                   type="text"
@@ -20,13 +20,11 @@
                   @blur="clearValidity('password')"
                />
             </div>
-            <p v-if="!loginIsValid" class="alert">請輸入完整資訊</p>
+            <!-- <p v-if="!loginIsValid" class="alert">請輸入完整資訊</p> -->
             <p class="forgot-psw">忘記密碼</p>
-            <router-link :to="toMember">
-               <button class="btn-secondary" @click="login">
-                  <span>登入</span>
-               </button>
-            </router-link>
+            <button class="btn-secondary" @click="login">
+               <span>登入</span>
+            </button>
             <button class="btn-primary">
                <span>離開</span>
             </button>
@@ -36,10 +34,12 @@
 </template>
 
 <script>
+import { BASE_URL } from "@/assets/js/commom";
+
 export default {
    data() {
       return {
-         acount: {
+         account: {
             val: "",
             isValid: true,
          },
@@ -50,21 +50,15 @@ export default {
          loginIsValid: true,
       };
    },
-   computed: {
-      toMember() {
-         if (this.loginIsValid) {
-            return "/member";
-         }
-      },
-   },
    methods: {
       clearValidity(input) {
          this[input].isValid = true;
       },
       validateLogin() {
          this.loginIsValid = true;
-         if (this.acount.val === "") {
-            this.acount.isValid = false;
+
+         if (this.account.val === "") {
+            this.account.isValid = false;
             this.loginIsValid = false;
          }
          if (this.password.val === "") {
@@ -72,12 +66,30 @@ export default {
             this.loginIsValid = false;
          }
       },
-      login() {
+      async login() {
          this.validateLogin();
-         if (!this.loginIsValid) {
-            return;
-         }
-         // this.$router.go(-1);
+         const response = await fetch(`${BASE_URL}/login.php`, {
+            method: "POST",
+            body: JSON.stringify({
+               account: this.account.val,
+               password: this.password.val,
+               
+            }),
+         });
+
+         const responseData = await response.json();
+
+         if (responseData.errMsg) {
+            window.alert(`${responseData.errMsg}`);
+            this.loginIsValid = false;
+         } else if(responseData.errMsg1){
+            window.alert(`${responseData.errMsg1}`);
+            console.log(`${responseData.errMsg1}`);
+            this.loginIsValid = false;
+         } else if (responseData.msg === "登入成功") {
+            window.alert(`歡迎登入，${responseData.adminName}`);
+            this.$router.push({ path: "/member" });
+         } 
       },
    },
 };

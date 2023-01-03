@@ -22,12 +22,12 @@
             ref="addForm"
             :rules="ruleValidate"
         >
-            <FormItem label="行程編號" prop="itinerary_id">
+            <!-- <FormItem label="行程編號" prop="itinerary_id">
                 <Input
                     v-model="addItem.itinerary_id"
                     placeholder="請輸入行程編號"
                 ></Input>
-            </FormItem>
+            </FormItem> -->
             <FormItem label="行程名稱" prop="itinerary_name">
                 <Input
                     v-model="addItem.itinerary_name"
@@ -38,6 +38,7 @@
                 <Input
                     v-model="addItem.story_id"
                     placeholder="請輸入故事編號"
+                    type="number"
                 ></Input>
             </FormItem>
 
@@ -351,7 +352,7 @@ export default {
                 story_id: [
                     {
                         required: true,
-                        type: "number",
+                        // type: "number",
                         message: "要輸入對喔",
                         trigger: "blur",
                     },
